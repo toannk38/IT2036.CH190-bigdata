@@ -1,0 +1,113 @@
+# Stock AI Prometheus Configuration
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: 'stock-ai'
+    environment: 'development'
+
+# Rules for alerting
+rule_files:
+  - "rules/*.yml"
+
+# Scrape configurations
+scrape_configs:
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+    scrape_interval: 5s
+    metrics_path: /metrics
+
+  # Node Exporter (system metrics)
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+    scrape_interval: 15s
+
+  # cAdvisor (container metrics)
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']
+    scrape_interval: 15s
+
+  # MongoDB metrics (if using mongodb_exporter)
+  - job_name: 'mongodb'
+    static_configs:
+      - targets: ['mongodb-exporter:9216']
+    scrape_interval: 15s
+    scrape_timeout: 10s
+
+  # Redis metrics (if using redis_exporter)
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis-exporter:9121']
+    scrape_interval: 15s
+
+  # Kafka metrics (if using kafka_exporter)
+  - job_name: 'kafka'
+    static_configs:
+      - targets: ['kafka-exporter:9308']
+    scrape_interval: 15s
+
+  # Nginx metrics (if using nginx-prometheus-exporter)
+  - job_name: 'nginx'
+    static_configs:
+      - targets: ['nginx-exporter:9113']
+    scrape_interval: 15s
+
+  # Application services (when implemented)
+  - job_name: 'stock-api'
+    static_configs:
+      - targets: ['stock-ai-api:8000']
+    metrics_path: /metrics
+    scrape_interval: 10s
+    scrape_timeout: 5s
+
+  - job_name: 'data-collector'
+    static_configs:
+      - targets: ['stock-ai-data-collector:8002']
+    metrics_path: /metrics
+    scrape_interval: 30s
+
+  - job_name: 'kafka-consumer'
+    static_configs:
+      - targets: ['stock-ai-kafka-consumer:8003']
+    metrics_path: /metrics
+    scrape_interval: 15s
+
+  - job_name: 'ai-analysis'
+    static_configs:
+      - targets: ['stock-ai-ai-analysis:8004']
+    metrics_path: /metrics
+    scrape_interval: 60s
+
+  - job_name: 'llm-analysis'
+    static_configs:
+      - targets: ['stock-ai-llm-analysis:8005']
+    metrics_path: /metrics
+    scrape_interval: 60s
+
+  - job_name: 'aggregation'
+    static_configs:
+      - targets: ['stock-ai-aggregation:8006']
+    metrics_path: /metrics
+    scrape_interval: 30s
+
+  - job_name: 'auth-service'
+    static_configs:
+      - targets: ['stock-ai-auth:8001']
+    metrics_path: /metrics
+    scrape_interval: 30s
+
+# Alertmanager configuration (if using alertmanager)
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - alertmanager:9093
+
+# Remote write configuration (for long-term storage)
+# remote_write:
+#   - url: "http://prometheus-remote-storage:8086/api/v1/prom/write?db=prometheus"

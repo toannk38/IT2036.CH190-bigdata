@@ -9,3 +9,4 @@
 *.log
 coverage/
 backend/data/organ_name.json
+infrastructure/docker_volumes/

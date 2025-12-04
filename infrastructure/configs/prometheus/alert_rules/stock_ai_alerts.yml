@@ -1,0 +1,139 @@
+groups:
+- name: stock-ai-system-alerts
+  rules:
+  
+  # High CPU usage
+  - alert: HighCPUUsage
+    expr: (100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)) > 80
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High CPU usage detected"
+      description: "CPU usage is above 80% for more than 2 minutes on instance {{ $labels.instance }}"
+
+  # High memory usage
+  - alert: HighMemoryUsage
+    expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High memory usage detected"
+      description: "Memory usage is above 85% for more than 2 minutes on instance {{ $labels.instance }}"
+
+  # Disk space running low
+  - alert: LowDiskSpace
+    expr: (1 - (node_filesystem_avail_bytes{fstype!="tmpfs"} / node_filesystem_size_bytes{fstype!="tmpfs"})) * 100 > 85
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Low disk space detected"
+      description: "Disk usage is above 85% on filesystem {{ $labels.mountpoint }} for instance {{ $labels.instance }}"
+
+  # Service down
+  - alert: ServiceDown
+    expr: up == 0
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Service is down"
+      description: "Service {{ $labels.job }} on instance {{ $labels.instance }} is down for more than 1 minute"
+
+- name: stock-ai-application-alerts
+  rules:
+
+  # API high response time
+  - alert: HighAPIResponseTime
+    expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job="stock-api"}[5m])) > 2
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High API response time"
+      description: "95th percentile of API response time is above 2 seconds for more than 2 minutes"
+
+  # API high error rate
+  - alert: HighAPIErrorRate
+    expr: rate(http_requests_total{job="stock-api",status=~"5.."}[5m]) / rate(http_requests_total{job="stock-api"}[5m]) > 0.05
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      summary: "High API error rate"
+      description: "API error rate is above 5% for more than 2 minutes"
+
+  # Database connection issues
+  - alert: DatabaseConnectionIssues
+    expr: mongodb_connections_current / mongodb_connections_available > 0.8
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High database connection usage"
+      description: "MongoDB connection usage is above 80% for more than 2 minutes"
+
+  # Kafka consumer lag
+  - alert: KafkaConsumerLag
+    expr: kafka_consumer_lag_sum > 1000
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High Kafka consumer lag"
+      description: "Kafka consumer lag is above 1000 messages for more than 5 minutes"
+
+  # Data collection failure
+  - alert: DataCollectionFailure
+    expr: increase(data_collection_errors_total[5m]) > 5
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Data collection failures detected"
+      description: "More than 5 data collection errors in the last 5 minutes"
+
+- name: stock-ai-business-alerts
+  rules:
+
+  # No recent stock price updates
+  - alert: StockPriceUpdateLag
+    expr: (time() - stock_price_last_update_timestamp) > 900  # 15 minutes
+    for: 0m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Stock price updates are lagging"
+      description: "No stock price updates received for more than 15 minutes"
+
+  # AI analysis processing delays
+  - alert: AIAnalysisDelay
+    expr: (time() - ai_analysis_last_run_timestamp) > 7200  # 2 hours
+    for: 0m
+    labels:
+      severity: warning
+    annotations:
+      summary: "AI analysis processing is delayed"
+      description: "AI analysis has not run for more than 2 hours"
+
+  # LLM analysis failures
+  - alert: LLMAnalysisFailures
+    expr: increase(llm_analysis_failures_total[1h]) > 10
+    for: 0m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Multiple LLM analysis failures"
+      description: "More than 10 LLM analysis failures in the last hour"
+
+  # Alert generation stopped
+  - alert: AlertGenerationStopped
+    expr: (time() - alert_generation_last_run_timestamp) > 3600  # 1 hour
+    for: 0m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Alert generation has stopped"
+      description: "No alerts have been generated for more than 1 hour"
