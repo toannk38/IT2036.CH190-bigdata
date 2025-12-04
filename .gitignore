@@ -10,3 +10,5 @@
 coverage/
 backend/data/organ_name.json
 infrastructure/docker_volumes/
+backend/notebook/backend/
+backend/data

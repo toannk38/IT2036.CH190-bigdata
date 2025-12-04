@@ -11,7 +11,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Configuration
-COMPOSE_FILE="docker-compose.yml"
+COMPOSE_FILE="docker compose.yml"
 ENV_FILE=".env"
 
 # Function to print colored output
@@ -47,7 +47,7 @@ check_prerequisites() {
     fi
     
     # Check if Docker Compose is installed
-    if ! command -v docker-compose &> /dev/null && ! docker compose version &> /dev/null; then
+    if ! command -v docker compose &> /dev/null && ! docker compose version &> /dev/null; then
         print_error "Docker Compose is not installed. Please install Docker Compose first."
         exit 1
     fi
@@ -82,11 +82,11 @@ start_infrastructure() {
     print_status "Starting Stock AI infrastructure in $environment mode..."
     
     if [ "$environment" = "development" ]; then
-        docker-compose -f $COMPOSE_FILE -f docker-compose.dev.yml up -d
+        docker compose -f $COMPOSE_FILE -f docker compose.dev.yml up -d
     elif [ "$environment" = "production" ]; then
-        docker-compose -f $COMPOSE_FILE -f docker-compose.prod.yml up -d
+        docker compose -f $COMPOSE_FILE -f docker compose.prod.yml up -d
     else
-        docker-compose -f $COMPOSE_FILE up -d
+        docker compose -f $COMPOSE_FILE up -d
     fi
     
     print_success "Infrastructure started"
@@ -113,7 +113,7 @@ wait_for_services() {
         print_status "Waiting for $name to be ready..."
         
         for i in {1..60}; do
-            if docker-compose exec $name nc -z localhost $port 2>/dev/null; then
+            if docker compose exec $name nc -z localhost $port 2>/dev/null; then
                 print_success "$name is ready"
                 break
             fi
@@ -131,7 +131,7 @@ wait_for_services() {
 show_status() {
     print_status "Service Status:"
     echo ""
-    docker-compose ps
+    docker compose ps
     echo ""
     
     print_status "Access URLs:"
@@ -163,7 +163,7 @@ init_kafka_topics() {
         
         print_status "Creating topic: $topic_name"
         
-        docker-compose exec kafka kafka-topics.sh \
+        docker compose exec kafka kafka-topics.sh \
             --create \
             --bootstrap-server localhost:9093 \
             --topic $topic_name \
@@ -179,9 +179,9 @@ init_kafka_topics() {
 show_logs() {
     local service=$1
     if [ -z "$service" ]; then
-        docker-compose logs -f
+        docker compose logs -f
     else
-        docker-compose logs -f $service
+        docker compose logs -f $service
     fi
 }
 
@@ -199,14 +199,14 @@ case "${1:-start}" in
     
     "stop")
         print_status "Stopping infrastructure..."
-        docker-compose down
+        docker compose down
         print_success "Infrastructure stopped"
         ;;
     
     "restart")
         environment=${2:-development}
         print_status "Restarting infrastructure..."
-        docker-compose down
+        docker compose down
         start_infrastructure $environment
         wait_for_services
         show_status
@@ -226,7 +226,7 @@ case "${1:-start}" in
         echo
         if [[ $REPLY =~ ^[Yy]$ ]]; then
             print_status "Cleaning up..."
-            docker-compose down -v --remove-orphans
+            docker compose down -v --remove-orphans
             docker system prune -f
             print_success "Cleanup completed"
         else
