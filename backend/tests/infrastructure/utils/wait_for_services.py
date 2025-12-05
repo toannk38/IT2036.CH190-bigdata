@@ -1,4 +1,5 @@
 """Wait for services to be ready."""
+import os
 import time
 import pymongo
 import redis
@@ -8,11 +9,15 @@ from elasticsearch import Elasticsearch
 
 def wait_for_mongodb(max_wait=60):
     """Wait for MongoDB to be ready."""
+    connection_string = os.getenv(
+        "MONGODB_CONNECTION_STRING",
+        "mongodb://admin:StockAIMongoDB@localhost:27017/stock_ai?authSource=admin"
+    )
     start = time.time()
     while time.time() - start < max_wait:
         try:
             client = pymongo.MongoClient(
-                "mongodb://admin:StockAI@MongoDB2024@localhost:27017/stock_ai?authSource=admin",
+                connection_string,
                 serverSelectionTimeoutMS=2000
             )
             client.server_info()
@@ -26,10 +31,14 @@ def wait_for_mongodb(max_wait=60):
 
 def wait_for_redis(max_wait=30):
     """Wait for Redis to be ready."""
+    password = os.getenv("REDIS_PASSWORD", "StockAIRedis")
+    host = os.getenv("REDIS_HOST", "localhost")
+    port = int(os.getenv("REDIS_PORT", "6379"))
+    
     start = time.time()
     while time.time() - start < max_wait:
         try:
-            client = redis.Redis(host='localhost', port=6379, password='StockAI@Redis2024')
+            client = redis.Redis(host=host, port=port, password=password)
             client.ping()
             print("✓ Redis is ready")
             return True
@@ -41,11 +50,13 @@ def wait_for_redis(max_wait=30):
 
 def wait_for_kafka(max_wait=60):
     """Wait for Kafka to be ready."""
+    bootstrap_servers = os.getenv("KAFKA_BOOTSTRAP_SERVERS", "localhost:9092").split(",")
+    
     start = time.time()
     while time.time() - start < max_wait:
         try:
             producer = KafkaProducer(
-                bootstrap_servers=['localhost:9092'],
+                bootstrap_servers=bootstrap_servers,
                 request_timeout_ms=5000
             )
             producer.close()
@@ -59,10 +70,13 @@ def wait_for_kafka(max_wait=60):
 
 def wait_for_elasticsearch(max_wait=60):
     """Wait for Elasticsearch to be ready."""
+    host = os.getenv("ELASTICSEARCH_HOST", "localhost")
+    port = os.getenv("ELASTICSEARCH_PORT", "9200")
+    
     start = time.time()
     while time.time() - start < max_wait:
         try:
-            client = Elasticsearch(['http://localhost:9200'])
+            client = Elasticsearch([f'http://{host}:{port}'])
             if client.ping():
                 print("✓ Elasticsearch is ready")
                 return True
