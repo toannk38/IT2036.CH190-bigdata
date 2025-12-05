@@ -259,59 +259,77 @@ model-training/
 │   ├── data_preprocessing.py   # LSTM-specific preprocessing
 │   └── config/lstm_config.yml
 ├── transformer/
-│   ├── train_transformer.py    # Transformer training
-│   ├── attention_analysis.py   # Attention visualization
+│   ├── train_transformer.py    # Transformer model training
+│   ├── attention_model.py      # Attention mechanisms
+│   ├── positional_encoding.py  # Positional encoding
 │   └── config/transformer_config.yml
 ├── catboost/
-│   ├── train_catboost.py       # CatBoost training
+│   ├── train_catboost.py       # CatBoost model training
 │   ├── feature_importance.py   # Feature analysis
 │   └── config/catboost_config.yml
 └── ensemble/
-    ├── ensemble_trainer.py     # Ensemble method training
-    └── weight_optimizer.py     # Optimize ensemble weights
+    ├── ensemble_trainer.py     # Ensemble model training
+    ├── model_stacking.py       # Model stacking
+    └── voting_classifier.py    # Voting methods
 ```
 
 ### ml-training/model-evaluation/
-**Chức năng:** Đánh giá performance models
+**Chức năng:** Backtesting, performance metrics, validation
 ```
 model-evaluation/
-├── backtesting.py             # Backtesting framework
-├── performance_metrics.py     # Accuracy, Sharpe ratio, etc.
-├── model_comparison.py        # Compare different models
-├── validation.py              # Cross-validation
-├── risk_analysis.py           # Risk metrics calculation
+├── backtesting/
+│   ├── backtest_engine.py      # Backtesting engine
+│   ├── strategy_tester.py      # Trading strategy testing
+│   └── performance_analyzer.py # Performance analysis
+├── metrics/
+│   ├── regression_metrics.py   # Regression evaluation
+│   ├── classification_metrics.py # Classification metrics
+│   ├── trading_metrics.py      # Trading performance
+│   └── risk_metrics.py         # Risk assessment
+├── validation/
+│   ├── cross_validator.py      # Cross-validation
+│   ├── time_series_validator.py # Time series validation
+│   └── walk_forward_validator.py # Walk-forward analysis
 └── reports/
-    ├── performance_report.py  # Generate performance reports
-    └── comparison_report.py   # Model comparison reports
+    ├── model_report_generator.py # Report generation
+    ├── performance_dashboard.py  # Interactive dashboard
+    └── comparison_report.py      # Model comparison
 ```
 
 ### ml-training/experiments/
-**Chức năng:** Research và development
+**Chức năng:** Jupyter notebooks, experiments, research
 ```
 experiments/
-├── notebooks/                 # Jupyter notebooks
-│   ├── 01_data_exploration.ipynb
-│   ├── 02_feature_analysis.ipynb
-│   ├── 03_model_experiments.ipynb
-│   └── 04_ensemble_analysis.ipynb
-├── results/                   # Experiment results
-│   ├── model_performance/
-│   └── hyperparameter_tuning/
-└── plots/                     # Visualization plots
-    ├── feature_importance/
-    └── model_comparison/
+├── notebooks/
+│   ├── data_exploration.ipynb  # Data analysis
+│   ├── feature_analysis.ipynb  # Feature engineering
+│   ├── model_comparison.ipynb  # Model comparison
+│   └── strategy_research.ipynb # Trading strategies
+├── research/
+│   ├── market_regime_detection.py # Market regime analysis
+│   ├── volatility_modeling.py     # Volatility models
+│   └── correlation_analysis.py    # Correlation studies
+└── prototypes/
+    ├── new_indicators.py       # Experimental indicators
+    ├── alternative_models.py   # New model architectures
+    └── ensemble_experiments.py # Ensemble methods
 ```
 
 ### ml-training/pipelines/
-**Chức năng:** End-to-end training pipelines
+**Chức năng:** Training pipelines và workflows
 ```
 pipelines/
-├── training_pipeline.py       # Complete training workflow
-├── data_pipeline.py          # Data preparation pipeline
-├── evaluation_pipeline.py    # Model evaluation pipeline
-├── deployment_pipeline.py    # Model deployment pipeline
+├── training_pipeline.py        # Main training orchestrator
+├── data_pipeline.py            # Data processing pipeline
+├── model_pipeline.py           # Model training pipeline
+├── evaluation_pipeline.py      # Evaluation pipeline
+├── deployment_pipeline.py      # Model deployment
+├── schedulers/
+│   ├── daily_retrain.py        # Daily retraining
+│   ├── weekly_evaluation.py    # Weekly evaluation
+│   └── monthly_backtest.py     # Monthly backtesting
 └── config/
-    └── pipeline_config.yml   # Pipeline configurations
+    └── pipeline_config.yml     # Pipeline configuration
 ```
 
 ---

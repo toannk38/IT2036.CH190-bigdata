@@ -4,16 +4,14 @@ import sys
 import pytest
 from pathlib import Path
 
-# Add project root to path
-project_root = Path(__file__).parent.parent.parent.parent
-sys.path.insert(0, str(project_root))
+
 
 # Import utilities
-from backend.tests.infrastructure.utils.wait_for_services import wait_for_all_services
-from backend.tests.infrastructure.utils.docker_helpers import check_services_running
-from backend.tests.infrastructure.fixtures.stock_companies import load_companies
-from backend.tests.infrastructure.fixtures.stock_prices import load_prices
-from backend.tests.infrastructure.fixtures.stock_news import load_news
+from  tests.infrastructure.utils.wait_for_services import wait_for_all_services
+from tests.infrastructure.utils.docker_helpers import check_services_running
+from tests.infrastructure.fixtures.stock_companies import load_companies
+from tests.infrastructure.fixtures.stock_prices import load_prices
+from tests.infrastructure.fixtures.stock_news import load_news
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -42,7 +40,7 @@ def mongodb_client():
     from pymongo import MongoClient
     
     connection_string = os.getenv("MONGODB_CONNECTION_STRING", 
-                                   "mongodb://admin:StockAI@MongoDB2024@localhost:27017/stock_ai?authSource=admin")
+                                   "mongodb://admin:StockAIMongoDB@127.0.0.1:27017/stock_ai?authSource=admin")
     client = MongoClient(connection_string)
     
     yield client
@@ -55,8 +53,10 @@ def redis_client():
     """Redis client fixture."""
     import redis
     
-    password = os.getenv("REDIS_PASSWORD", "StockAI@Redis2024")
-    client = redis.Redis(host='localhost', port=6379, password=password, decode_responses=True)
+    password = os.getenv("REDIS_PASSWORD", "StockAIRedis")
+    host = os.getenv("REDIS_HOST", "localhost")
+    port = int(os.getenv("REDIS_PORT", "6379"))
+    client = redis.Redis(host=host, port=port, password=password, decode_responses=True)
     
     yield client
     
