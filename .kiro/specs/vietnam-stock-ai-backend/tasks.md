@@ -160,7 +160,7 @@
   - Test influence score calculation
   - _Requirements: 5.2, 5.3, 5.4_
 
-- [-] 9. Implement Aggregation Service
+- [x] 9. Implement Aggregation Service
 - [x] 9.1 Create AggregationService class
   - Implement `__init__` with MongoDB client and weight configuration
   - Implement `aggregate()` to combine AI/ML and LLM results
@@ -168,29 +168,29 @@
   - Implement `generate_alerts()` based on score thresholds
   - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5_
 
-- [ ] 9.2 Write property test for final score range validity
+- [x] 9.2 Write property test for final score range validity
   - **Property 21: Final score range validity**
   - **Validates: Requirements 6.3**
 
-- [ ] 9.3 Write property test for alert generation consistency
+- [x] 9.3 Write property test for alert generation consistency
   - **Property 22: Alert generation consistency**
   - **Validates: Requirements 6.4**
 
-- [ ] 9.4 Write property test for final scores storage completeness
+- [x] 9.4 Write property test for final scores storage completeness
   - **Property 23: Final scores storage completeness**
   - **Validates: Requirements 6.5**
 
-- [ ] 9.5 Write unit tests for AggregationService
+- [x] 9.5 Write unit tests for AggregationService
   - Test weighted score calculation
   - Test alert generation for different score ranges
   - Test data retrieval and aggregation
   - _Requirements: 6.2, 6.3, 6.4_
 
-- [ ] 10. Checkpoint - Ensure all tests pass
+- [x] 10. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 11. Implement API Service
-- [ ] 11.1 Create FastAPI application with endpoints
+- [-] 11. Implement API Service
+- [x] 11.1 Create FastAPI application with endpoints
   - Implement `get_stock_summary()` endpoint for comprehensive stock data
   - Implement `get_alerts()` endpoint with sorting and pagination
   - Implement `get_historical_analysis()` endpoint with date filtering
@@ -198,15 +198,15 @@
   - Add response models and documentation
   - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5_
 
-- [ ] 11.2 Write property test for stock summary response completeness
+- [x] 11.2 Write property test for stock summary response completeness
   - **Property 24: Stock summary response completeness**
   - **Validates: Requirements 7.1**
 
-- [ ] 11.3 Write property test for alert list sorting
+- [x] 11.3 Write property test for alert list sorting
   - **Property 25: Alert list sorting**
   - **Validates: Requirements 7.2**
 
-- [ ] 11.4 Write property test for historical data date range filtering
+- [x] 11.4 Write property test for historical data date range filtering
   - **Property 26: Historical data date range filtering**
   - **Validates: Requirements 7.3**
 
