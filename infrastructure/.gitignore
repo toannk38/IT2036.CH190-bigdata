@@ -1,0 +1,5 @@
+# Ignore all volume data
+volumes/
+
+# But keep the directory structure
+!volumes/.gitkeep

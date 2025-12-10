@@ -114,7 +114,8 @@ class SymbolManager:
                     upsert=True
                 )
                 
-                if result.upserted_id or result.modified_count > 0:
+                # Count if inserted, updated, or matched (even if no changes)
+                if result.upserted_id or result.modified_count > 0 or result.matched_count > 0:
                     count += 1
                     logger.debug(f"Upserted symbol: {symbol_data['symbol']}")
                     

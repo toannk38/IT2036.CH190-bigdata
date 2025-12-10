@@ -15,99 +15,99 @@
   - Implement `update_symbol()` for metadata updates
   - _Requirements: 2.1, 2.2, 2.4, 2.5_
 
-- [-] 2.2 Write property test for symbol upsert idempotence
+- [x] 2.2 Write property test for symbol upsert idempotence
   - **Property 3: Symbol upsert idempotence**
   - **Validates: Requirements 2.4**
 
-- [ ] 2.3 Write property test for active symbols retrieval
+- [x] 2.3 Write property test for active symbols retrieval
   - **Property 4: Active symbols retrieval**
   - **Validates: Requirements 2.5**
 
-- [ ] 2.4 Write unit tests for SymbolManager
+- [x] 2.4 Write unit tests for SymbolManager
   - Test JSON parsing and loading
   - Test symbol retrieval with different filters
   - Test error handling for invalid JSON
   - _Requirements: 2.1, 2.2, 2.5_
 
-- [ ] 3. Implement Price Collector
-- [ ] 3.1 Create PriceCollector class with vnstock integration
+- [x] 3. Implement Price Collector
+- [x] 3.1 Create PriceCollector class with vnstock integration
   - Implement `__init__` with Kafka producer, vnstock client, and SymbolManager
   - Implement `collect()` to fetch prices for all active symbols
   - Implement `publish_to_kafka()` to send data to stock_prices_raw topic
   - Add error handling and logging for failed symbol collections
   - _Requirements: 1.2, 1.3, 1.6_
 
-- [ ] 3.2 Write property test for symbol-based price collection
+- [x] 3.2 Write property test for symbol-based price collection
   - **Property 5: Symbol-based price collection**
   - **Validates: Requirements 1.2**
 
-- [ ] 3.3 Write property test for price data Kafka publishing
+- [x] 3.3 Write property test for price data Kafka publishing
   - **Property 6: Price data Kafka publishing**
   - **Validates: Requirements 1.3**
 
-- [ ] 3.4 Write unit tests for PriceCollector
+- [x] 3.4 Write unit tests for PriceCollector
   - Test price data collection with mocked vnstock
   - Test Kafka publishing with mocked producer
   - Test error handling for network failures
   - _Requirements: 1.2, 1.3, 1.6_
 
-- [ ] 4. Implement News Collector
-- [ ] 4.1 Create NewsCollector class with vnstock integration
+- [x] 4. Implement News Collector
+- [x] 4.1 Create NewsCollector class with vnstock integration
   - Implement `__init__` with Kafka producer, vnstock client, and SymbolManager
   - Implement `collect()` to fetch news for all active symbols
   - Implement `publish_to_kafka()` to send data to stock_news_raw topic
   - Add error handling and logging for failed symbol collections
   - _Requirements: 3.1, 3.2, 3.3, 3.6_
 
-- [ ] 4.2 Write property test for symbol-based news collection
+- [x] 4.2 Write property test for symbol-based news collection
   - **Property 9: Symbol-based news collection**
   - **Validates: Requirements 3.2**
 
-- [ ] 4.3 Write property test for news data Kafka publishing
+- [x] 4.3 Write property test for news data Kafka publishing
   - **Property 10: News data Kafka publishing**
   - **Validates: Requirements 3.3**
 
-- [ ] 4.4 Write unit tests for NewsCollector
+- [x] 4.4 Write unit tests for NewsCollector
   - Test news collection with mocked vnstock
   - Test Kafka publishing with mocked producer
   - Test error handling for API failures
   - _Requirements: 3.1, 3.2, 3.3, 3.6_
 
-- [ ] 5. Implement Kafka Consumer
-- [ ] 5.1 Create KafkaDataConsumer class
+- [x] 5. Implement Kafka Consumer
+- [x] 5.1 Create KafkaDataConsumer class
   - Implement `__init__` with Kafka consumer and MongoDB client
   - Implement `consume_and_store()` for continuous message processing
   - Implement `validate_message()` for schema validation
   - Add offset management and error recovery
   - _Requirements: 1.4, 3.4, 8.1, 8.2, 8.3_
 
-- [ ] 5.2 Write property test for price data round-trip preservation
+- [x] 5.2 Write property test for price data round-trip preservation
   - **Property 7: Price data round-trip preservation**
   - **Validates: Requirements 1.4**
 
-- [ ] 5.3 Write property test for price data completeness
+- [x] 5.3 Write property test for price data completeness
   - **Property 8: Price data completeness**
   - **Validates: Requirements 1.5**
 
-- [ ] 5.4 Write property test for news data round-trip preservation
+- [x] 5.4 Write property test for news data round-trip preservation
   - **Property 11: News data round-trip preservation**
   - **Validates: Requirements 3.4**
 
-- [ ] 5.5 Write property test for news data completeness
+- [x] 5.5 Write property test for news data completeness
   - **Property 12: News data completeness**
   - **Validates: Requirements 3.5**
 
-- [ ] 5.6 Write unit tests for KafkaDataConsumer
+- [x] 5.6 Write unit tests for KafkaDataConsumer
   - Test message consumption and storage
   - Test schema validation
   - Test offset recovery after failure
   - _Requirements: 1.4, 3.4, 8.3_
 
-- [ ] 6. Checkpoint - Ensure all tests pass
+- [x] 6. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 7. Implement AI/ML Engine
-- [ ] 7.1 Create AIMLEngine class with analysis functions
+- [-] 7. Implement AI/ML Engine
+- [x] 7.1 Create AIMLEngine class with analysis functions
   - Implement `__init__` with MongoDB client and model loading
   - Implement `analyze_stock()` to orchestrate analysis
   - Implement `calculate_trend()` using time-series analysis
@@ -115,26 +115,26 @@
   - Implement `calculate_technical_score()` using RSI, MACD indicators
   - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5_
 
-- [ ] 7.2 Write property test for risk score validity
+- [x] 7.2 Write property test for risk score validity
   - **Property 14: Risk score validity**
   - **Validates: Requirements 4.3**
 
-- [ ] 7.3 Write property test for technical score validity
+- [x] 7.3 Write property test for technical score validity
   - **Property 15: Technical score validity**
   - **Validates: Requirements 4.4**
 
-- [ ] 7.4 Write property test for AI/ML results storage completeness
+- [x] 7.4 Write property test for AI/ML results storage completeness
   - **Property 16: AI/ML results storage completeness**
   - **Validates: Requirements 4.5**
 
-- [ ] 7.5 Write unit tests for AIMLEngine
+- [x] 7.5 Write unit tests for AIMLEngine
   - Test trend calculation with sample price data
   - Test risk score calculation
   - Test technical indicators calculation
   - _Requirements: 4.2, 4.3, 4.4_
 
 - [ ] 8. Implement LLM Engine
-- [ ] 8.1 Create LLMEngine class with sentiment analysis
+- [x] 8.1 Create LLMEngine class with sentiment analysis
   - Implement `__init__` with MongoDB client and LLM client
   - Implement `analyze_news()` to process news articles
   - Implement `analyze_sentiment()` for single article sentiment
@@ -142,26 +142,26 @@
   - Implement `calculate_influence_score()` based on source credibility
   - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5_
 
-- [ ] 8.2 Write property test for sentiment classification validity
+- [x] 8.2 Write property test for sentiment classification validity
   - **Property 17: Sentiment classification validity**
   - **Validates: Requirements 5.2**
 
-- [ ] 8.3 Write property test for influence score validity
+- [x] 8.3 Write property test for influence score validity
   - **Property 18: Influence score validity**
   - **Validates: Requirements 5.4**
 
-- [ ] 8.4 Write property test for LLM results storage completeness
+- [x] 8.4 Write property test for LLM results storage completeness
   - **Property 19: LLM results storage completeness**
   - **Validates: Requirements 5.5**
 
-- [ ] 8.5 Write unit tests for LLMEngine
+- [x] 8.5 Write unit tests for LLMEngine
   - Test sentiment analysis with mocked LLM
   - Test summary generation
   - Test influence score calculation
   - _Requirements: 5.2, 5.3, 5.4_
 
-- [ ] 9. Implement Aggregation Service
-- [ ] 9.1 Create AggregationService class
+- [-] 9. Implement Aggregation Service
+- [x] 9.1 Create AggregationService class
   - Implement `__init__` with MongoDB client and weight configuration
   - Implement `aggregate()` to combine AI/ML and LLM results
   - Implement `calculate_final_score()` with weighted formula
