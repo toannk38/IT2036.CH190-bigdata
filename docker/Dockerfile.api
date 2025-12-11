@@ -1,27 +1,44 @@
 FROM python:3.11-slim
 
+# Dockerfile for FastAPI Service
+# Requirements: 10.1
+# Optimized for production deployment with security and performance
+
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies
+# Install system dependencies in a single layer
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     build-essential \
+    gcc \
+    curl \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements and install Python dependencies
+# Copy and install Python dependencies (separate layer for caching)
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt && \
+    rm requirements.txt
 
-# Copy application code
+# Copy application code (changes frequently, keep at end)
 COPY src /app/src
 
 # Set Python path
 ENV PYTHONPATH=/app
 
+# Create non-root user for security
+RUN useradd -m -u 1000 apiuser && \
+    chown -R apiuser:apiuser /app
+USER apiuser
+
 # Expose API port
 EXPOSE 8000
 
-# Run the API service
-CMD ["uvicorn", "src.services.api:app", "--host", "0.0.0.0", "--port", "8000"]
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+  CMD curl -f http://localhost:8000/health || exit 1
+
+# Run the API service with production settings
+CMD ["uvicorn", "src.services.api_service:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]
