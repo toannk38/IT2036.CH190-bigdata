@@ -24,6 +24,11 @@ services:
       AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/dags
       AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "false"
       AIRFLOW__SCHEDULER__DAG_DIR_LIST_INTERVAL: 30
+      # Webserver Configuration
+      AIRFLOW__WEBSERVER__WEB_SERVER_WORKER_TIMEOUT: 300
+      AIRFLOW__WEBSERVER__WORKER_REFRESH_BATCH_SIZE: 0
+      AIRFLOW__WEBSERVER__WORKER_REFRESH_INTERVAL: 0
+      AIRFLOW__WEBSERVER__RELOAD_ON_PLUGIN_CHANGE: "false"
       # Application Configuration
       MONGODB_URI: mongodb://mongodb:27017
       MONGODB_DATABASE: vietnam_stock_ai
@@ -42,6 +47,8 @@ services:
       - stock-ai-network
     command: >
       bash -c "
+      echo 'Cleaning up any stale PID files...' &&
+      rm -f /opt/airflow/airflow-webserver.pid /opt/airflow/airflow-scheduler.pid &&
       echo 'Initializing Airflow database...' &&
       airflow db init &&
       echo 'Creating admin user...' &&
