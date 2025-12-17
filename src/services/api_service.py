@@ -479,6 +479,40 @@ app = FastAPI(
 mongo_client = MongoClient(config.MONGODB_URI)
 api_service = APIService(mongo_client, config.MONGODB_DATABASE)
 
+# Health check endpoint
+@app.get("/health")
+async def health_check():
+    """
+    Health check endpoint to verify API and database connectivity.
+    
+    Returns:
+        Dict with status information including API status and database connectivity
+    """
+    try:
+        # Test database connectivity
+        mongo_client.admin.command('ping')
+        db_status = "healthy"
+        db_message = "Database connection successful"
+    except Exception as e:
+        logger.error(f"Database health check failed: {str(e)}")
+        db_status = "unhealthy"
+        db_message = f"Database connection failed: {str(e)}"
+    
+    # Overall status
+    overall_status = "healthy" if db_status == "healthy" else "unhealthy"
+    
+    return {
+        "status": overall_status,
+        "timestamp": datetime.utcnow().isoformat(),
+        "version": "1.0.0",
+        "services": {
+            "api": "healthy",
+            "database": {
+                "status": db_status,
+                "message": db_message
+            }
+        }
+    }
 
 # API Endpoints
 @app.get("/")
