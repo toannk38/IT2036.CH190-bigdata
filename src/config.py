@@ -72,3 +72,21 @@ class Config:
 
 # Create a singleton instance
 config = Config()
+
+def get_config():
+    """
+    Get configuration as a dictionary for the consumer service.
+    
+    Returns:
+        Dictionary containing configuration values
+    """
+    return {
+        'mongo_uri': config.MONGODB_URI,
+        'mongo_database': config.MONGODB_DATABASE,
+        'kafka_bootstrap_servers': config.KAFKA_BOOTSTRAP_SERVERS,
+        'kafka_topics': [config.KAFKA_PRICE_TOPIC, config.KAFKA_NEWS_TOPIC],
+        'kafka_consumer_group': 'stock_ai_consumer',
+        'kafka_auto_offset_reset': 'earliest',
+        'kafka_consumer_timeout_ms': 10000,
+        'log_level': config.LOG_LEVEL
+    }

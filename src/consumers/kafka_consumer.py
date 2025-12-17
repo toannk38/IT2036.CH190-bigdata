@@ -13,6 +13,7 @@ import json
 import time
 
 from src.logging_config import get_logger
+from src.config import get_config
 
 logger = get_logger(__name__)
 
@@ -364,3 +365,130 @@ class KafkaDataConsumer:
                 context={'error': str(e)},
                 exc_info=True
             )
+
+
+def create_kafka_consumer(config: Dict[str, Any]) -> KafkaConsumer:
+    """
+    Create and configure a Kafka consumer instance.
+    
+    Args:
+        config: Configuration dictionary containing Kafka settings
+        
+    Returns:
+        Configured KafkaConsumer instance
+    """
+    kafka_config = {
+        'bootstrap_servers': config.get('kafka_bootstrap_servers', 'localhost:9092'),
+        'group_id': config.get('kafka_consumer_group', 'stock_ai_consumer'),
+        'auto_offset_reset': config.get('kafka_auto_offset_reset', 'earliest'),
+        'enable_auto_commit': False,  # Manual commit for better control
+        'value_deserializer': lambda x: x,  # We'll handle JSON decoding manually
+        'consumer_timeout_ms': config.get('kafka_consumer_timeout_ms', 10000)
+    }
+    
+    topics = config.get('kafka_topics', ['stock_prices_raw', 'stock_news_raw'])
+    
+    consumer = KafkaConsumer(*topics, **kafka_config)
+    
+    logger.info(
+        "Kafka consumer created",
+        context={
+            'topics': topics,
+            'bootstrap_servers': kafka_config['bootstrap_servers'],
+            'group_id': kafka_config['group_id']
+        }
+    )
+    
+    return consumer
+
+
+def create_mongo_client(config: Dict[str, Any]) -> MongoClient:
+    """
+    Create and configure a MongoDB client instance.
+    
+    Args:
+        config: Configuration dictionary containing MongoDB settings
+        
+    Returns:
+        Configured MongoClient instance
+    """
+    mongo_uri = config.get('mongo_uri', 'mongodb://localhost:27017')
+    
+    client = MongoClient(mongo_uri)
+    
+    # Test connection
+    try:
+        client.admin.command('ping')
+        logger.info(
+            "MongoDB connection established",
+            context={'uri': mongo_uri}
+        )
+    except Exception as e:
+        logger.error(
+            "Failed to connect to MongoDB",
+            context={'uri': mongo_uri, 'error': str(e)},
+            exc_info=True
+        )
+        raise
+    
+    return client
+
+
+def main():
+    """
+    Main entry point for the Kafka consumer service.
+    """
+    logger.info("Starting Kafka Data Consumer service")
+    
+    try:
+        # Load configuration
+        config = get_config()
+        
+        # Create Kafka consumer
+        consumer = create_kafka_consumer(config)
+        
+        # Create MongoDB client
+        mongo_client = create_mongo_client(config)
+        
+        # Create consumer instance
+        kafka_data_consumer = KafkaDataConsumer(
+            consumer=consumer,
+            mongo_client=mongo_client,
+            database_name=config.get('mongo_database', 'vietnam_stock_ai')
+        )
+        
+        # Start consuming messages
+        logger.info("Starting message consumption loop")
+        stats = kafka_data_consumer.consume_and_store()
+        
+        logger.info(
+            "Consumer finished",
+            context=stats
+        )
+        
+    except KeyboardInterrupt:
+        logger.info("Consumer service interrupted by user")
+    except Exception as e:
+        logger.error(
+            "Consumer service failed",
+            context={'error': str(e)},
+            exc_info=True
+        )
+        raise
+    finally:
+        # Cleanup
+        try:
+            if 'kafka_data_consumer' in locals():
+                kafka_data_consumer.close()
+            if 'mongo_client' in locals():
+                mongo_client.close()
+        except Exception as e:
+            logger.error(
+                "Error during cleanup",
+                context={'error': str(e)},
+                exc_info=True
+            )
+
+
+if __name__ == "__main__":
+    main()

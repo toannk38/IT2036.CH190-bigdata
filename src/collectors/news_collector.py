@@ -58,7 +58,6 @@ class NewsCollector:
     def __init__(
         self,
         kafka_producer: KafkaProducer,
-        vnstock_client: Any,
         symbol_manager: SymbolManager
     ):
         """
@@ -66,11 +65,9 @@ class NewsCollector:
         
         Args:
             kafka_producer: Kafka producer instance for publishing messages
-            vnstock_client: vnstock client for fetching stock news
             symbol_manager: SymbolManager instance for getting active symbols
         """
         self.producer = kafka_producer
-        self.client = vnstock_client
         self.symbol_manager = symbol_manager
         
         logger.info("NewsCollector initialized")
@@ -184,12 +181,13 @@ class NewsCollector:
             List of NewsData objects, empty list if no news, or None if fetch fails
         """
         try:
-            # Use vnstock to get news data
-            # vnstock3 API: stock(symbol=symbol, source='VCI').company.news()
-            stock = self.client.stock(symbol=symbol, source='VCI')
+            from vnstock import Company
+            
+            # Use vnstock Company class to get news data
+            company = Company(symbol=symbol, source='VCI')
             
             # Get news articles
-            df = stock.company.news()
+            df = company.news()
             
             if df is None or df.empty:
                 logger.debug(f"No news data returned from vnstock for {symbol}")
@@ -201,12 +199,19 @@ class NewsCollector:
             
             for _, row in df.iterrows():
                 try:
+                    # Map vnstock news columns to our NewsData structure
+                    # vnstock columns: ['id', 'news_title', 'news_sub_title', 'friendly_sub_title',
+                    #                   'news_image_url', 'news_source_link', 'created_at', 'public_date',
+                    #                   'updated_at', 'lang_code', 'news_id', 'news_short_content',
+                    #                   'news_full_content', 'close_price', 'ref_price', 'floor', 'ceiling',
+                    #                   'price_change_pct']
+                    
                     news_data = NewsData(
                         symbol=symbol,
-                        title=str(row.get('title', '')),
-                        content=str(row.get('content', '')),
-                        source=str(row.get('source', 'vnstock')),
-                        published_at=str(row.get('published_date', collected_at)),
+                        title=str(row.get('news_title', '')),
+                        content=str(row.get('news_full_content', row.get('news_short_content', ''))),
+                        source=str(row.get('news_source_link', 'vnstock')),
+                        published_at=str(row.get('public_date', row.get('created_at', collected_at))),
                         collected_at=collected_at
                     )
                     news_articles.append(news_data)

@@ -8,7 +8,6 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from kafka import KafkaProducer
 from pymongo import MongoClient
-import vnstock
 
 from src.collectors.news_collector import NewsCollector
 from src.services.symbol_manager import SymbolManager
@@ -41,9 +40,6 @@ def collect_news_data():
         )
         logger.info(f"Connected to Kafka: {config.KAFKA_BOOTSTRAP_SERVERS}")
         
-        # Initialize vnstock client
-        vnstock_client = vnstock
-        
         # Initialize SymbolManager
         symbol_manager = SymbolManager(
             mongo_client=mongo_client,
@@ -53,7 +49,6 @@ def collect_news_data():
         # Initialize NewsCollector
         news_collector = NewsCollector(
             kafka_producer=kafka_producer,
-            vnstock_client=vnstock_client,
             symbol_manager=symbol_manager
         )
         

@@ -59,7 +59,6 @@ class PriceCollector:
     def __init__(
         self,
         kafka_producer: KafkaProducer,
-        vnstock_client: Any,
         symbol_manager: SymbolManager
     ):
         """
@@ -67,11 +66,9 @@ class PriceCollector:
         
         Args:
             kafka_producer: Kafka producer instance for publishing messages
-            vnstock_client: vnstock client for fetching stock data
             symbol_manager: SymbolManager instance for getting active symbols
         """
         self.producer = kafka_producer
-        self.client = vnstock_client
         self.symbol_manager = symbol_manager
         
         logger.info("PriceCollector initialized")
@@ -174,12 +171,17 @@ class PriceCollector:
             PriceData object or None if fetch fails
         """
         try:
-            # Use vnstock to get latest price data
-            # vnstock3 API: stock(symbol=symbol, source='VCI').quote.history(...)
-            stock = self.client.stock(symbol=symbol, source='VCI')
+            from vnstock import Quote
+            from datetime import datetime, timedelta
             
-            # Get latest trading data (1 day)
-            df = stock.quote.history(start='2024-01-01', end='2024-12-31')
+            # Use vnstock Quote class to get latest price data
+            quote = Quote(symbol=symbol, source='VCI')
+            
+            # Get recent trading data (last 5 days to ensure we get data)
+            end_date = datetime.now().strftime('%Y-%m-%d')
+            start_date = (datetime.now() - timedelta(days=5)).strftime('%Y-%m-%d')
+            
+            df = quote.history(start=start_date, end=end_date, interval='1D')
             
             if df is None or df.empty:
                 logger.warning(f"No data returned from vnstock for {symbol}")
@@ -188,7 +190,7 @@ class PriceCollector:
             # Get the most recent row
             latest = df.iloc[-1]
             
-            # Extract price data
+            # Extract price data - vnstock returns columns: ['time', 'open', 'high', 'low', 'close', 'volume']
             price_data = PriceData(
                 symbol=symbol,
                 timestamp=datetime.utcnow().isoformat(),
