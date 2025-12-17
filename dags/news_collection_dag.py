@@ -8,7 +8,7 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from kafka import KafkaProducer
 from pymongo import MongoClient
-import vnstock3 as vnstock
+import vnstock
 
 from src.collectors.news_collector import NewsCollector
 from src.services.symbol_manager import SymbolManager

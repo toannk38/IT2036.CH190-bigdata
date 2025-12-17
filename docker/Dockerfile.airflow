@@ -18,10 +18,11 @@ RUN apt-get update && \
 USER airflow
 
 # Copy and install Python dependencies (separate layer for caching)
+# Exclude apache-airflow from requirements.txt since it's already in the base image
 COPY requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r /tmp/requirements.txt && \
-    rm /tmp/requirements.txt
+    grep -v "^apache-airflow" /tmp/requirements.txt > /tmp/requirements_filtered.txt && \
+    pip install --no-cache-dir -r /tmp/requirements_filtered.txt
 
 # Set working directory
 WORKDIR /opt/airflow
