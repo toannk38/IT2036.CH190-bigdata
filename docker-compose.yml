@@ -13,7 +13,7 @@ services:
     container_name: stock-ai-airflow
     hostname: airflow
     ports:
-      - "127.0.0.1:8080:8080"
+      - "8080:8080"
     environment:
       # Airflow Core Configuration
       AIRFLOW_HOME: /opt/airflow
@@ -89,7 +89,7 @@ services:
     container_name: stock-ai-api
     hostname: api-service
     ports:
-      - "127.0.0.1:8000:8000"
+      - "8000:8000"
     environment:
       MONGODB_URI: mongodb://mongodb:27017
       MONGODB_DATABASE: vietnam_stock_ai
