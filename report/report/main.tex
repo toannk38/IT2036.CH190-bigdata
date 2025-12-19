@@ -1,0 +1,95 @@
+\documentclass[12pt,a4paper]{report}
+
+% Vietnamese language support
+\usepackage[utf8]{inputenc}
+\usepackage[vietnamese]{babel}
+
+% Page layout
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+% Graphics and figures
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+
+% Tables and lists
+\usepackage{tocloft}
+\usepackage{longtable}
+\usepackage{booktabs}
+
+% Code listings
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Math and symbols
+\usepackage{amsmath}
+\usepackage{amsfonts}
+
+% Hyperlinks
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    citecolor=red
+}
+
+% Code listing style
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny,
+    showstringspaces=false
+}
+
+% Header and footer
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\leftmark}
+\fancyhead[R]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% Title information
+\title{Vietnam Stock AI Backend\\Hệ thống phân tích chứng khoán Việt Nam sử dụng AI}
+\author{[Tên sinh viên]\\[Mã số sinh viên]}
+\date{\today}
+
+\begin{document}
+
+% Title page
+\maketitle
+
+% Table of contents
+\tableofcontents
+\newpage
+
+% List of figures
+\listoffigures
+\newpage
+
+% Main content
+\input{chapters/01-introduction}
+\input{chapters/02-literature}
+\input{chapters/03-design}
+\input{chapters/04-implementation}
+\input{chapters/05-testing}
+\input{chapters/06-results}
+\input{chapters/07-conclusion}
+
+% Appendices
+\appendix
+\input{appendices/code-snippets}
+
+% Bibliography (placeholder)
+\begin{thebibliography}{99}
+\bibitem{kafka} Apache Kafka Documentation. \url{https://kafka.apache.org/documentation/}
+\bibitem{mongodb} MongoDB Documentation. \url{https://docs.mongodb.com/}
+\bibitem{airflow} Apache Airflow Documentation. \url{https://airflow.apache.org/docs/}
+\end{thebibliography}
+
+\end{document}

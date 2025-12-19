@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2024-12-19T00:00:00.000Z" agent="5.0" etag="system-architecture" version="24.7.17">
+  <diagram name="System Architecture" id="system-architecture">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- Title -->
+        <mxCell id="title" value="Vietnam Stock AI Backend - System Architecture" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="400" y="20" width="400" height="30" as="geometry" />
+        </mxCell>
+        
+        <!-- External Data Sources -->
+        <mxCell id="vnstock-api" value="vnstock API&#xa;(External)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="100" width="120" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- Orchestration Layer -->
+        <mxCell id="orchestration-layer" value="ORCHESTRATION LAYER" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="220" y="80" width="200" height="100" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="airflow" value="Apache Airflow&#xa;(Standalone)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="240" y="110" width="160" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- Collection Layer -->
+        <mxCell id="collection-layer" value="COLLECTION LAYER" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="460" y="80" width="280" height="100" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="price-collector" value="Price Collector&#xa;(5min interval)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="480" y="110" width="110" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="news-collector" value="News Collector&#xa;(30min interval)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="610" y="110" width="110" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- Streaming Layer -->
+        <mxCell id="streaming-layer" value="STREAMING LAYER" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=14;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="220" y="220" width="520" height="120" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="zookeeper" value="Zookeeper" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="240" y="250" width="80" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="kafka" value="Apache Kafka" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="350" y="250" width="120" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="price-topic" value="stock_prices_raw" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="500" y="250" width="100" height="30" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="news-topic" value="stock_news_raw" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="620" y="250" width="100" height="30" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="kafka-consumer" value="Kafka Consumer&#xa;(Consumer Group)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="350" y="300" width="120" height="30" as="geometry" />
+        </mxCell>
+        
+        <!-- Storage Layer -->
+        <mxCell id="storage-layer" value="STORAGE LAYER" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=14;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="220" y="380" width="520" height="100" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="mongodb" value="MongoDB" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="350" y="410" width="120" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="price-collection" value="price_history" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="500" y="410" width="80" height="25" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="news-collection" value="news" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="590" y="410" width="60" height="25" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="symbols-collection" value="symbols" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="660" y="410" width="60" height="25" as="geometry" />
+        </mxCell>
+        
+        <!-- Analysis Layer -->
+        <mxCell id="analysis-layer" value="ANALYSIS LAYER" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="220" y="520" width="520" height="100" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="aiml-engine" value="AI/ML Engine&#xa;(Quantitative)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="280" y="550" width="110" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="llm-engine" value="LLM Engine&#xa;(Sentiment)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="420" y="550" width="110" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="symbol-manager" value="Symbol Manager" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="560" y="550" width="100" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- Service Layer -->
+        <mxCell id="service-layer" value="SERVICE LAYER" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=14;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="220" y="660" width="520" height="100" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="aggregation-service" value="Aggregation Service&#xa;(Weighted Scoring)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="280" y="690" width="130" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="api-service" value="API Service&#xa;(REST API)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="450" y="690" width="110" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- Client Applications -->
+        <mxCell id="clients" value="Client Applications&#xa;(Web/Mobile)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="800" y="690" width="140" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- Docker Container Boundaries -->
+        <mxCell id="docker-airflow" value="Docker: airflow" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#666666;strokeWidth=2;fontSize=10;fontStyle=2;verticalAlign=bottom;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="210" y="70" width="540" height="120" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="docker-infrastructure" value="Docker: infrastructure" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#666666;strokeWidth=2;fontSize=10;fontStyle=2;verticalAlign=bottom;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="210" y="210" width="540" height="140" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="docker-consumer" value="Docker: kafka-consumer" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#666666;strokeWidth=2;fontSize=10;fontStyle=2;verticalAlign=bottom;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="340" y="290" width="140" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="docker-api" value="Docker: api-service" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#666666;strokeWidth=2;fontSize=10;fontStyle=2;verticalAlign=bottom;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="210" y="510" width="540" height="260" as="geometry" />
+        </mxCell>
+        
+        <!-- Data Flow Arrows -->
+        <mxCell id="arrow1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d79b00;" edge="1" parent="1" source="vnstock-api" target="price-collector">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="arrow2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d79b00;" edge="1" parent="1" source="vnstock-api" target="news-collector">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="arrow3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="airflow" target="price-collector">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="arrow4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="airflow" target="news-collector">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="arrow5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;" edge="1" parent="1" source="price-collector" target="price-topic">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="arrow6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;" edge="1" parent="1" source="news-collector" target="news-topic">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="arrow7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d6b656;" edge="1" parent="1" source="kafka-consumer" target="mongodb">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="arrow8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;" edge="1" parent="1" source="mongodb" target="aiml-engine">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="arrow9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;" edge="1" parent="1" source="mongodb" target="llm-engine">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="arrow10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d6b656;" edge="1" parent="1" source="aiml-engine" target="aggregation-service">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="arrow11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d6b656;" edge="1" parent="1" source="llm-engine" target="aggregation-service">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="arrow12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="aggregation-service" target="api-service">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="arrow13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#666666;" edge="1" parent="1" source="api-service" target="clients">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Kafka connections -->
+        <mxCell id="kafka-zk" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;strokeColor=#9673a6;" edge="1" parent="1" source="zookeeper" target="kafka">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="kafka-topics1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;strokeColor=#d6b656;" edge="1" parent="1" source="kafka" target="price-topic">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="kafka-topics2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;strokeColor=#d6b656;" edge="1" parent="1" source="kafka" target="news-topic">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="kafka-consumer-conn" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;strokeColor=#82b366;" edge="1" parent="1" source="kafka" target="kafka-consumer">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -5,6 +5,9 @@ Price Data Initialization Script
 This script initializes the database with historical price data for the recent year
 using 1-minute intervals for all active symbols in the VN30 index.
 
+The script now uses epoch timestamps (Unix timestamps as floats) for better performance
+and consistency with the updated system architecture.
+
 Usage:
     python scripts/init_price_data.py [--symbols SYMBOL1,SYMBOL2] [--days DAYS] [--interval INTERVAL]
 
@@ -35,18 +38,20 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from src.config import config
 from src.logging_config import get_logger
 from src.services.symbol_manager import SymbolManager
+from src.utils.time_utils import current_epoch
 
 logger = get_logger(__name__)
 
 
 class PriceDataInitializer:
     """
-    Initializes historical price data for stock symbols.
+    Initializes historical price data for stock symbols using epoch timestamps.
     
     This class handles bulk initialization of price data by:
     - Fetching historical data from vnstock
+    - Converting timestamps to epoch format for better performance
     - Processing data in batches
-    - Storing directly to MongoDB
+    - Storing directly to MongoDB with epoch timestamps
     - Handling errors and retries
     """
     
@@ -128,7 +133,7 @@ class PriceDataInitializer:
         interval: str = "1m"
     ) -> Optional[pd.DataFrame]:
         """
-        Fetch historical price data for a symbol.
+        Fetch historical price data for a symbol with epoch timestamps.
         
         Args:
             symbol: Stock symbol code
@@ -137,7 +142,7 @@ class PriceDataInitializer:
             interval: Data interval (1m, 5m, 15m, 30m, 1h, 1d)
             
         Returns:
-            DataFrame with price data or None if failed
+            DataFrame with price data (timestamps in epoch format) or None if failed
         """
         try:
             from vnstock import Quote
@@ -179,16 +184,31 @@ class PriceDataInitializer:
             # Select only required columns
             df = df[required_columns].copy()
             
-            # Convert timestamp to ISO format string for MongoDB
-            df['timestamp'] = df['timestamp'].dt.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+            # Convert timestamp to epoch format for MongoDB
+            # Convert pandas datetime to epoch seconds (Unix timestamp) as float
+            df['timestamp'] = (df['timestamp'].astype('int64') // 10**9).astype('float64')
+            
+            # Validate timestamp conversion
+            if df['timestamp'].min() < 946684800:  # Year 2000 epoch
+                logger.warning(f"Some timestamps for {symbol} appear to be before year 2000")
+            if df['timestamp'].max() > 4102444800:  # Year 2100 epoch
+                logger.warning(f"Some timestamps for {symbol} appear to be after year 2100")
             
             # Ensure numeric columns are proper types
-            numeric_columns = ['open', 'high', 'low', 'close', 'volume']
+            numeric_columns = ['open', 'high', 'low', 'close', 'volume', 'timestamp']
             for col in numeric_columns:
                 df[col] = pd.to_numeric(df[col], errors='coerce')
             
             # Remove rows with NaN values
             df = df.dropna()
+            
+            # Add created_at timestamp
+            df['created_at'] = current_epoch()
+            
+            # Log sample timestamp for verification
+            if not df.empty:
+                sample_timestamp = df['timestamp'].iloc[0]
+                logger.debug(f"Sample epoch timestamp for {symbol}: {sample_timestamp}")
             
             logger.info(f"Fetched {len(df)} records for {symbol}")
             return df
@@ -199,10 +219,10 @@ class PriceDataInitializer:
     
     def store_price_data(self, df: pd.DataFrame, symbol: str) -> int:
         """
-        Store price data to MongoDB.
+        Store price data to MongoDB with epoch timestamps.
         
         Args:
-            df: DataFrame containing price data
+            df: DataFrame containing price data with epoch timestamps
             symbol: Stock symbol code
             
         Returns:

@@ -1,0 +1,55 @@
+% Architecture section
+\section{Kiến trúc hệ thống}
+
+\begin{frame}{Tổng quan kiến trúc}
+    \begin{center}
+        \textbf{[Placeholder for System Architecture Diagram]}
+        \vspace{2em}
+        
+        \textit{Sơ đồ kiến trúc tổng quan hệ thống}
+    \end{center}
+    
+    \begin{block}{Các layer chính}
+        \begin{itemize}
+            \item \textbf{Orchestration:} Apache Airflow
+            \item \textbf{Collection:} Price \& News Collectors
+            \item \textbf{Streaming:} Apache Kafka
+            \item \textbf{Storage:} MongoDB
+            \item \textbf{Analysis:} AI/ML \& LLM Engines
+            \item \textbf{Service:} Aggregation \& REST API
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{Kiến trúc Microservices}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \textbf{Core Services:}
+            \begin{itemize}
+                \item Price Collector Service
+                \item News Collector Service
+                \item Kafka Consumer Service
+                \item AI/ML Analysis Engine
+                \item LLM Sentiment Engine
+                \item Aggregation Service
+                \item REST API Service
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{Infrastructure:}
+            \begin{itemize}
+                \item Docker Containers
+                \item Docker Compose
+                \item Apache Kafka
+                \item MongoDB
+                \item Apache Airflow
+                \item Python Runtime
+            \end{itemize}
+        \end{column}
+    \end{columns}
+    
+    \vspace{1em}
+    \begin{alertblock}{Lợi ích}
+        Scalability, Maintainability, Independent Deployment
+    \end{alertblock}
+\end{frame}

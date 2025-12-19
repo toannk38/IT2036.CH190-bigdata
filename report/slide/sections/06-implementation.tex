@@ -1,0 +1,56 @@
+% Implementation section
+\section{Triển khai hệ thống}
+
+\begin{frame}{Aggregation \& API Service}
+    \begin{block}{Aggregation Service}
+        \begin{itemize}
+            \item Kết hợp điểm số từ AI/ML và LLM engines
+            \item Tính toán weighted score: \texttt{0.6 * technical + 0.4 * sentiment}
+            \item Tạo alerts dựa trên ngưỡng điểm số
+            \item Lưu trữ kết quả vào MongoDB
+        \end{itemize}
+    \end{block>
+    
+    \begin{block}{REST API Service}
+        \begin{itemize}
+            \item FastAPI framework
+            \item Endpoints: \texttt{/stocks}, \texttt{/analysis}, \texttt{/alerts}
+            \item JSON response format
+            \item Authentication \& rate limiting
+        \end{itemize}
+    \end{block>
+    
+    \vspace{0.5em}
+    \begin{center}
+        \textit{[Placeholder for API Architecture Diagram]}
+    \end{center>
+\end{frame>
+
+\begin{frame}{Airflow Orchestration}
+    \begin{center}
+        \textbf{[Placeholder for Airflow DAGs Diagram]}
+        \vspace{1em}
+    \end{center>
+    
+    \begin{block}{3 DAGs độc lập}
+        \begin{enumerate}
+            \item \textbf{price\_collection\_dag:} Chạy mỗi 5 phút (*/5 * * * *)
+            \begin{itemize}
+                \item Trigger Price Collector
+                \item Monitor data quality
+            \end{itemize}
+            
+            \item \textbf{news\_collection\_dag:} Chạy mỗi 30 phút (*/30 * * * *)
+            \begin{itemize}
+                \item Trigger News Collector
+                \item Validate news data
+            \end{itemize>
+            
+            \item \textbf{analysis\_pipeline\_dag:} Chạy mỗi giờ (@hourly)
+            \begin{itemize}
+                \item AI/ML Analysis → LLM Analysis → Aggregation
+                \item Task dependencies và error handling
+            \end{itemize>
+        \end{enumerate>
+    \end{block>
+\end{frame>

@@ -1,0 +1,65 @@
+\documentclass[aspectratio=169]{beamer}
+
+% Vietnamese language support - Use XeLaTeX/LuaLaTeX for better Vietnamese rendering
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setdefaultlanguage{vietnamese}
+\setotherlanguage{english}
+
+% Fallback for pdfLaTeX
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+  \usepackage[vietnamese]{babel}
+\fi
+
+% Professional academic theme
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+
+% Additional packages
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{booktabs}
+\usepackage{array}
+
+% Configure listings for code
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    frame=single,
+    language=Python
+}
+
+% Title information
+\title{Vietnam Stock AI Backend}
+\subtitle{Hệ thống phân tích chứng khoán Việt Nam sử dụng AI}
+\author{[Tên sinh viên]\\[Mã số sinh viên]}
+\institute{[Tên khoa]\\[Tên trường đại học]}
+\date{\today}
+
+% Navigation symbols
+\setbeamertemplate{navigation symbols}{}
+
+% Footer with slide numbers
+\setbeamertemplate{footline}[frame number]
+
+% Document content
+\begin{document}
+
+% Include all sections
+\input{sections/01-title}
+\input{sections/02-introduction}
+\input{sections/03-problem}
+\input{sections/04-architecture}
+\input{sections/05-components}
+\input{sections/06-implementation}
+\input{sections/07-demo}
+\input{sections/08-results}
+\input{sections/09-conclusion}
+
+\end{document}

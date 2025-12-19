@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2024-12-19T00:00:00.000Z" agent="5.0" etag="data-flow" version="24.7.17">
+  <diagram name="Data Flow" id="data-flow">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- Title -->
+        <mxCell id="title" value="Vietnam Stock AI Backend - Data Flow Diagram" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="400" y="20" width="400" height="30" as="geometry" />
+        </mxCell>
+        
+        <!-- External Data Source -->
+        <mxCell id="vnstock-api" value="vnstock API&#xa;(Vietnam Stock Data)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="100" width="140" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- Collection Phase -->
+        <mxCell id="collection-phase" value="COLLECTION PHASE" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="250" y="80" width="300" height="100" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="price-collector" value="Price Collector&#xa;Every 5 minutes&#xa;(Cron: */5 * * * *)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="270" y="110" width="120" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="news-collector" value="News Collector&#xa;Every 30 minutes&#xa;(Cron: */30 * * * *)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="410" y="110" width="120" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- Streaming Phase -->
+        <mxCell id="streaming-phase" value="STREAMING PHASE" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=14;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="250" y="220" width="300" height="120" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="kafka-broker" value="Apache Kafka Broker" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="250" width="160" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="price-topic" value="Topic: stock_prices_raw&#xa;Partition: 1&#xa;Retention: 7 days" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="270" y="300" width="110" height="30" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="news-topic" value="Topic: stock_news_raw&#xa;Partition: 1&#xa;Retention: 7 days" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="400" y="300" width="110" height="30" as="geometry" />
+        </mxCell>
+        
+        <!-- Consumer Phase -->
+        <mxCell id="consumer-phase" value="CONSUMER PHASE" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="250" y="380" width="300" height="80" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="kafka-consumer" value="Kafka Consumer&#xa;Group: stock-ai-consumer-group&#xa;Auto-commit: enabled" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="320" y="410" width="160" height="40" as="geometry" />
+        </mxCell>
+        
+        <!-- Storage Phase -->
+        <mxCell id="storage-phase" value="STORAGE PHASE" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=14;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="250" y="500" width="300" height="120" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="mongodb" value="MongoDB Database&#xa;vietnam_stock_ai" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="530" width="160" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="collections" value="Collections:&#xa;• price_history (OHLCV data)&#xa;• news (articles + metadata)&#xa;• symbols (active stocks)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;align=left;" vertex="1" parent="1">
+          <mxGeometry x="270" y="580" width="260" height="30" as="geometry" />
+        </mxCell>
+        
+        <!-- Analysis Phase -->
+        <mxCell id="analysis-phase" value="ANALYSIS PHASE (Every Hour - @hourly)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="600" y="220" width="320" height="200" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="aiml-engine" value="AI/ML Engine&#xa;• Technical Analysis (RSI, MACD)&#xa;• Risk Assessment&#xa;• Trend Prediction&#xa;Lookback: 90 days" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="620" y="250" width="130" height="70" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="llm-engine" value="LLM Engine&#xa;• Sentiment Analysis&#xa;• News Summarization&#xa;• Impact Assessment&#xa;Lookback: 7 days" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="770" y="250" width="130" height="70" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="analysis-storage" value="Analysis Results:&#xa;• ai_analysis (technical scores)&#xa;• llm_analysis (sentiment scores)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="620" y="340" width="280" height="40" as="geometry" />
+        </mxCell>
+        
+        <!-- Aggregation Phase -->
+        <mxCell id="aggregation-phase" value="AGGREGATION PHASE" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=14;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="600" y="460" width="320" height="120" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="aggregation-service" value="Aggregation Service&#xa;Weighted Scoring:&#xa;• Technical: 40%&#xa;• Risk: 30%&#xa;• Sentiment: 30%" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="620" y="490" width="140" height="70" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="final-scores" value="Final Scores:&#xa;• final_scores collection&#xa;• Recommendations (BUY/WATCH/RISK)&#xa;• Alert generation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="780" y="490" width="120" height="70" as="geometry" />
+        </mxCell>
+        
+        <!-- API Phase -->
+        <mxCell id="api-phase" value="API PHASE" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="600" y="620" width="320" height="80" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="api-service" value="REST API Service&#xa;Port: 8000&#xa;Endpoints: /stocks, /analysis, /alerts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="620" y="650" width="180" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="clients" value="Client Applications&#xa;(Web/Mobile/Dashboard)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="820" y="650" width="80" height="40" as="geometry" />
+        </mxCell>
+        
+        <!-- Data Flow Arrows with Labels -->
+        <mxCell id="flow1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#d79b00;startArrow=none;startFill=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="vnstock-api" target="price-collector">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow1-label" value="Price Data&#xa;(OHLCV)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontColor=#d79b00;fontStyle=1;" vertex="1" connectable="0" parent="flow1">
+          <mxGeometry x="-0.1" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="flow2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#d79b00;startArrow=none;startFill=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="vnstock-api" target="news-collector">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow2-label" value="News Data&#xa;(Articles)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontColor=#d79b00;fontStyle=1;" vertex="1" connectable="0" parent="flow2">
+          <mxGeometry x="-0.1" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="flow3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;startArrow=none;startFill=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="price-collector" target="price-topic">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow3-label" value="JSON Messages" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontColor=#b85450;" vertex="1" connectable="0" parent="flow3">
+          <mxGeometry x="-0.1" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="flow4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;startArrow=none;startFill=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="news-collector" target="news-topic">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow4-label" value="JSON Messages" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontColor=#b85450;" vertex="1" connectable="0" parent="flow4">
+          <mxGeometry x="-0.1" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="flow5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;startArrow=none;startFill=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="kafka-consumer" target="mongodb">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow5-label" value="Batch Insert&#xa;(Real-time)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontColor=#82b366;" vertex="1" connectable="0" parent="flow5">
+          <mxGeometry x="-0.1" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="flow6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;startArrow=none;startFill=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="mongodb" target="aiml-engine">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="550" y="550" />
+              <mxPoint x="550" y="285" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow6-label" value="Historical Data&#xa;Query" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontColor=#6c8ebf;" vertex="1" connectable="0" parent="flow6">
+          <mxGeometry x="-0.1" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="flow7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;startArrow=none;startFill=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="mongodb" target="llm-engine">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="570" y="550" />
+              <mxPoint x="570" y="285" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow7-label" value="Recent News&#xa;Query" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontColor=#6c8ebf;" vertex="1" connectable="0" parent="flow7">
+          <mxGeometry x="-0.1" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="flow8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;startArrow=none;startFill=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="aiml-engine" target="analysis-storage">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="flow9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;startArrow=none;startFill=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="llm-engine" target="analysis-storage">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="flow10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d6b656;startArrow=none;startFill=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="analysis-storage" target="aggregation-service">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow10-label" value="Analysis Results" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontColor=#d6b656;" vertex="1" connectable="0" parent="flow10">
+          <mxGeometry x="-0.1" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="flow11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;startArrow=none;startFill=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="aggregation-service" target="final-scores">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow11-label" value="Final Scores" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontColor=#9673a6;" vertex="1" connectable="0" parent="flow11">
+          <mxGeometry x="-0.1" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="flow12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;startArrow=none;startFill=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="final-scores" target="api-service">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="840" y="600" />
+              <mxPoint x="710" y="600" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow12-label" value="Query Results" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontColor=#82b366;" vertex="1" connectable="0" parent="flow12">
+          <mxGeometry x="-0.1" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="flow13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#666666;startArrow=none;startFill=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="api-service" target="clients">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow13-label" value="HTTP/JSON&#xa;Responses" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontColor=#666666;fontStyle=1;" vertex="1" connectable="0" parent="flow13">
+          <mxGeometry x="-0.1" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Timing Annotations -->
+        <mxCell id="timing1" value="5min" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="120" width="30" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="timing2" value="30min" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="150" width="30" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="timing3" value="1hr" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="570" y="280" width="25" height="20" as="geometry" />
+        </mxCell>
+        
+        <!-- Consumer connection to topics -->
+        <mxCell id="consumer-price" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;strokeColor=#82b366;startArrow=none;startFill=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="price-topic" target="kafka-consumer">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="consumer-news" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;strokeColor=#82b366;startArrow=none;startFill=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="news-topic" target="kafka-consumer">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
