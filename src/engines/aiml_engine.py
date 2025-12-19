@@ -180,8 +180,10 @@ class AIMLEngine:
                 logger.error(f"Missing required columns in price data for {symbol}")
                 return None
             
-            # Convert timestamp to datetime
-            df['timestamp'] = pd.to_datetime(df['timestamp'])
+            # Convert timestamp to datetime - handle mixed timezone formats
+            df['timestamp'] = pd.to_datetime(df['timestamp'], utc=True)
+            # Convert to timezone-naive UTC for consistent sorting
+            df['timestamp'] = df['timestamp'].dt.tz_localize(None)
             df = df.sort_values('timestamp')
             
             return df

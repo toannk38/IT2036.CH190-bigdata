@@ -60,7 +60,7 @@ class PriceDataInitializer:
         """
         self.mongo_client = MongoClient(mongo_uri)
         self.db = self.mongo_client[database_name]
-        self.price_collection = self.db['price_data']
+        self.price_collection = self.db['price_history']
         self.symbol_manager = SymbolManager(self.mongo_client, database_name)
         
         # Create indexes for efficient querying
