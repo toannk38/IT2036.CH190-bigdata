@@ -14,6 +14,7 @@ import time
 
 from src.logging_config import get_logger
 from src.config import get_config
+from src.utils.time_utils import safe_convert_to_epoch, current_epoch
 
 logger = get_logger(__name__)
 
@@ -34,7 +35,7 @@ class KafkaDataConsumer:
         'required_fields': {'symbol', 'timestamp', 'open', 'close', 'high', 'low', 'volume'},
         'field_types': {
             'symbol': str,
-            'timestamp': str,
+            'timestamp': (int, float, str),  # Accept epoch numbers or ISO strings for conversion
             'open': (int, float),
             'close': (int, float),
             'high': (int, float),
@@ -50,8 +51,8 @@ class KafkaDataConsumer:
             'title': str,
             'content': str,
             'source': str,
-            'published_at': str,
-            'collected_at': str
+            'published_at': (int, float, str),  # Accept epoch numbers or ISO strings for conversion
+            'collected_at': (int, float, str)   # Accept epoch numbers or ISO strings for conversion
         }
     }
     
@@ -156,6 +157,9 @@ class KafkaDataConsumer:
                                     }
                                 )
                                 continue
+                            
+                            # Convert timestamps to epoch format
+                            self._convert_timestamps_to_epoch(message_data, topic)
                             
                             # Store in MongoDB
                             if self._store_message(message_data, collection_name):
@@ -302,7 +306,7 @@ class KafkaDataConsumer:
         
         # Add created_at timestamp if not present
         if 'created_at' not in message:
-            message['created_at'] = datetime.utcnow().isoformat()
+            message['created_at'] = current_epoch()
         
         # Retry logic with exponential backoff
         for attempt in range(max_retries):
@@ -353,6 +357,30 @@ class KafkaDataConsumer:
                 return False
         
         return False
+    
+    def _convert_timestamps_to_epoch(self, message: Dict[str, Any], topic: str):
+        """
+        Convert timestamp fields from ISO format to epoch format.
+        
+        Args:
+            message: Message data dictionary (modified in place)
+            topic: Kafka topic name to determine which fields to convert
+        """
+        timestamp_fields = []
+        
+        if topic == 'stock_prices_raw':
+            timestamp_fields = ['timestamp']
+        elif topic == 'stock_news_raw':
+            timestamp_fields = ['published_at', 'collected_at']
+        
+        for field in timestamp_fields:
+            if field in message:
+                epoch_value = safe_convert_to_epoch(message[field])
+                if epoch_value is not None:
+                    message[field] = epoch_value
+                    logger.debug(f"Converted {field} to epoch format: {epoch_value}")
+                else:
+                    logger.warning(f"Failed to convert {field} to epoch format: {message[field]}")
     
     def close(self):
         """Close the consumer and release resources."""

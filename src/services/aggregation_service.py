@@ -9,6 +9,7 @@ from dataclasses import dataclass, asdict
 from pymongo import MongoClient
 
 from src.logging_config import get_logger
+from src.utils.time_utils import current_epoch
 
 logger = get_logger(__name__)
 
@@ -29,7 +30,7 @@ class Alert:
 class FinalScore:
     """Final aggregated score and recommendation."""
     symbol: str
-    timestamp: str
+    timestamp: float  # Changed to float for epoch timestamp
     final_score: float  # 0-100
     recommendation: str  # 'BUY', 'WATCH', or 'RISK'
     components: Dict[str, float]  # Individual component scores
@@ -132,7 +133,7 @@ class AggregationService:
             # Create final score object
             result = FinalScore(
                 symbol=symbol,
-                timestamp=datetime.utcnow().isoformat(),
+                timestamp=current_epoch(),  # Use epoch timestamp
                 final_score=final_score,
                 recommendation=recommendation,
                 components=components,

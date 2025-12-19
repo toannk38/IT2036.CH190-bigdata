@@ -9,6 +9,7 @@ from dataclasses import dataclass, asdict
 from pymongo import MongoClient
 
 from src.logging_config import get_logger
+from src.utils.time_utils import current_epoch
 
 logger = get_logger(__name__)
 
@@ -43,7 +44,7 @@ class NewsArticle:
 class NewsAnalysisResult:
     """Complete LLM analysis result for a stock's news."""
     symbol: str
-    timestamp: str
+    timestamp: float  # Changed to float for epoch timestamp
     sentiment: SentimentResult
     summary: str
     influence_score: float  # 0.0 to 1.0
@@ -488,7 +489,7 @@ class LLMEngine:
             # Create analysis result
             result = NewsAnalysisResult(
                 symbol=symbol,
-                timestamp=datetime.utcnow().isoformat(),
+                timestamp=current_epoch(),  # Use epoch timestamp
                 sentiment=overall_sentiment,
                 summary=summary,
                 influence_score=overall_influence,
@@ -529,14 +530,18 @@ class LLMEngine:
             List of news article documents
         """
         try:
-            # Calculate start date
+            # Calculate start date as epoch timestamp
             start_date = datetime.utcnow() - timedelta(days=lookback_days)
+            start_epoch = start_date.timestamp()
             
-            # Query MongoDB
+            # Query MongoDB - handle both epoch and ISO timestamps during migration
             cursor = self.news_collection.find(
                 {
                     'symbol': symbol,
-                    'collected_at': {'$gte': start_date.isoformat()}
+                    '$or': [
+                        {'collected_at': {'$gte': start_epoch}},  # Epoch format
+                        {'collected_at': {'$gte': start_date.isoformat()}}  # ISO format (legacy)
+                    ]
                 },
                 sort=[('collected_at', -1)]  # Most recent first
             )

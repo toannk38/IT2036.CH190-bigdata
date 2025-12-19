@@ -14,6 +14,7 @@ from ta.momentum import RSIIndicator
 from ta.volatility import BollingerBands
 
 from src.logging_config import get_logger
+from src.utils.time_utils import current_epoch, epoch_to_iso
 
 logger = get_logger(__name__)
 
@@ -34,7 +35,7 @@ class TrendPrediction:
 class AnalysisResult:
     """Complete AI/ML analysis result for a stock."""
     symbol: str
-    timestamp: str
+    timestamp: float  # Changed to float for epoch timestamp
     trend_prediction: TrendPrediction
     risk_score: float  # 0.0 to 1.0
     technical_score: float  # 0.0 to 1.0
@@ -112,7 +113,7 @@ class AIMLEngine:
             # Create analysis result
             result = AnalysisResult(
                 symbol=symbol,
-                timestamp=datetime.utcnow().isoformat(),
+                timestamp=current_epoch(),  # Use epoch timestamp
                 trend_prediction=trend,
                 risk_score=risk_score,
                 technical_score=technical_score,
@@ -153,14 +154,18 @@ class AIMLEngine:
             DataFrame with price data or None if no data found
         """
         try:
-            # Calculate start date
+            # Calculate start date as epoch timestamp
             start_date = datetime.utcnow() - timedelta(days=lookback_days)
+            start_epoch = start_date.timestamp()
             
-            # Query MongoDB
+            # Query MongoDB - handle both epoch and ISO timestamps during migration
             cursor = self.price_collection.find(
                 {
                     'symbol': symbol,
-                    'timestamp': {'$gte': start_date.isoformat()}
+                    '$or': [
+                        {'timestamp': {'$gte': start_epoch}},  # Epoch format
+                        {'timestamp': {'$gte': start_date.isoformat()}}  # ISO format (legacy)
+                    ]
                 },
                 sort=[('timestamp', 1)]
             )
@@ -180,10 +185,16 @@ class AIMLEngine:
                 logger.error(f"Missing required columns in price data for {symbol}")
                 return None
             
-            # Convert timestamp to datetime - handle mixed timezone formats
-            df['timestamp'] = pd.to_datetime(df['timestamp'], utc=True)
-            # Convert to timezone-naive UTC for consistent sorting
-            df['timestamp'] = df['timestamp'].dt.tz_localize(None)
+            # Convert timestamp to datetime - handle both epoch and ISO formats
+            def convert_timestamp(ts):
+                if isinstance(ts, (int, float)):
+                    # Already epoch format
+                    return pd.to_datetime(ts, unit='s')
+                else:
+                    # ISO format string
+                    return pd.to_datetime(ts, utc=True).tz_localize(None)
+            
+            df['timestamp'] = df['timestamp'].apply(convert_timestamp)
             df = df.sort_values('timestamp')
             
             return df

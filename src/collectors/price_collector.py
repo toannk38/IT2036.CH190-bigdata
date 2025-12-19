@@ -12,6 +12,7 @@ import json
 
 from src.logging_config import get_logger
 from src.services.symbol_manager import SymbolManager
+from src.utils.time_utils import current_epoch
 
 logger = get_logger(__name__)
 
@@ -20,7 +21,7 @@ logger = get_logger(__name__)
 class PriceData:
     """Data class for stock price information."""
     symbol: str
-    timestamp: str
+    timestamp: float  # Changed to float for epoch timestamp
     open: float
     close: float
     high: float
@@ -193,7 +194,7 @@ class PriceCollector:
             # Extract price data - vnstock returns columns: ['time', 'open', 'high', 'low', 'close', 'volume']
             price_data = PriceData(
                 symbol=symbol,
-                timestamp=datetime.utcnow().isoformat(),
+                timestamp=current_epoch(),  # Use epoch timestamp
                 open=float(latest.get('open', 0)),
                 close=float(latest.get('close', 0)),
                 high=float(latest.get('high', 0)),

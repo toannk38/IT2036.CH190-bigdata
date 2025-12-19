@@ -13,6 +13,7 @@ from pymongo.errors import PyMongoError
 
 from src.config import config
 from src.logging_config import get_logger
+from src.utils.time_utils import epoch_to_iso, safe_convert_to_epoch
 
 logger = get_logger(__name__)
 
@@ -20,7 +21,7 @@ logger = get_logger(__name__)
 # Response Models
 class PriceData(BaseModel):
     """Price data model."""
-    timestamp: str
+    timestamp: str  # Will be converted from epoch to ISO for API response
     open: float
     close: float
     high: float
@@ -185,7 +186,7 @@ class APIService:
                 recommendation=final_score_doc.get('recommendation') if final_score_doc else None,
                 component_scores=self._format_component_scores(final_score_doc) if final_score_doc else None,
                 alerts=self._format_alerts(final_score_doc.get('alerts', [])) if final_score_doc else [],
-                last_updated=final_score_doc.get('timestamp') if final_score_doc else None
+                last_updated=self._format_timestamp(final_score_doc.get('timestamp')) if final_score_doc else None
             )
             
             logger.info(f"Stock summary retrieved for {symbol}")
@@ -272,7 +273,7 @@ class APIService:
             for item in paginated_alerts:
                 alert_data = {
                     'symbol': item['symbol'],
-                    'timestamp': item['timestamp'],
+                    'timestamp': self._format_timestamp(item['timestamp']),
                     'final_score': item['final_score'],
                     'recommendation': item['recommendation'],
                     'type': item['alert']['type'],
@@ -352,14 +353,28 @@ class APIService:
                     detail="start_date must be before or equal to end_date"
                 )
             
-            # Query historical final scores within date range
+            # Convert to epoch timestamps for query
+            start_epoch = start_dt.timestamp()
+            end_epoch = end_dt.timestamp()
+            
+            # Query historical final scores within date range - handle both epoch and ISO formats
             cursor = self.final_scores_collection.find(
                 {
                     'symbol': symbol,
-                    'timestamp': {
-                        '$gte': start_dt.isoformat(),
-                        '$lte': end_dt.isoformat()
-                    }
+                    '$or': [
+                        {
+                            'timestamp': {
+                                '$gte': start_epoch,
+                                '$lte': end_epoch
+                            }
+                        },  # Epoch format
+                        {
+                            'timestamp': {
+                                '$gte': start_dt.isoformat(),
+                                '$lte': end_dt.isoformat()
+                            }
+                        }   # ISO format (legacy)
+                    ]
                 },
                 sort=[('timestamp', 1)]
             )
@@ -368,7 +383,7 @@ class APIService:
             data_points = []
             for doc in cursor:
                 point = HistoricalDataPoint(
-                    timestamp=doc['timestamp'],
+                    timestamp=self._format_timestamp(doc['timestamp']),
                     final_score=doc['final_score'],
                     recommendation=doc['recommendation'],
                     components=ComponentScores(
@@ -418,8 +433,15 @@ class APIService:
     
     def _format_price_data(self, price_doc: Dict[str, Any]) -> PriceData:
         """Format price document to PriceData model."""
+        # Convert epoch timestamp to ISO format for API response
+        timestamp = price_doc['timestamp']
+        if isinstance(timestamp, (int, float)):
+            timestamp_str = epoch_to_iso(timestamp)
+        else:
+            timestamp_str = str(timestamp)  # Already ISO format
+            
         return PriceData(
-            timestamp=price_doc['timestamp'],
+            timestamp=timestamp_str,
             open=price_doc['open'],
             close=price_doc['close'],
             high=price_doc['high'],
@@ -429,8 +451,15 @@ class APIService:
     
     def _format_ai_analysis(self, ai_doc: Dict[str, Any]) -> Dict[str, Any]:
         """Format AI/ML analysis document."""
+        # Convert epoch timestamp to ISO format for API response
+        timestamp = ai_doc['timestamp']
+        if isinstance(timestamp, (int, float)):
+            timestamp_str = epoch_to_iso(timestamp)
+        else:
+            timestamp_str = str(timestamp)  # Already ISO format
+            
         return {
-            'timestamp': ai_doc['timestamp'],
+            'timestamp': timestamp_str,
             'trend_prediction': ai_doc['trend_prediction'],
             'risk_score': ai_doc['risk_score'],
             'technical_score': ai_doc['technical_score'],
@@ -439,8 +468,15 @@ class APIService:
     
     def _format_llm_analysis(self, llm_doc: Dict[str, Any]) -> Dict[str, Any]:
         """Format LLM analysis document."""
+        # Convert epoch timestamp to ISO format for API response
+        timestamp = llm_doc['timestamp']
+        if isinstance(timestamp, (int, float)):
+            timestamp_str = epoch_to_iso(timestamp)
+        else:
+            timestamp_str = str(timestamp)  # Already ISO format
+            
         return {
-            'timestamp': llm_doc['timestamp'],
+            'timestamp': timestamp_str,
             'sentiment': llm_doc['sentiment'],
             'summary': llm_doc.get('summary', ''),
             'influence_score': llm_doc.get('influence_score', 0.0),
@@ -466,6 +502,16 @@ class APIService:
             )
             for alert in alerts
         ]
+    
+    def _format_timestamp(self, timestamp: Any) -> Optional[str]:
+        """Format timestamp to ISO string for API response."""
+        if timestamp is None:
+            return None
+        
+        if isinstance(timestamp, (int, float)):
+            return epoch_to_iso(timestamp)
+        else:
+            return str(timestamp)  # Already ISO format
 
 
 # Create FastAPI application
@@ -503,7 +549,7 @@ async def health_check():
     
     return {
         "status": overall_status,
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.utcnow().isoformat(),  # Keep ISO for API response
         "version": "1.0.0",
         "services": {
             "api": "healthy",

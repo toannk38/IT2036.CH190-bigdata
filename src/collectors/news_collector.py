@@ -12,6 +12,7 @@ import json
 
 from src.logging_config import get_logger
 from src.services.symbol_manager import SymbolManager
+from src.utils.time_utils import current_epoch, safe_convert_to_epoch
 
 logger = get_logger(__name__)
 
@@ -23,8 +24,8 @@ class NewsData:
     title: str
     content: str
     source: str
-    published_at: str
-    collected_at: str
+    published_at: float  # Changed to float for epoch timestamp
+    collected_at: float  # Changed to float for epoch timestamp
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for JSON serialization."""
@@ -195,7 +196,7 @@ class NewsCollector:
             
             # Convert DataFrame rows to NewsData objects
             news_articles = []
-            collected_at = datetime.utcnow().isoformat()
+            collected_at = current_epoch()
             
             for _, row in df.iterrows():
                 try:
@@ -206,12 +207,18 @@ class NewsCollector:
                     #                   'news_full_content', 'close_price', 'ref_price', 'floor', 'ceiling',
                     #                   'price_change_pct']
                     
+                    # Convert published_at to epoch if it's a string
+                    published_at_raw = row.get('public_date', row.get('created_at', collected_at))
+                    published_at = safe_convert_to_epoch(published_at_raw)
+                    if published_at is None:
+                        published_at = collected_at
+                    
                     news_data = NewsData(
                         symbol=symbol,
                         title=str(row.get('news_title', '')),
                         content=str(row.get('news_full_content', row.get('news_short_content', ''))),
                         source=str(row.get('news_source_link', 'vnstock')),
-                        published_at=str(row.get('public_date', row.get('created_at', collected_at))),
+                        published_at=published_at,
                         collected_at=collected_at
                     )
                     news_articles.append(news_data)
