@@ -4,19 +4,19 @@
 \begin{frame}{Aggregation \& API Service}
     \begin{block}{Aggregation Service}
         \begin{itemize}
-            \item Kết hợp điểm số từ AI/ML và LLM engines
-            \item Tính toán weighted score: \texttt{0.6 * technical + 0.4 * sentiment}
-            \item Tạo alerts dựa trên ngưỡng điểm số
-            \item Lưu trữ kết quả vào MongoDB
+            \item Weighted scoring: Technical (40\%), Risk (30\%), Sentiment (30\%)
+            \item Final score: 0-100 scale với configurable weights
+            \item Alert thresholds: BUY (>70), WATCH (40-70), RISK (<40)
+            \item MongoDB collection: \texttt{final\_scores}
         \end{itemize}
     \end{block}
     
     \begin{block}{REST API Service}
         \begin{itemize}
-            \item FastAPI framework
-            \item Endpoints: \texttt{/stocks}, \texttt{/analysis}, \texttt{/alerts}
-            \item JSON response format
-            \item Authentication \& rate limiting
+            \item FastAPI framework (port 8000)
+            \item Endpoints: \texttt{/stocks}, \texttt{/analysis}, \texttt{/alerts}, \texttt{/health}
+            \item JSON response với CORS support
+            \item Error handling với structured logging
         \end{itemize}
     \end{block}
     
@@ -34,22 +34,22 @@
     
     \begin{block}{3 DAGs độc lập}
         \begin{enumerate}
-            \item \textbf{price\_collection\_dag:} Chạy mỗi 5 phút (*/5 * * * *)
+            \item \textbf{price\_collection:} Chạy mỗi 5 phút (*/5 * * * *)
             \begin{itemize}
-                \item Trigger Price Collector
-                \item Monitor data quality
+                \item PythonOperator: collect\_prices\_task
+                \item Retries: 2, timeout: 10 minutes
             \end{itemize}
             
-            \item \textbf{news\_collection\_dag:} Chạy mỗi 30 phút (*/30 * * * *)
+            \item \textbf{news\_collection:} Chạy mỗi 30 phút (*/30 * * * *)
             \begin{itemize}
-                \item Trigger News Collector
-                \item Validate news data
+                \item PythonOperator: collect\_news\_task
+                \item Retries: 2, timeout: 15 minutes
             \end{itemize}
             
-            \item \textbf{analysis\_pipeline\_dag:} Chạy mỗi giờ (@hourly)
+            \item \textbf{analysis\_pipeline:} Chạy mỗi giờ (@hourly)
             \begin{itemize}
-                \item AI/ML Analysis → LLM Analysis → Aggregation
-                \item Task dependencies và error handling
+                \item Parallel: run\_ai\_ml\_task + run\_llm\_task
+                \item Sequential: aggregate\_results\_task
             \end{itemize}
         \end{enumerate}
     \end{block}

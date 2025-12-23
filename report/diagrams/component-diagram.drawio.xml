@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2024-12-19T00:00:00.000Z" agent="5.0" etag="component-diagram" version="24.7.17">
+  <diagram name="Component Relationships" id="component-diagram">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- Title -->
+        <mxCell id="title" value="Vietnam Stock AI Backend - Component Relationship Diagram" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="350" y="20" width="500" height="30" as="geometry" />
+        </mxCell>
+        
+        <!-- Core Components -->
+        <mxCell id="symbol-manager" value="SymbolManager&#xa;&#xa;• load_symbols()&#xa;• get_active_symbols()&#xa;• validate_symbol()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;align=left;verticalAlign=top;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="100" width="150" height="80" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="price-collector" value="PriceCollector&#xa;&#xa;• collect_prices()&#xa;• format_price_data()&#xa;• send_to_kafka()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;align=left;verticalAlign=top;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="250" y="100" width="150" height="80" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="news-collector" value="NewsCollector&#xa;&#xa;• collect_news()&#xa;• parse_articles()&#xa;• send_to_kafka()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;align=left;verticalAlign=top;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="450" y="100" width="150" height="80" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="kafka-consumer" value="KafkaConsumer&#xa;&#xa;• consume_messages()&#xa;• process_batch()&#xa;• store_to_mongodb()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;align=left;verticalAlign=top;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="650" y="100" width="150" height="80" as="geometry" />
+        </mxCell>
+        
+        <!-- Analysis Components -->
+        <mxCell id="aiml-engine" value="AIMLEngine&#xa;&#xa;• analyze_technical()&#xa;• calculate_indicators()&#xa;• assess_risk()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;align=left;verticalAlign=top;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="150" y="250" width="150" height="80" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="llm-engine" value="LLMEngine&#xa;&#xa;• analyze_sentiment()&#xa;• summarize_news()&#xa;• assess_impact()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;align=left;verticalAlign=top;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="350" y="250" width="150" height="80" as="geometry" />
+        </mxCell>
+        
+        <!-- Service Components -->
+        <mxCell id="aggregation-service" value="AggregationService&#xa;&#xa;• aggregate_scores()&#xa;• calculate_weights()&#xa;• generate_recommendations()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;align=left;verticalAlign=top;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="550" y="250" width="180" height="80" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="api-service" value="APIService&#xa;&#xa;• get_stock_analysis()&#xa;• get_recommendations()&#xa;• get_alerts()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;align=left;verticalAlign=top;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="780" y="250" width="150" height="80" as="geometry" />
+        </mxCell>
+        
+        <!-- Component Relationships -->
+        <mxCell id="rel1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d6b656;" edge="1" parent="1" source="symbol-manager" target="price-collector">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="rel2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d6b656;" edge="1" parent="1" source="symbol-manager" target="news-collector">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="rel10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;" edge="1" parent="1" source="aiml-engine" target="aggregation-service">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="rel11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;" edge="1" parent="1" source="llm-engine" target="aggregation-service">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="rel12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="aggregation-service" target="api-service">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

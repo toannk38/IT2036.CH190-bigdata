@@ -4,22 +4,22 @@
 \begin{frame}{Thành tựu của dự án}
     \begin{block}{Chức năng đã hoàn thành}
         \begin{itemize}
-            \item ✅ Thu thập dữ liệu real-time cho 30 mã VN30
-            \item ✅ Xử lý message streaming với Kafka
-            \item ✅ Phân tích kỹ thuật tự động
-            \item ✅ Sentiment analysis cho tin tức tiếng Việt
-            \item ✅ Tính toán điểm số tổng hợp và alerts
-            \item ✅ REST API service hoàn chỉnh
-            \item ✅ Orchestration với Airflow
+            \item ✅ Thu thập dữ liệu real-time cho 30 mã VN30 (5 phút/lần)
+            \item ✅ Message streaming với Kafka (2 topics, 1 consumer group)
+            \item ✅ Phân tích kỹ thuật tự động (RSI, MACD, Bollinger Bands)
+            \item ✅ Sentiment analysis cho tin tức tiếng Việt (OpenAI GPT-3.5)
+            \item ✅ Weighted scoring system (Technical 40\%, Risk 30\%, Sentiment 30\%)
+            \item ✅ REST API service với FastAPI (port 8000)
+            \item ✅ Orchestration với Airflow (3 DAGs độc lập)
         \end{itemize}
     \end{block}
     
     \begin{block}{Metrics hệ thống}
         \begin{itemize}
-            \item \textbf{Data latency:} < 5 minutes cho price data
-            \item \textbf{Processing time:} < 30 seconds cho analysis
-            \item \textbf{API response time:} < 200ms
-            \item \textbf{System uptime:} > 99\%
+            \item \textbf{Data latency:} < 5 phút cho price data (schedule-based)
+            \item \textbf{Processing time:} < 30 giây cho AI/ML analysis
+            \item \textbf{API response time:} < 200ms (MongoDB queries)
+            \item \textbf{System availability:} 99\%+ với Docker restart policies
         \end{itemize}
     \end{block}
 \end{frame}
@@ -29,10 +29,10 @@
         \begin{column}{0.5\textwidth}
             \textbf{Backend Technologies:}
             \begin{itemize}
-                \item Python 3.11
-                \item Apache Kafka
-                \item MongoDB
-                \item Apache Airflow
+                \item Python 3.11+ runtime
+                \item Apache Kafka 7.5.0 (Confluent)
+                \item MongoDB 7.0 (Document DB)
+                \item Apache Airflow (Standalone mode)
                 \item FastAPI
                 \item Docker \& Docker Compose
             \end{itemize}
@@ -40,11 +40,11 @@
         \begin{column}{0.5\textwidth}
             \textbf{AI/ML Stack:}
             \begin{itemize}
-                \item pandas, numpy
+                \item pandas, numpy (data processing)
                 \item ta-lib (technical analysis)
-                \item OpenAI GPT API
+                \item OpenAI GPT-3.5-turbo API
                 \item scikit-learn
-                \item Property-based testing
+                \item pytest + Hypothesis (PBT)
             \end{itemize}
         \end{column}
     \end{columns}
@@ -52,9 +52,9 @@
     \vspace{1em}
     \begin{alertblock}{Đóng góp}
         \begin{itemize}
-            \item Microservices architecture cho fintech
-            \item Vietnamese sentiment analysis pipeline
-            \item Real-time stock analysis system
+            \item Kiến trúc microservices cho hệ thống fintech
+            \item Pipeline phân tích sentiment tiếng Việt
+            \item Hệ thống phân tích chứng khoán real-time
         \end{itemize}
     \end{alertblock}
 \end{frame}

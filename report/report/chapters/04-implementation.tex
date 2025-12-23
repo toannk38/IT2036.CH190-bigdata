@@ -1,0 +1,63 @@
+\chapter{Triển khai hệ thống}
+
+\section{Cấu trúc mã nguồn}
+
+Dự án được tổ chức theo kiến trúc microservices với cấu trúc thư mục rõ ràng:
+
+\begin{lstlisting}[language=bash]
+src/
+├── collectors/          # Thu thập dữ liệu
+│   ├── price_collector.py
+│   └── news_collector.py
+├── consumers/           # Kafka consumers
+│   └── kafka_consumer.py
+├── engines/            # AI/ML và LLM engines
+│   ├── aiml_engine.py
+│   └── llm_engine.py
+└── services/           # API và aggregation
+    ├── api_service.py
+    └── aggregation_service.py
+\end{lstlisting}
+
+\section{Cấu hình Docker}
+
+Hệ thống sử dụng Docker Compose để orchestrate các services:
+
+\begin{itemize}
+\item \textbf{Kafka}: Message streaming platform
+\item \textbf{MongoDB}: NoSQL database cho việc lưu trữ
+\item \textbf{Airflow}: Workflow orchestration
+\item \textbf{API Service}: RESTful API endpoints
+\end{itemize}
+
+\section{Price Collector (5-minute interval)}
+
+Price Collector thu thập dữ liệu giá cổ phiếu từ vnstock API mỗi 5 phút:
+
+\begin{lstlisting}[language=Python]
+# Placeholder for Price Collector implementation
+class PriceCollector:
+    def collect_prices(self, symbols):
+        # Collect stock prices from vnstock API
+        pass
+\end{lstlisting}
+
+\section{News Collector (30-minute interval)}
+
+News Collector thu thập tin tức tài chính mỗi 30 phút:
+
+\begin{lstlisting}[language=Python]
+# Placeholder for News Collector implementation
+class NewsCollector:
+    def collect_news(self):
+        # Collect financial news
+        pass
+\end{lstlisting}
+
+\section{Analysis Engines}
+
+\subsection{AI/ML Engine}
+Engine phân tích định lượng sử dụng machine learning algorithms.
+
+\subsection{LLM Engine}
+Engine phân tích sentiment và tóm tắt tin tức sử dụng Large Language Models.

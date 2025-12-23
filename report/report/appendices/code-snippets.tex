@@ -1,0 +1,88 @@
+\chapter{Phụ lục}
+
+\section{Code Snippets}
+
+\subsection{Docker Compose Configuration}
+
+\begin{lstlisting}[language=yaml]
+version: '3.8'
+services:
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+    ports:
+      - "9092:9092"
+  
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+  
+  airflow:
+    image: apache/airflow:2.5.0
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    volumes:
+      - ./dags:/opt/airflow/dags
+\end{lstlisting}
+
+\subsection{Price Collector Implementation}
+
+\begin{lstlisting}[language=Python]
+import vnstock
+from kafka import KafkaProducer
+import json
+
+class PriceCollector:
+    def __init__(self):
+        self.producer = KafkaProducer(
+            bootstrap_servers=['localhost:9092'],
+            value_serializer=lambda x: json.dumps(x).encode('utf-8')
+        )
+    
+    def collect_prices(self, symbols):
+        for symbol in symbols:
+            try:
+                price_data = vnstock.stock_historical_data(
+                    symbol=symbol,
+                    start_date="2024-01-01",
+                    end_date="2024-12-31"
+                )
+                self.producer.send('stock_prices_raw', price_data)
+            except Exception as e:
+                print(f"Error collecting {symbol}: {e}")
+\end{lstlisting}
+
+\subsection{Airflow DAG Configuration}
+
+\begin{lstlisting}[language=Python]
+from airflow import DAG
+from airflow.operators.python_operator import PythonOperator
+from datetime import datetime, timedelta
+
+default_args = {
+    'owner': 'vietnam-stock-ai',
+    'depends_on_past': False,
+    'start_date': datetime(2024, 1, 1),
+    'retries': 1,
+    'retry_delay': timedelta(minutes=5)
+}
+
+dag = DAG(
+    'price_collection',
+    default_args=default_args,
+    description='Collect stock prices every 5 minutes',
+    schedule_interval='*/5 * * * *',
+    catchup=False
+)
+
+collect_task = PythonOperator(
+    task_id='collect_prices',
+    python_callable=collect_stock_prices,
+    dag=dag
+)
+\end{lstlisting}

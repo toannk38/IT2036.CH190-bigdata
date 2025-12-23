@@ -11,12 +11,12 @@
     
     \begin{block}{Các layer chính}
         \begin{itemize}
-            \item \textbf{Orchestration:} Apache Airflow
-            \item \textbf{Collection:} Price \& News Collectors
-            \item \textbf{Streaming:} Apache Kafka
-            \item \textbf{Storage:} MongoDB
-            \item \textbf{Analysis:} AI/ML \& LLM Engines
-            \item \textbf{Service:} Aggregation \& REST API
+            \item \textbf{Orchestration:} Apache Airflow (Standalone mode với SQLite)
+            \item \textbf{Collection:} Price Collector (5 phút) \& News Collector (30 phút)
+            \item \textbf{Streaming:} Apache Kafka với Zookeeper (Confluent Platform 7.5.0)
+            \item \textbf{Storage:} MongoDB 7.0 (Database: vietnam\_stock\_ai)
+            \item \textbf{Analysis:} AI/ML Engine (pandas, ta-lib) \& LLM Engine (OpenAI GPT)
+            \item \textbf{Service:} Aggregation Service \& FastAPI REST API
         \end{itemize}
     \end{block}
 \end{frame}
@@ -26,24 +26,26 @@
         \begin{column}{0.5\textwidth}
             \textbf{Core Services:}
             \begin{itemize}
-                \item Price Collector Service
-                \item News Collector Service
+                \item Airflow Service (port 8080)
                 \item Kafka Consumer Service
+                \item API Service (port 8000)
+                \item Price Collector (vnstock API)
+                \item News Collector (vnstock API)
                 \item AI/ML Analysis Engine
                 \item LLM Sentiment Engine
                 \item Aggregation Service
-                \item REST API Service
             \end{itemize}
         \end{column}
         \begin{column}{0.5\textwidth}
             \textbf{Infrastructure:}
             \begin{itemize}
-                \item Docker Containers
-                \item Docker Compose
-                \item Apache Kafka
-                \item MongoDB
-                \item Apache Airflow
-                \item Python Runtime
+                \item Docker Compose orchestration
+                \item Kafka + Zookeeper cluster
+                \item MongoDB 7.0 database
+                \item Python 3.11+ runtime
+                \item Confluent Kafka 7.5.0
+                \item Custom Docker images
+                \item Persistent volumes
             \end{itemize}
         \end{column}
     \end{columns}

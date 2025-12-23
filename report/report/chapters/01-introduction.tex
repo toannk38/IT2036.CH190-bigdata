@@ -1,0 +1,88 @@
+\chapter{Giới thiệu}
+
+\section{Bối cảnh}
+
+Thị trường chứng khoán Việt Nam đã trải qua sự phát triển mạnh mẽ trong những năm gần đây, với sự tham gia ngày càng tăng của các nhà đầu tư cá nhân và tổ chức. Tuy nhiên, việc phân tích và đưa ra quyết định đầu tư hiệu quả vẫn là một thách thức lớn do khối lượng thông tin khổng lồ và tính phức tạp của thị trường.
+
+Với sự phát triển của công nghệ Trí tuệ nhân tạo (AI) và Machine Learning (ML), việc ứng dụng các công nghệ này vào phân tích tài chính đã trở thành xu hướng tất yếu. Các hệ thống phân tích tự động có thể xử lý khối lượng dữ liệu lớn, phát hiện các mẫu hình phức tạp và đưa ra những dự đoán có giá trị cho các nhà đầu tư.
+
+Dự án "Vietnam Stock AI Backend" được phát triển nhằm tạo ra một hệ thống backend toàn diện, sử dụng công nghệ AI/ML (Artificial Intelligence/Machine Learning) và LLM (Large Language Model) để phân tích thị trường chứng khoán Việt Nam một cách tự động và hiệu quả. Hệ thống áp dụng kiến trúc microservices với message streaming để đảm bảo khả năng mở rộng và xử lý dữ liệu real-time.
+
+\section{Mục tiêu dự án}
+
+\subsection{Mục tiêu chính}
+
+Xây dựng một hệ thống backend AI hoàn chỉnh cho phân tích chứng khoán Việt Nam với các tính năng:
+
+\begin{itemize}
+    \item Thu thập dữ liệu giá cổ phiếu và tin tức tự động từ vnstock API
+    \item Phân tích định lượng (quantitative analysis) sử dụng AI/ML để dự đoán xu hướng và đánh giá rủi ro
+    \item Phân tích định tính (qualitative analysis) sử dụng LLM để phân tích tâm lý thị trường từ tin tức
+    \item Tổng hợp kết quả phân tích và tạo ra các cảnh báo đầu tư (investment alerts)
+    \item Cung cấp REST API để các ứng dụng client có thể truy cập dữ liệu
+\end{itemize}
+
+\subsection{Mục tiêu kỹ thuật}
+
+\begin{itemize}
+    \item Thiết kế kiến trúc microservices có khả năng mở rộng cao (scalable architecture)
+    \item Sử dụng message streaming (Apache Kafka) để xử lý dữ liệu real-time
+    \item Triển khai hệ thống orchestration (Apache Airflow) để quản lý workflow tự động
+    \item Đảm bảo tính tin cậy (reliability) và khả năng phục hồi (fault tolerance) của hệ thống
+    \item Áp dụng các phương pháp kiểm thử hiện đại (unit tests, property-based tests)
+\end{itemize}
+
+\section{Phạm vi dự án}
+
+\subsection{Phạm vi chức năng}
+
+Hệ thống bao gồm các thành phần chính:
+
+\begin{enumerate}
+    \item \textbf{Data Collection Layer}: Thu thập dữ liệu giá cổ phiếu (5 phút/lần) và tin tức (30 phút/lần) từ vnstock API
+    \item \textbf{Message Streaming Layer}: Sử dụng Apache Kafka để truyền tải dữ liệu giữa các microservices
+    \item \textbf{Storage Layer}: MongoDB để lưu trữ dữ liệu thô (raw data) và kết quả phân tích
+    \item \textbf{Analysis Layer}: 
+        \begin{itemize}
+            \item AI/ML Engine: Phân tích định lượng (trend prediction, risk assessment, technical indicators)
+            \item LLM Engine: Phân tích định tính (sentiment analysis, news summarization)
+        \end{itemize}
+    \item \textbf{Aggregation Layer}: Tổng hợp kết quả từ các engine và tính toán điểm số tổng hợp (weighted scoring)
+    \item \textbf{API Layer}: REST API để cung cấp dữ liệu cho client applications
+    \item \textbf{Orchestration Layer}: Apache Airflow để quản lý và lập lịch các workflow tự động
+\end{enumerate}
+
+\subsection{Phạm vi kỹ thuật}
+
+\begin{itemize}
+    \item \textbf{Ngôn ngữ lập trình}: Python 3.11+
+    \item \textbf{Framework}: FastAPI cho REST API
+    \item \textbf{Database}: MongoDB cho NoSQL storage
+    \item \textbf{Message Broker}: Apache Kafka với Zookeeper
+    \item \textbf{Workflow Management}: Apache Airflow
+    \item \textbf{Containerization}: Docker và Docker Compose cho deployment
+    \item \textbf{AI/ML Libraries}: pandas, numpy, ta-lib (technical analysis library)
+    \item \textbf{LLM Integration}: OpenAI API với fallback keyword-based analysis
+\end{itemize}
+
+\subsection{Giới hạn}
+
+\begin{itemize}
+    \item Hệ thống chỉ tập trung vào thị trường chứng khoán Việt Nam (VN30 index)
+    \item Dữ liệu được thu thập từ vnstock API (không bao gồm các nguồn dữ liệu khác)
+    \item Không bao gồm giao diện người dùng (chỉ cung cấp backend API services)
+    \item Không thực hiện giao dịch tự động (chỉ cung cấp phân tích và cảnh báo đầu tư)
+\end{itemize}
+
+\section{Cấu trúc báo cáo}
+
+Báo cáo được tổ chức thành các chương sau:
+
+\begin{itemize}
+    \item \textbf{Chương 2}: Cơ sở lý thuyết về các công nghệ được sử dụng
+    \item \textbf{Chương 3}: Thiết kế hệ thống và kiến trúc tổng thể
+    \item \textbf{Chương 4}: Chi tiết triển khai và cấu hình hệ thống
+    \item \textbf{Chương 5}: Phương pháp kiểm thử và đảm bảo chất lượng
+    \item \textbf{Chương 6}: Kết quả thực nghiệm và đánh giá hiệu suất
+    \item \textbf{Chương 7}: Kết luận và hướng phát triển tương lai
+\end{itemize}

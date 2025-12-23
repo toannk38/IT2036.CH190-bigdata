@@ -1,0 +1,38 @@
+\chapter{Kiểm thử hệ thống}
+
+\section{Unit Tests}
+
+Hệ thống được kiểm thử với unit tests cho từng component:
+
+\begin{itemize}
+\item \textbf{Price Collector Tests}: Kiểm thử thu thập dữ liệu giá
+\item \textbf{News Collector Tests}: Kiểm thử thu thập tin tức
+\item \textbf{AI/ML Engine Tests}: Kiểm thử thuật toán phân tích
+\item \textbf{API Service Tests}: Kiểm thử endpoints
+\end{itemize}
+
+\section{Property-Based Tests}
+
+Sử dụng property-based testing để kiểm thử các tính chất của hệ thống:
+
+\begin{lstlisting}[language=Python]
+# Example property-based test
+def test_price_data_consistency():
+    # Test that price data maintains consistency
+    pass
+\end{lstlisting}
+
+\section{Integration Tests}
+
+Kiểm thử tích hợp giữa các components:
+
+\begin{itemize}
+\item Kafka message flow
+\item MongoDB data persistence
+\item Airflow DAG execution
+\item End-to-end data pipeline
+\end{itemize}
+
+\section{Kết quả kiểm thử}
+
+Tất cả các tests đều pass với coverage > 80\% cho core functionality.

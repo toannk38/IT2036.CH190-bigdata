@@ -4,19 +4,19 @@
 \begin{frame}{Data Collection Layer}
     \begin{block}{Price Collector (5-minute interval)}
         \begin{itemize}
-            \item Thu thập dữ liệu giá từ vnstock API
-            \item Xử lý 30 mã cổ phiếu VN30
-            \item Lưu trữ: Open, High, Low, Close, Volume
-            \item Gửi message qua Kafka topic: \texttt{stock\_prices\_raw}
+            \item Thu thập dữ liệu giá từ vnstock API (30 mã VN30)
+            \item Schedule: */5 * * * * (mỗi 5 phút)
+            \item Dữ liệu: Open, High, Low, Close, Volume, Timestamp
+            \item Kafka topic: \texttt{stock\_prices\_raw} → MongoDB: \texttt{price\_history}
         \end{itemize}
     \end{block}
     
     \begin{block}{News Collector (30-minute interval)}
         \begin{itemize}
-            \item Thu thập tin tức từ các nguồn tài chính
-            \item Lọc tin tức liên quan đến VN30
-            \item Xử lý văn bản tiếng Việt
-            \item Gửi message qua Kafka topic: \texttt{stock\_news\_raw}
+            \item Thu thập tin tức từ vnstock news API
+            \item Schedule: */30 * * * * (mỗi 30 phút)
+            \item Dữ liệu: title, content, source, published\_at
+            \item Kafka topic: \texttt{stock\_news\_raw} → MongoDB: \texttt{news}
         \end{itemize}
     \end{block}
     
@@ -49,9 +49,10 @@
         \begin{column}{0.5\textwidth}
             \textbf{Consumers:}
             \begin{itemize}
-                \item Kafka Consumer Service
-                \item Lưu vào MongoDB
-                \item Trigger analysis
+                \item KafkaDataConsumer service
+                \item Consumer group: stock-ai-consumer-group
+                \item Auto-commit: disabled (manual commit)
+                \item Collections: price\_history, news
             \end{itemize}
             
             \textbf{Benefits:}
@@ -67,19 +68,19 @@
 \begin{frame}{Analysis Layer}
     \begin{block}{AI/ML Engine - Phân tích kỹ thuật}
         \begin{itemize}
-            \item Tính toán các chỉ báo kỹ thuật (RSI, MACD, MA)
-            \item Phân tích xu hướng giá
-            \item Tạo điểm số kỹ thuật (0-100)
-            \item Sử dụng thư viện: pandas, numpy, ta-lib
+            \item Lookback period: 90 ngày dữ liệu giá
+            \item Chỉ báo: RSI, MACD, Bollinger Bands, Moving Averages
+            \item Trend prediction + Risk score (0-100)
+            \item MongoDB collection: \texttt{ai\_analysis}
         \end{itemize}
     \end{block}
     
     \begin{block}{LLM Engine - Sentiment Analysis}
         \begin{itemize}
-            \item Phân tích sentiment từ tin tức tiếng Việt
-            \item Sử dụng OpenAI GPT API
-            \item Tạo điểm số sentiment (-1 đến +1)
-            \item Xử lý ngôn ngữ tự nhiên tiếng Việt
+            \item Lookback period: 7 ngày tin tức
+            \item OpenAI GPT-3.5-turbo với fallback keyword analysis
+            \item Sentiment score (-1 đến +1) + influence score
+            \item MongoDB collection: \texttt{llm\_analysis}
         \end{itemize}
     \end{block}
     

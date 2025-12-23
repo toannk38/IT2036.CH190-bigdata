@@ -1,0 +1,487 @@
+\chapter{Thiết kế hệ thống}
+
+\section{Kiến trúc tổng thể}
+
+\subsection{Mô hình Microservices}
+
+Hệ thống Vietnam Stock AI Backend được thiết kế theo kiến trúc microservices, trong đó mỗi service chịu trách nhiệm cho một chức năng cụ thể và hoạt động độc lập. Kiến trúc này mang lại các lợi ích:
+
+\begin{itemize}
+    \item \textbf{Khả năng mở rộng}: Mỗi service có thể được scale độc lập dựa trên nhu cầu
+    \item \textbf{Tính độc lập}: Lỗi ở một service không ảnh hưởng đến các service khác
+    \item \textbf{Linh hoạt công nghệ}: Mỗi service có thể sử dụng công nghệ phù hợp nhất
+    \item \textbf{Phát triển song song}: Các team có thể phát triển các service khác nhau đồng thời
+\end{itemize}
+
+\subsection{Kiến trúc phân lớp}
+
+Hệ thống được tổ chức thành 6 lớp chính:
+
+\begin{enumerate}
+    \item \textbf{Orchestration Layer}: Apache Airflow quản lý workflow và lập lịch
+    \item \textbf{Collection Layer}: Thu thập dữ liệu từ vnstock API
+    \item \textbf{Streaming Layer}: Apache Kafka xử lý message streaming
+    \item \textbf{Storage Layer}: MongoDB lưu trữ dữ liệu
+    \item \textbf{Analysis Layer}: AI/ML và LLM engines phân tích dữ liệu
+    \item \textbf{Service Layer}: Aggregation và API services cung cấp kết quả
+\end{enumerate}
+
+% Placeholder for system architecture diagram
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.8\textwidth}{\centering
+        \textbf{[PLACEHOLDER: System Architecture Diagram]}\\
+        \vspace{1cm}
+        Sơ đồ kiến trúc tổng thể hệ thống\\
+        Hiển thị 6 lớp và các service trong mỗi lớp\\
+        Bao gồm: Airflow, Collectors, Kafka, MongoDB, Engines, API
+    }}
+    \caption{Kiến trúc tổng thể hệ thống Vietnam Stock AI Backend}
+    \label{fig:system-architecture}
+\end{figure}
+
+\section{Các thành phần chính}
+
+\subsection{Data Collection Layer}
+
+Lớp thu thập dữ liệu bao gồm hai collector chính:
+
+\subsubsection{Price Collector}
+\begin{itemize}
+    \item \textbf{Chức năng}: Thu thập dữ liệu giá cổ phiếu từ vnstock API
+    \item \textbf{Tần suất}: Mỗi 5 phút (*/5 * * * *)
+    \item \textbf{Dữ liệu thu thập}: Open, Close, High, Low, Volume cho từng mã cổ phiếu
+    \item \textbf{Output}: Gửi dữ liệu đến Kafka topic \texttt{stock\_prices\_raw}
+\end{itemize}
+
+\subsubsection{News Collector}
+\begin{itemize}
+    \item \textbf{Chức năng}: Thu thập tin tức liên quan đến cổ phiếu
+    \item \textbf{Tần suất}: Mỗi 30 phút (*/30 * * * *)
+    \item \textbf{Dữ liệu thu thập}: Tiêu đề, nội dung, thời gian, nguồn tin
+    \item \textbf{Output}: Gửi dữ liệu đến Kafka topic \texttt{stock\_news\_raw}
+\end{itemize}
+
+\subsection{Message Streaming Layer}
+
+Apache Kafka được sử dụng làm message broker với cấu hình:
+
+\begin{itemize}
+    \item \textbf{Topics}: 
+        \begin{itemize}
+            \item \texttt{stock\_prices\_raw}: Dữ liệu giá cổ phiếu
+            \item \texttt{stock\_news\_raw}: Dữ liệu tin tức
+        \end{itemize}
+    \item \textbf{Consumer Group}: \texttt{stock-ai-consumer-group}
+    \item \textbf{Partitioning}: Phân chia theo symbol để đảm bảo ordering
+    \item \textbf{Retention}: 7 ngày để đảm bảo khả năng replay
+\end{itemize}
+
+% Placeholder for Kafka message flow diagram
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.8\textwidth}{\centering
+        \textbf{[PLACEHOLDER: Kafka Message Flow Diagram]}\\
+        \vspace{1cm}
+        Sơ đồ luồng message trong Kafka\\
+        Hiển thị Producers, Topics, Consumers\\
+        Bao gồm: Price/News Collectors → Topics → Consumer Service
+    }}
+    \caption{Luồng message trong Apache Kafka}
+    \label{fig:kafka-flow}
+\end{figure}
+
+\subsection{Storage Layer}
+
+MongoDB được sử dụng làm database chính với các collection:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|p{6cm}|}
+\hline
+\textbf{Collection} & \textbf{Mục đích} & \textbf{Dữ liệu} \\
+\hline
+\texttt{symbols} & Quản lý mã cổ phiếu & Danh sách VN30, thông tin cơ bản \\
+\hline
+\texttt{price\_history} & Lịch sử giá & OHLCV data với timestamp epoch \\
+\hline
+\texttt{news} & Tin tức & Tiêu đề, nội dung, timestamp, nguồn \\
+\hline
+\texttt{ai\_analysis} & Kết quả AI/ML & Trend, risk score, technical score \\
+\hline
+\texttt{llm\_analysis} & Kết quả LLM & Sentiment, summary, influence score \\
+\hline
+\texttt{final\_scores} & Điểm tổng hợp & Final score, recommendation, alerts \\
+\hline
+\end{tabular}
+\caption{Cấu trúc MongoDB Collections}
+\label{tab:mongodb-collections}
+\end{table}
+
+\subsection{Analysis Layer}
+
+Lớp phân tích bao gồm hai engine chính:
+
+\subsubsection{AI/ML Engine}
+\textbf{Chức năng phân tích định lượng}:
+\begin{itemize}
+    \item \textbf{Trend Prediction}: Sử dụng Moving Average crossover (MA20 vs MA50)
+    \item \textbf{Risk Assessment}: Tính toán volatility dựa trên standard deviation
+    \item \textbf{Technical Analysis}: RSI, MACD, Bollinger Bands
+    \item \textbf{Scoring}: Kết hợp các chỉ số thành technical\_score (0-1)
+\end{itemize}
+
+\textbf{Thuật toán chính}:
+\begin{enumerate}
+    \item Lấy dữ liệu giá 90 ngày gần nhất
+    \item Tính toán Moving Average 20 và 50 ngày
+    \item Xác định xu hướng: MA20 > MA50 = tăng, ngược lại = giảm
+    \item Tính risk score từ volatility của returns
+    \item Tính technical score từ RSI, MACD, Bollinger Bands
+\end{enumerate}
+
+\subsubsection{LLM Engine}
+\textbf{Chức năng phân tích định tính}:
+\begin{itemize}
+    \item \textbf{Sentiment Analysis}: Phân tích tâm lý từ tin tức
+    \item \textbf{News Summarization}: Tóm tắt tin tức quan trọng
+    \item \textbf{Impact Assessment}: Đánh giá tác động của tin tức đến giá
+    \item \textbf{Fallback Analysis}: Keyword-based khi OpenAI API không khả dụng
+\end{itemize}
+
+\textbf{Quy trình xử lý}:
+\begin{enumerate}
+    \item Lấy tin tức liên quan đến symbol trong 24h
+    \item Gửi request đến OpenAI API với system prompt
+    \item Parse response để lấy sentiment score và summary
+    \item Fallback sang keyword analysis nếu API fail
+    \item Tính toán influence\_score dựa trên sentiment và số lượng tin
+\end{enumerate}
+
+\section{Luồng dữ liệu}
+
+\subsection{Data Flow Pipeline}
+
+Luồng dữ liệu trong hệ thống được thiết kế theo mô hình pipeline:
+
+\begin{enumerate}
+    \item \textbf{Collection}: vnstock API → Collectors → Kafka Topics
+    \item \textbf{Ingestion}: Kafka Topics → Consumer Service → MongoDB
+    \item \textbf{Analysis}: MongoDB → AI/ML Engine → ai\_analysis collection
+    \item \textbf{Analysis}: MongoDB → LLM Engine → llm\_analysis collection
+    \item \textbf{Aggregation}: ai\_analysis + llm\_analysis → Aggregation Service → final\_scores
+    \item \textbf{API}: final\_scores → API Service → Client Applications
+\end{enumerate}
+
+% Placeholder for data flow diagram
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.8\textwidth}{\centering
+        \textbf{[PLACEHOLDER: Data Flow Diagram]}\\
+        \vspace{1cm}
+        Sơ đồ luồng dữ liệu từ nguồn đến API\\
+        Hiển thị: vnstock → Collectors → Kafka → Consumer → MongoDB → Engines → Aggregation → API\\
+        Bao gồm timing: 5min price, 30min news, hourly analysis
+    }}
+    \caption{Luồng dữ liệu trong hệ thống}
+    \label{fig:data-flow}
+\end{figure}
+
+\subsection{Timing và Scheduling}
+
+Hệ thống hoạt động theo lịch trình được định nghĩa trong Airflow DAGs:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{DAG} & \textbf{Schedule} & \textbf{Mô tả} \\
+\hline
+\texttt{price\_collection} & */5 * * * * & Thu thập giá mỗi 5 phút \\
+\hline
+\texttt{news\_collection} & */30 * * * * & Thu thập tin tức mỗi 30 phút \\
+\hline
+\texttt{analysis\_pipeline} & @hourly & Phân tích dữ liệu mỗi giờ \\
+\hline
+\end{tabular}
+\caption{Lịch trình thực thi các DAG}
+\label{tab:dag-schedule}
+\end{table}
+
+\section{Mô hình dữ liệu}
+
+\subsection{Price Data Model}
+
+Dữ liệu giá cổ phiếu được lưu trữ với cấu trúc:
+
+\begin{lstlisting}[language=json, caption=Price History Document]
+{
+  "_id": ObjectId,
+  "symbol": "VIC",
+  "timestamp": 1703123400.0,  // Epoch timestamp
+  "open": 85000.0,
+  "close": 86500.0,
+  "high": 87000.0,
+  "low": 84500.0,
+  "volume": 1250000
+}
+\end{lstlisting}
+
+\subsection{Analysis Result Model}
+
+Kết quả phân tích AI/ML:
+
+\begin{lstlisting}[language=json, caption=AI/ML Analysis Document]
+{
+  "_id": ObjectId,
+  "symbol": "VIC",
+  "timestamp": 1703127000.0,
+  "trend_prediction": {
+    "direction": "up",
+    "confidence": 0.75,
+    "predicted_price": 88000.0
+  },
+  "risk_score": 0.35,
+  "technical_score": 0.68,
+  "indicators": {
+    "rsi": 45.2,
+    "macd": 1250.5,
+    "moving_avg_20": 85500.0,
+    "moving_avg_50": 84200.0
+  }
+}
+\end{lstlisting}
+
+\subsection{Final Score Model}
+
+Điểm số tổng hợp cuối cùng:
+
+\begin{lstlisting}[language=json, caption=Final Score Document]
+{
+  "_id": ObjectId,
+  "symbol": "VIC",
+  "timestamp": 1703127000.0,
+  "final_score": 72.5,
+  "recommendation": "BUY",
+  "components": {
+    "technical_score": 68.0,
+    "risk_score": 65.0,
+    "sentiment_score": 80.0
+  },
+  "alerts": [
+    {
+      "type": "BUY_SIGNAL",
+      "priority": "high",
+      "message": "Strong buy signal detected"
+    }
+  ]
+}
+\end{lstlisting}
+
+\section{Microservices Architecture}
+
+\subsection{Service Decomposition}
+
+Hệ thống được chia thành các microservice độc lập:
+
+% Placeholder for component relationship diagram
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.8\textwidth}{\centering
+        \textbf{[PLACEHOLDER: Component Relationship Diagram]}\\
+        \vspace{1cm}
+        Sơ đồ quan hệ giữa các component\\
+        Hiển thị: SymbolManager, PriceCollector, NewsCollector,\\
+        KafkaConsumer, AIMLEngine, LLMEngine, AggregationService, APIService\\
+        Bao gồm data models và interfaces
+    }}
+    \caption{Quan hệ giữa các component trong hệ thống}
+    \label{fig:component-diagram}
+\end{figure}
+
+\subsubsection{Core Services}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|p{4cm}|p{6cm}|}
+\hline
+\textbf{Service} & \textbf{Trách nhiệm} & \textbf{Interface} \\
+\hline
+Price Collector & Thu thập dữ liệu giá & vnstock API → Kafka Producer \\
+\hline
+News Collector & Thu thập tin tức & vnstock API → Kafka Producer \\
+\hline
+Kafka Consumer & Xử lý message & Kafka Consumer → MongoDB \\
+\hline
+AI/ML Engine & Phân tích định lượng & MongoDB → Analysis → MongoDB \\
+\hline
+LLM Engine & Phân tích định tính & MongoDB + OpenAI API → MongoDB \\
+\hline
+Aggregation Service & Tổng hợp kết quả & MongoDB → Weighted Score → MongoDB \\
+\hline
+API Service & REST API & MongoDB → FastAPI → JSON Response \\
+\hline
+\end{tabular}
+\caption{Microservices và trách nhiệm}
+\label{tab:microservices}
+\end{table}
+
+\subsection{Service Communication}
+
+Các service giao tiếp thông qua:
+
+\begin{itemize}
+    \item \textbf{Asynchronous Messaging}: Kafka cho data streaming
+    \item \textbf{Shared Database}: MongoDB cho data persistence
+    \item \textbf{REST API}: HTTP endpoints cho client access
+    \item \textbf{Configuration}: Environment variables cho service config
+\end{itemize}
+
+\section{Docker và Container Orchestration}
+
+\subsection{Containerization Strategy}
+
+Mỗi service được đóng gói trong Docker container riêng biệt:
+
+\begin{itemize}
+    \item \textbf{Base Image}: Python 3.11-slim cho tất cả application services
+    \item \textbf{Multi-stage Build}: Tối ưu hóa kích thước image
+    \item \textbf{Health Checks}: Monitoring container health
+    \item \textbf{Resource Limits}: CPU và memory constraints
+\end{itemize}
+
+\subsection{Docker Compose Configuration}
+
+Hệ thống sử dụng Docker Compose để orchestrate các container:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Service} & \textbf{Port} & \textbf{Dependencies} \\
+\hline
+MongoDB & 27017 & - \\
+\hline
+Kafka & 9092, 29092 & Zookeeper \\
+\hline
+Zookeeper & 2181 & - \\
+\hline
+Airflow & 8080 & MongoDB, Kafka \\
+\hline
+Kafka Consumer & - & MongoDB, Kafka \\
+\hline
+API Service & 8000 & MongoDB \\
+\hline
+\end{tabular}
+\caption{Docker Compose Services}
+\label{tab:docker-services}
+\end{table}
+
+\subsection{Network và Volume Management}
+
+\begin{itemize}
+    \item \textbf{Network}: \texttt{stock-ai-network} bridge network cho inter-service communication
+    \item \textbf{Volumes}: 
+        \begin{itemize}
+            \item \texttt{mongodb\_data}: Persistent MongoDB data
+            \item \texttt{kafka\_data}: Kafka logs và data
+            \item \texttt{airflow\_logs}: Airflow execution logs
+        \end{itemize}
+    \item \textbf{Environment Variables}: Centralized configuration management
+\end{itemize}
+
+\section{Workflow Orchestration với Airflow}
+
+\subsection{DAG Architecture}
+
+Apache Airflow quản lý 3 DAG độc lập:
+
+% Placeholder for Airflow DAGs workflow diagram
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.8\textwidth}{\centering
+        \textbf{[PLACEHOLDER: Airflow DAGs Workflow Diagram]}\\
+        \vspace{1cm}
+        Sơ đồ workflow của 3 DAG trong Airflow\\
+        Hiển thị: price\_collection (*/5), news\_collection (*/30), analysis\_pipeline (@hourly)\\
+        Bao gồm task dependencies trong analysis\_pipeline
+    }}
+    \caption{Workflow DAGs trong Apache Airflow}
+    \label{fig:airflow-dags}
+\end{figure}
+
+\subsubsection{Analysis Pipeline DAG}
+
+DAG phức tạp nhất với task dependencies:
+
+\begin{enumerate}
+    \item \textbf{ai\_ml\_analysis\_task}: Chạy AI/ML Engine cho tất cả symbols
+    \item \textbf{llm\_analysis\_task}: Chạy LLM Engine (depends on task 1)
+    \item \textbf{aggregation\_task}: Tổng hợp kết quả (depends on task 1 và 2)
+\end{enumerate}
+
+\subsection{Error Handling và Retry Logic}
+
+\begin{itemize}
+    \item \textbf{Retry Policy}: 3 lần retry với exponential backoff
+    \item \textbf{Timeout}: 30 phút timeout cho mỗi task
+    \item \textbf{Alerting}: Email notification khi task fail
+    \item \textbf{Monitoring}: Web UI để theo dõi DAG execution
+\end{itemize}
+
+\section{Scalability và Performance}
+
+\subsection{Horizontal Scaling}
+
+Hệ thống được thiết kế để scale theo chiều ngang:
+
+\begin{itemize}
+    \item \textbf{Kafka Partitioning}: Phân chia message theo symbol
+    \item \textbf{Consumer Groups}: Multiple consumer instances
+    \item \textbf{MongoDB Sharding}: Phân chia data theo symbol ranges
+    \item \textbf{Load Balancing}: API service có thể chạy multiple instances
+\end{itemize}
+
+\subsection{Performance Optimization}
+
+\begin{itemize}
+    \item \textbf{Database Indexing}: Index trên symbol và timestamp
+    \item \textbf{Connection Pooling}: MongoDB connection pool
+    \item \textbf{Caching}: In-memory caching cho frequently accessed data
+    \item \textbf{Batch Processing}: Xử lý multiple symbols trong một batch
+\end{itemize}
+
+\section{Security và Configuration}
+
+\subsection{Security Measures}
+
+\begin{itemize}
+    \item \textbf{Environment Variables}: Sensitive data không hardcode
+    \item \textbf{Network Isolation}: Docker network segmentation
+    \item \textbf{API Authentication}: JWT tokens cho API access (future)
+    \item \textbf{Input Validation}: Pydantic models cho data validation
+\end{itemize}
+
+\subsection{Configuration Management}
+
+Tất cả configuration được quản lý thông qua environment variables:
+
+\begin{lstlisting}[language=bash, caption=Environment Configuration]
+# MongoDB Configuration
+MONGODB_URI=mongodb://mongodb:27017
+MONGODB_DATABASE=vietnam_stock_ai
+
+# Kafka Configuration
+KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+KAFKA_PRICE_TOPIC=stock_prices_raw
+KAFKA_NEWS_TOPIC=stock_news_raw
+
+# LLM Configuration
+OPENAI_API_KEY=sk-...
+OPENAI_MODEL=gpt-3.5-turbo
+
+# Aggregation Weights
+WEIGHT_TECHNICAL=0.4
+WEIGHT_RISK=0.3
+WEIGHT_SENTIMENT=0.3
+\end{lstlisting}

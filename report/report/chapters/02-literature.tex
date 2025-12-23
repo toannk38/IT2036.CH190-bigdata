@@ -1,0 +1,264 @@
+\chapter{Cơ sở lý thuyết}
+
+\section{Apache Kafka - Message Streaming Platform}
+
+\subsection{Tổng quan về Kafka}
+
+Apache Kafka là một nền tảng streaming phân tán mã nguồn mở, được phát triển bởi LinkedIn và sau đó được chuyển giao cho Apache Software Foundation. Kafka được thiết kế để xử lý các luồng dữ liệu real-time với khả năng mở rộng cao, độ tin cậy và hiệu suất tốt.
+
+\subsection{Kiến trúc Kafka}
+
+Kafka sử dụng mô hình publish-subscribe với các thành phần chính:
+
+\begin{itemize}
+    \item \textbf{Producer}: Ứng dụng gửi dữ liệu (messages) đến Kafka topics
+    \item \textbf{Consumer}: Ứng dụng đọc dữ liệu từ Kafka topics
+    \item \textbf{Topic}: Kênh logic để phân loại messages
+    \item \textbf{Partition}: Phân chia topic thành các phần nhỏ để tăng khả năng song song
+    \item \textbf{Broker}: Server Kafka lưu trữ và quản lý topics
+    \item \textbf{Zookeeper}: Quản lý metadata và coordination cho Kafka cluster
+\end{itemize}
+
+\subsection{Ứng dụng trong dự án}
+
+Trong hệ thống Vietnam Stock AI Backend, Kafka được sử dụng để:
+
+\begin{itemize}
+    \item Truyền tải dữ liệu giá cổ phiếu từ Price Collector đến Consumer
+    \item Truyền tải dữ liệu tin tức từ News Collector đến Consumer
+    \item Đảm bảo tính bền vững và khả năng phục hồi dữ liệu
+    \item Cho phép mở rộng hệ thống với nhiều consumer độc lập
+\end{itemize}
+
+\section{MongoDB - NoSQL Database}
+
+\subsection{Đặc điểm của MongoDB}
+
+MongoDB là một hệ quản trị cơ sở dữ liệu NoSQL dạng document-oriented, sử dụng định dạng BSON (Binary JSON) để lưu trữ dữ liệu. MongoDB cung cấp:
+
+\begin{itemize}
+    \item Schema linh hoạt, phù hợp với dữ liệu có cấu trúc thay đổi
+    \item Khả năng mở rộng ngang (horizontal scaling)
+    \item Hiệu suất cao cho các truy vấn phức tạp
+    \item Hỗ trợ indexing và aggregation pipeline mạnh mẽ
+\end{itemize}
+
+\subsection{Mô hình dữ liệu}
+
+MongoDB tổ chức dữ liệu theo cấu trúc:
+
+\begin{itemize}
+    \item \textbf{Database}: Chứa nhiều collections
+    \item \textbf{Collection}: Tương đương với table trong SQL, chứa các documents
+    \item \textbf{Document}: Đơn vị dữ liệu cơ bản, tương đương với row trong SQL
+    \item \textbf{Field}: Thuộc tính của document, tương đương với column trong SQL
+\end{itemize}
+
+\subsection{Ứng dụng trong dự án}
+
+MongoDB được sử dụng để lưu trữ:
+
+\begin{itemize}
+    \item Dữ liệu giá cổ phiếu lịch sử (price\_history collection)
+    \item Dữ liệu tin tức (news collection)
+    \item Kết quả phân tích AI/ML (ai\_analysis collection)
+    \item Kết quả phân tích LLM (llm\_analysis collection)
+    \item Dữ liệu tổng hợp cuối cùng (aggregated\_analysis collection)
+    \item Danh sách mã cổ phiếu (symbols collection)
+\end{itemize}
+
+\section{Apache Airflow - Workflow Orchestration}
+
+\subsection{Khái niệm Workflow Orchestration}
+
+Workflow orchestration là quá trình quản lý, lập lịch và giám sát các tác vụ phức tạp trong một hệ thống. Apache Airflow là một nền tảng mã nguồn mở được thiết kế để tạo, lập lịch và giám sát các workflow.
+
+\subsection{Thành phần chính của Airflow}
+
+\begin{itemize}
+    \item \textbf{DAG (Directed Acyclic Graph)}: Định nghĩa workflow với các task và dependencies
+    \item \textbf{Task}: Đơn vị công việc cơ bản trong workflow
+    \item \textbf{Operator}: Template để tạo task (PythonOperator, BashOperator, etc.)
+    \item \textbf{Scheduler}: Lập lịch và kích hoạt các DAG
+    \item \textbf{Executor}: Thực thi các task
+    \item \textbf{Web UI}: Giao diện quản lý và giám sát
+\end{itemize}
+
+\subsection{Ứng dụng trong dự án}
+
+Airflow quản lý 3 DAG chính:
+
+\begin{enumerate}
+    \item \textbf{price\_collection\_dag}: Thu thập dữ liệu giá (chạy mỗi 5 phút)
+    \item \textbf{news\_collection\_dag}: Thu thập tin tức (chạy mỗi 30 phút)
+    \item \textbf{analysis\_pipeline\_dag}: Phân tích dữ liệu (chạy mỗi giờ)
+        \begin{itemize}
+            \item Task 1: AI/ML analysis
+            \item Task 2: LLM analysis (phụ thuộc Task 1)
+            \item Task 3: Aggregation (phụ thuộc Task 1 và 2)
+        \end{itemize}
+\end{enumerate}
+
+\section{Artificial Intelligence và Machine Learning}
+
+\subsection{AI/ML trong phân tích tài chính}
+
+Trí tuệ nhân tạo và Machine Learning đã trở thành công cụ quan trọng trong phân tích tài chính, cho phép:
+
+\begin{itemize}
+    \item Phân tích dữ liệu lịch sử để dự đoán xu hướng
+    \item Tính toán các chỉ số kỹ thuật phức tạp
+    \item Đánh giá rủi ro dựa trên volatility
+    \item Phát hiện các pattern trong dữ liệu time-series
+\end{itemize}
+
+\subsection{Technical Analysis}
+
+Technical Analysis là phương pháp phân tích dựa trên dữ liệu giá và khối lượng giao dịch lịch sử. Các chỉ số kỹ thuật chính được sử dụng:
+
+\begin{itemize}
+    \item \textbf{RSI (Relative Strength Index)}: Đo lường momentum, xác định vùng quá mua/quá bán
+    \item \textbf{MACD (Moving Average Convergence Divergence)}: Phân tích xu hướng và momentum
+    \item \textbf{Bollinger Bands}: Đo lường volatility và xác định support/resistance
+    \item \textbf{Moving Averages}: Làm mượt dữ liệu giá và xác định xu hướng
+\end{itemize}
+
+\subsection{Ứng dụng trong dự án}
+
+AI/ML Engine thực hiện:
+
+\begin{itemize}
+    \item Dự đoán xu hướng sử dụng Moving Average crossover
+    \item Tính toán risk score dựa trên standard deviation của returns
+    \item Tính toán technical score từ RSI, MACD, Bollinger Bands
+    \item Kết hợp các chỉ số để đưa ra đánh giá tổng thể
+\end{itemize}
+\section{Large Language Models (LLM)}
+
+\subsection{Khái niệm LLM}
+
+Large Language Models là các mô hình AI được huấn luyện trên khối lượng văn bản khổng lồ, có khả năng hiểu và sinh ra ngôn ngữ tự nhiên. LLM có thể thực hiện nhiều tác vụ như:
+
+\begin{itemize}
+    \item Phân tích sentiment từ văn bản
+    \item Tóm tắt nội dung
+    \item Trả lời câu hỏi
+    \item Dịch thuật
+\end{itemize}
+
+\subsection{OpenAI API}
+
+OpenAI cung cấp API để truy cập các mô hình LLM như GPT-3.5 và GPT-4. API cho phép:
+
+\begin{itemize}
+    \item Gửi prompt và nhận response từ mô hình
+    \item Tùy chỉnh temperature để kiểm soát tính sáng tạo
+    \item Giới hạn số token để kiểm soát chi phí
+    \item Sử dụng system message để định hướng hành vi mô hình
+\end{itemize}
+
+\subsection{Sentiment Analysis}
+
+Sentiment Analysis là quá trình xác định cảm xúc hoặc thái độ trong văn bản. Trong phân tích tài chính, sentiment analysis giúp:
+
+\begin{itemize}
+    \item Đánh giá tâm lý thị trường từ tin tức
+    \item Dự đoán phản ứng của nhà đầu tư đối với các sự kiện
+    \item Phát hiện các tín hiệu mua/bán từ thông tin định tính
+    \item Bổ sung cho phân tích kỹ thuật truyền thống
+\end{itemize}
+
+\subsection{Ứng dụng trong dự án}
+
+LLM Engine trong hệ thống thực hiện:
+
+\begin{itemize}
+    \item Phân tích sentiment của tin tức liên quan đến cổ phiếu
+    \item Tóm tắt nội dung tin tức quan trọng
+    \item Đánh giá tác động của tin tức đến giá cổ phiếu
+    \item Cung cấp fallback analysis khi OpenAI API không khả dụng
+\end{itemize}
+\section{Microservices Architecture}
+
+\subsection{Khái niệm Microservices}
+
+Microservices là một kiến trúc phần mềm trong đó ứng dụng được chia thành nhiều service nhỏ, độc lập, mỗi service chịu trách nhiệm cho một chức năng cụ thể. Các đặc điểm chính:
+
+\begin{itemize}
+    \item \textbf{Decoupling}: Các service hoạt động độc lập
+    \item \textbf{Scalability}: Có thể mở rộng từng service riêng biệt
+    \item \textbf{Technology Diversity}: Mỗi service có thể sử dụng công nghệ khác nhau
+    \item \textbf{Fault Isolation}: Lỗi ở một service không ảnh hưởng đến service khác
+\end{itemize}
+
+\subsection{So sánh với Monolithic Architecture}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Tiêu chí} & \textbf{Monolithic} & \textbf{Microservices} \\
+\hline
+Deployment & Toàn bộ ứng dụng & Từng service riêng biệt \\
+\hline
+Scaling & Scale toàn bộ & Scale từng service \\
+\hline
+Technology Stack & Đồng nhất & Đa dạng \\
+\hline
+Complexity & Thấp ban đầu & Cao về infrastructure \\
+\hline
+Team Organization & Centralized & Distributed \\
+\hline
+\end{tabular}
+\caption{So sánh Monolithic và Microservices Architecture}
+\end{table}
+
+\subsection{Ứng dụng trong dự án}
+
+Hệ thống Vietnam Stock AI Backend được thiết kế theo mô hình microservices với các service:
+
+\begin{itemize}
+    \item \textbf{Price Collector Service}: Thu thập dữ liệu giá cổ phiếu
+    \item \textbf{News Collector Service}: Thu thập tin tức
+    \item \textbf{Kafka Consumer Service}: Xử lý message từ Kafka
+    \item \textbf{AI/ML Engine Service}: Phân tích định lượng
+    \item \textbf{LLM Engine Service}: Phân tích định tính
+    \item \textbf{Aggregation Service}: Tổng hợp kết quả
+    \item \textbf{API Service}: Cung cấp REST API
+\end{itemize}
+\section{Containerization với Docker}
+
+\subsection{Docker và Container Technology}
+
+Docker là nền tảng containerization cho phép đóng gói ứng dụng và dependencies vào các container nhẹ, portable. Lợi ích của containerization:
+
+\begin{itemize}
+    \item \textbf{Consistency}: Đảm bảo môi trường chạy nhất quán
+    \item \textbf{Portability}: Chạy trên mọi hệ thống hỗ trợ Docker
+    \item \textbf{Isolation}: Cô lập ứng dụng và dependencies
+    \item \textbf{Efficiency}: Sử dụng tài nguyên hiệu quả hơn VM
+\end{itemize}
+
+\subsection{Docker Compose}
+
+Docker Compose là công cụ để định nghĩa và chạy multi-container Docker applications. Compose sử dụng file YAML để cấu hình services, networks và volumes.
+
+\subsection{Ứng dụng trong dự án}
+
+Docker được sử dụng để:
+
+\begin{itemize}
+    \item Containerize tất cả các service trong hệ thống
+    \item Đảm bảo môi trường development và production nhất quán
+    \item Đơn giản hóa việc deployment và scaling
+    \item Quản lý dependencies và configuration
+\end{itemize}
+
+Hệ thống sử dụng Docker Compose để orchestrate các container:
+
+\begin{itemize}
+    \item MongoDB container cho database
+    \item Kafka và Zookeeper containers cho message streaming
+    \item Airflow containers cho workflow management
+    \item Application containers cho các microservices
+\end{itemize}
