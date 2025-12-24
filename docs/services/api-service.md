@@ -53,7 +53,8 @@ The API Service provides a RESTful interface for accessing Vietnam Stock AI anal
   "endpoints": {
     "stock_summary": "/stock/{symbol}/summary",
     "alerts": "/alerts",
-    "historical_analysis": "/stock/{symbol}/history"
+    "historical_analysis": "/stock/{symbol}/history",
+    "active_symbols": "/symbols"
   }
 }
 ```
@@ -180,6 +181,60 @@ The API Service provides a RESTful interface for accessing Vietnam Stock AI anal
 }
 ```
 
+### Active Symbols
+**Endpoint**: `GET /symbols`
+**Purpose**: Get list of all active symbols with comprehensive information
+
+**Response Model**: `SymbolsResponse`
+```json
+{
+  "symbols": [
+    {
+      "symbol": "VIC",
+      "organ_name": "Tập đoàn Vingroup - Công ty CP",
+      "icb_name2": "Bất động sản",
+      "icb_name3": "Bất động sản",
+      "icb_name4": "Bất động sản",
+      "com_type_code": "CT",
+      "icb_code1": "8000",
+      "icb_code2": "8600",
+      "icb_code3": "8630",
+      "icb_code4": "8633",
+      "active": true,
+      "created_at": "2024-01-01T10:00:00Z",
+      "updated_at": "2024-01-01T12:00:00Z"
+    },
+    {
+      "symbol": "VCB",
+      "organ_name": "Ngân hàng Thương mại Cổ phần Ngoại thương Việt Nam",
+      "icb_name2": "Ngân hàng",
+      "icb_name3": "Ngân hàng",
+      "icb_name4": "Ngân hàng",
+      "com_type_code": "NH",
+      "icb_code1": "8301",
+      "icb_code2": "8300",
+      "icb_code3": "8350",
+      "icb_code4": "8355",
+      "active": true,
+      "created_at": "2024-01-01T10:00:00Z",
+      "updated_at": "2024-01-01T12:00:00Z"
+    }
+  ],
+  "total": 50,
+  "active_count": 30
+}
+```
+
+**Features**:
+- Returns all active symbols (where `active` field is `true`)
+- Includes comprehensive company information:
+  - Symbol code and company name
+  - Industry Classification Benchmark (ICB) codes and names
+  - Company type code (CT=Company, NH=Bank, CK=Securities)
+  - Creation and update timestamps
+- Symbols are sorted alphabetically by symbol code
+- Provides total count and active count for reference
+
 ## Data Models
 
 ### Core Models
@@ -209,6 +264,32 @@ class Alert(BaseModel):
     type: str
     priority: str  # "high", "medium", "low"
     message: str
+```
+
+**SymbolInfo**
+```python
+class SymbolInfo(BaseModel):
+    symbol: str
+    organ_name: str
+    icb_name2: Optional[str] = None
+    icb_name3: Optional[str] = None
+    icb_name4: Optional[str] = None
+    com_type_code: Optional[str] = None
+    icb_code1: Optional[str] = None
+    icb_code2: Optional[str] = None
+    icb_code3: Optional[str] = None
+    icb_code4: Optional[str] = None
+    active: bool = True
+    created_at: Optional[str] = None
+    updated_at: Optional[str] = None
+```
+
+**SymbolsResponse**
+```python
+class SymbolsResponse(BaseModel):
+    symbols: List[SymbolInfo]
+    total: int
+    active_count: int
 ```
 
 ## Database Integration
