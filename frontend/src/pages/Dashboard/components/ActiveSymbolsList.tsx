@@ -6,12 +6,10 @@ import {
   Typography,
   List,
   ListItem,
-  ListItemButton,
   ListItemText,
   Skeleton,
   Box,
   Chip,
-  Grid,
 } from '@mui/material';
 import { TrendingUp, Business } from '@mui/icons-material';
 import { ActiveSymbolsListProps } from '@/types';
@@ -88,9 +86,20 @@ export const ActiveSymbolsList: React.FC<ActiveSymbolsListProps> = ({
           />
         </Box>
         
-        <Grid container spacing={1}>
+        <Box 
+          sx={{ 
+            display: 'grid',
+            gridTemplateColumns: {
+              xs: '1fr',
+              sm: 'repeat(2, 1fr)',
+              md: 'repeat(3, 1fr)',
+              lg: 'repeat(4, 1fr)',
+            },
+            gap: 1,
+          }}
+        >
           {symbols.map((symbol) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={symbol.symbol}>
+            <Box key={symbol.symbol}>
               <Card 
                 variant="outlined" 
                 sx={{ 
@@ -145,9 +154,9 @@ export const ActiveSymbolsList: React.FC<ActiveSymbolsListProps> = ({
                   )}
                 </CardContent>
               </Card>
-            </Grid>
+            </Box>
           ))}
-        </Grid>
+        </Box>
       </CardContent>
     </Card>
   );

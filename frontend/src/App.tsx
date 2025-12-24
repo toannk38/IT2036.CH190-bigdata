@@ -2,6 +2,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import { Layout } from './components/layout';
+import { Dashboard } from './pages/Dashboard';
+import { StockAnalysis } from './pages/StockAnalysis';
 
 // Create a theme
 const theme = createTheme({
@@ -27,8 +29,6 @@ const queryClient = new QueryClient({
 });
 
 // Placeholder components for routes
-const Dashboard = () => <div>Dashboard Page - Coming Soon</div>;
-const StockAnalysis = () => <div>Stock Analysis Page - Coming Soon</div>;
 const Alerts = () => <div>Alerts Page - Coming Soon</div>;
 const HistoricalData = () => <div>Historical Data Page - Coming Soon</div>;
 

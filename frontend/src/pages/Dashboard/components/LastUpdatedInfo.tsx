@@ -95,4 +95,91 @@ export const LastUpdatedInfo: React.FC<LastUpdatedInfoProps> = ({
       <CardContent>
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
           {getStatusIcon(timestamp)}
-          <Typogra
+          <Typography variant="h6" component="h2" sx={{ ml: 1 }}>
+            Cập Nhật Cuối
+          </Typography>
+        </Box>
+        
+        <Box sx={{ mb: 2 }}>
+          <Typography 
+            variant="body1" 
+            sx={{ 
+              fontWeight: 'medium',
+              mb: 1,
+            }}
+          >
+            {formatTimestamp(currentTimestamp)}
+          </Typography>
+          
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Chip
+              label={getTimeAgo(currentTimestamp)}
+              size="small"
+              color={statusColor as any}
+              variant="outlined"
+            />
+          </Box>
+        </Box>
+        
+        <Box sx={{ 
+          p: 2, 
+          backgroundColor: 'grey.50', 
+          borderRadius: 1,
+          border: '1px solid',
+          borderColor: 'grey.200',
+        }}>
+          <Typography 
+            variant="body2" 
+            color="text.secondary"
+            sx={{ 
+              display: 'flex', 
+              alignItems: 'center',
+              fontSize: '0.85rem',
+            }}
+          >
+            <Schedule sx={{ mr: 1, fontSize: '1rem' }} />
+            Dữ liệu được cập nhật tự động từ hệ thống backend
+          </Typography>
+        </Box>
+        
+        {statusColor === 'error' && (
+          <Box sx={{ 
+            mt: 2,
+            p: 1.5,
+            backgroundColor: 'error.light',
+            borderRadius: 1,
+            border: '1px solid',
+            borderColor: 'error.main',
+          }}>
+            <Typography 
+              variant="body2" 
+              color="error.dark"
+              sx={{ fontSize: '0.85rem' }}
+            >
+              ⚠️ Dữ liệu có thể đã cũ. Vui lòng kiểm tra kết nối hệ thống.
+            </Typography>
+          </Box>
+        )}
+        
+        {statusColor === 'warning' && (
+          <Box sx={{ 
+            mt: 2,
+            p: 1.5,
+            backgroundColor: 'warning.light',
+            borderRadius: 1,
+            border: '1px solid',
+            borderColor: 'warning.main',
+          }}>
+            <Typography 
+              variant="body2" 
+              color="warning.dark"
+              sx={{ fontSize: '0.85rem' }}
+            >
+              ℹ️ Dữ liệu đang được cập nhật...
+            </Typography>
+          </Box>
+        )}
+      </CardContent>
+    </Card>
+  );
+};
