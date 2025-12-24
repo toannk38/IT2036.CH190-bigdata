@@ -1,17 +1,8 @@
 \documentclass[aspectratio=169]{beamer}
 
-% Vietnamese language support - Use XeLaTeX/LuaLaTeX for better Vietnamese rendering
-\usepackage{fontspec}
-\usepackage{polyglossia}
-\setdefaultlanguage{vietnamese}
-\setotherlanguage{english}
-
-% Fallback for pdfLaTeX
-\usepackage{ifxetex,ifluatex}
-\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
-  \usepackage[utf8]{inputenc}
-  \usepackage[vietnamese]{babel}
-\fi
+% Vietnamese language support for pdfLaTeX (Overleaf default)
+\usepackage[utf8]{inputenc}
+\usepackage[vietnamese]{babel}
 
 % Professional academic theme
 \usetheme{Madrid}
@@ -19,7 +10,6 @@
 
 % Additional packages
 \usepackage{graphicx}
-\usepackage{tikz}
 \usepackage{listings}
 \usepackage{hyperref}
 \usepackage{amsmath}

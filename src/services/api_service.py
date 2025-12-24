@@ -29,6 +29,30 @@ class PriceData(BaseModel):
     volume: int
 
 
+class SymbolInfo(BaseModel):
+    """Symbol information model."""
+    symbol: str
+    organ_name: str
+    icb_name2: Optional[str] = None
+    icb_name3: Optional[str] = None
+    icb_name4: Optional[str] = None
+    com_type_code: Optional[str] = None
+    icb_code1: Optional[str] = None
+    icb_code2: Optional[str] = None
+    icb_code3: Optional[str] = None
+    icb_code4: Optional[str] = None
+    active: bool = True
+    created_at: Optional[str] = None
+    updated_at: Optional[str] = None
+
+
+class SymbolsResponse(BaseModel):
+    """Active symbols list response."""
+    symbols: List[SymbolInfo]
+    total: int
+    active_count: int
+
+
 class TrendPrediction(BaseModel):
     """Trend prediction model."""
     direction: str
@@ -420,6 +444,76 @@ class APIService:
                 detail=f"Internal server error: {str(e)}"
             )
     
+    def get_active_symbols(self) -> SymbolsResponse:
+        """
+        Get list of all active symbols with their information.
+        
+        Returns:
+            SymbolsResponse with list of active symbols and metadata
+            
+        Raises:
+            HTTPException: If data retrieval fails
+        """
+        try:
+            logger.info("Fetching active symbols list")
+            
+            # Get all symbols from database
+            cursor = self.symbols_collection.find({})
+            all_symbols = list(cursor)
+            
+            # Filter and format active symbols
+            active_symbols = []
+            total_count = len(all_symbols)
+            active_count = 0
+            
+            for symbol_doc in all_symbols:
+                # Check if symbol is active (default to True if not specified)
+                is_active = symbol_doc.get('active', True)
+                
+                if is_active:
+                    active_count += 1
+                    
+                    # Format symbol info
+                    symbol_info = SymbolInfo(
+                        symbol=symbol_doc['symbol'],
+                        organ_name=symbol_doc.get('organ_name', ''),
+                        icb_name2=symbol_doc.get('icb_name2'),
+                        icb_name3=symbol_doc.get('icb_name3'),
+                        icb_name4=symbol_doc.get('icb_name4'),
+                        com_type_code=symbol_doc.get('com_type_code'),
+                        icb_code1=symbol_doc.get('icb_code1'),
+                        icb_code2=symbol_doc.get('icb_code2'),
+                        icb_code3=symbol_doc.get('icb_code3'),
+                        icb_code4=symbol_doc.get('icb_code4'),
+                        active=is_active,
+                        created_at=self._format_timestamp(symbol_doc.get('created_at')),
+                        updated_at=self._format_timestamp(symbol_doc.get('updated_at'))
+                    )
+                    active_symbols.append(symbol_info)
+            
+            # Sort symbols by symbol code for consistent ordering
+            active_symbols.sort(key=lambda x: x.symbol)
+            
+            response = SymbolsResponse(
+                symbols=active_symbols,
+                total=total_count,
+                active_count=active_count
+            )
+            
+            logger.info(f"Retrieved {active_count} active symbols out of {total_count} total")
+            return response
+            
+        except Exception as e:
+            logger.error(
+                f"Error retrieving active symbols",
+                context={'error': str(e)},
+                exc_info=True
+            )
+            raise HTTPException(
+                status_code=500,
+                detail=f"Internal server error: {str(e)}"
+            )
+    
     def _get_latest_price(self, symbol: str) -> Optional[Dict[str, Any]]:
         """Get latest price data for symbol."""
         try:
@@ -570,7 +664,8 @@ async def root():
         "endpoints": {
             "stock_summary": "/stock/{symbol}/summary",
             "alerts": "/alerts",
-            "historical_analysis": "/stock/{symbol}/history"
+            "historical_analysis": "/stock/{symbol}/history",
+            "active_symbols": "/symbols"
         }
     }
 
@@ -617,6 +712,22 @@ async def get_historical_analysis(
         start_date,
         end_date
     )
+
+
+@app.get("/symbols", response_model=SymbolsResponse)
+async def get_active_symbols():
+    """
+    Get list of all active symbols with their information.
+    
+    Returns comprehensive information about all active stock symbols including:
+    - Symbol code
+    - Company name (organ_name)
+    - Industry classification (ICB codes and names)
+    - Company type code
+    - Active status
+    - Creation and update timestamps
+    """
+    return api_service.get_active_symbols()
 
 
 @app.exception_handler(HTTPException)
