@@ -4,7 +4,6 @@ import {
   CardContent,
   Typography,
   Box,
-  Grid,
   LinearProgress,
   Chip,
 } from '@mui/material';
@@ -88,64 +87,62 @@ const ComponentScoresChart: React.FC<ComponentScoresChartProps> = ({ scores }) =
           </Typography>
         </Box>
 
-        <Grid container spacing={3}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
           {scoreComponents.map((component) => (
-            <Grid item xs={12} key={component.key}>
-              <Box sx={{ mb: 2 }}>
-                {/* Component Header */}
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                  <Box sx={{ color: getScoreColor(component.value), mr: 1 }}>
-                    {component.icon}
-                  </Box>
-                  <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
-                    {component.label}
-                  </Typography>
-                  <Chip
-                    label={`${formatScore(component.value)}%`}
-                    size="small"
-                    sx={{
-                      backgroundColor: getScoreColor(component.value),
-                      color: 'white',
-                      fontWeight: 'bold',
-                    }}
-                  />
+            <Box key={component.key} sx={{ mb: 2 }}>
+              {/* Component Header */}
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                <Box sx={{ color: getScoreColor(component.value), mr: 1 }}>
+                  {component.icon}
                 </Box>
-
-                {/* Progress Bar */}
-                <LinearProgress
-                  variant="determinate"
-                  value={component.value * 100}
+                <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
+                  {component.label}
+                </Typography>
+                <Chip
+                  label={`${formatScore(component.value)}%`}
+                  size="small"
                   sx={{
-                    height: 12,
-                    borderRadius: 6,
-                    mb: 1,
-                    backgroundColor: 'grey.200',
-                    '& .MuiLinearProgress-bar': {
-                      backgroundColor: getScoreColor(component.value),
-                      borderRadius: 6,
-                    },
+                    backgroundColor: getScoreColor(component.value),
+                    color: 'white',
+                    fontWeight: 'bold',
                   }}
                 />
-
-                {/* Score Details */}
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Typography variant="body2" color="text.secondary">
-                    {component.description}
-                  </Typography>
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      color: getScoreColor(component.value),
-                      fontWeight: 'medium',
-                    }}
-                  >
-                    {getScoreLevel(component.value)}
-                  </Typography>
-                </Box>
               </Box>
-            </Grid>
+
+              {/* Progress Bar */}
+              <LinearProgress
+                variant="determinate"
+                value={component.value * 100}
+                sx={{
+                  height: 12,
+                  borderRadius: 6,
+                  mb: 1,
+                  backgroundColor: 'grey.200',
+                  '& .MuiLinearProgress-bar': {
+                    backgroundColor: getScoreColor(component.value),
+                    borderRadius: 6,
+                  },
+                }}
+              />
+
+              {/* Score Details */}
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Typography variant="body2" color="text.secondary">
+                  {component.description}
+                </Typography>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: getScoreColor(component.value),
+                    fontWeight: 'medium',
+                  }}
+                >
+                  {getScoreLevel(component.value)}
+                </Typography>
+              </Box>
+            </Box>
           ))}
-        </Grid>
+        </Box>
 
         {/* Summary */}
         <Box sx={{ mt: 3, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>

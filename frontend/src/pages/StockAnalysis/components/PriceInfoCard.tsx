@@ -3,7 +3,6 @@ import {
   Card,
   CardContent,
   Typography,
-  Grid,
   Box,
   Chip,
   Divider,
@@ -106,66 +105,63 @@ const PriceInfoCard: React.FC<PriceInfoCardProps> = ({ priceData }) => {
 
         <Divider sx={{ mb: 2 }} />
 
-        {/* Price Details Grid */}
-        <Grid container spacing={2}>
-          <Grid item xs={6}>
-            <Box>
-              <Typography variant="body2" color="text.secondary" gutterBottom>
-                Giá Mở Cửa
-              </Typography>
-              <Typography variant="h6" color="primary.main">
-                {formatPrice(priceData.open)}
-              </Typography>
-            </Box>
-          </Grid>
+        {/* Price Details */}
+        <Box 
+          sx={{ 
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
+            gap: 2,
+          }}
+        >
+          <Box>
+            <Typography variant="body2" color="text.secondary" gutterBottom>
+              Giá Mở Cửa
+            </Typography>
+            <Typography variant="h6" color="primary.main">
+              {formatPrice(priceData.open)}
+            </Typography>
+          </Box>
           
-          <Grid item xs={6}>
-            <Box>
-              <Typography variant="body2" color="text.secondary" gutterBottom>
-                Giá Đóng Cửa
-              </Typography>
-              <Typography variant="h6" color={isPositive ? 'success.main' : 'error.main'}>
-                {formatPrice(priceData.close)}
-              </Typography>
-            </Box>
-          </Grid>
+          <Box>
+            <Typography variant="body2" color="text.secondary" gutterBottom>
+              Giá Đóng Cửa
+            </Typography>
+            <Typography variant="h6" color={isPositive ? 'success.main' : 'error.main'}>
+              {formatPrice(priceData.close)}
+            </Typography>
+          </Box>
 
-          <Grid item xs={6}>
-            <Box>
-              <Typography variant="body2" color="text.secondary" gutterBottom>
-                Giá Cao Nhất
-              </Typography>
-              <Typography variant="h6" color="success.main">
-                {formatPrice(priceData.high)}
-              </Typography>
-            </Box>
-          </Grid>
+          <Box>
+            <Typography variant="body2" color="text.secondary" gutterBottom>
+              Giá Cao Nhất
+            </Typography>
+            <Typography variant="h6" color="success.main">
+              {formatPrice(priceData.high)}
+            </Typography>
+          </Box>
 
-          <Grid item xs={6}>
-            <Box>
-              <Typography variant="body2" color="text.secondary" gutterBottom>
-                Giá Thấp Nhất
-              </Typography>
-              <Typography variant="h6" color="error.main">
-                {formatPrice(priceData.low)}
-              </Typography>
-            </Box>
-          </Grid>
+          <Box>
+            <Typography variant="body2" color="text.secondary" gutterBottom>
+              Giá Thấp Nhất
+            </Typography>
+            <Typography variant="h6" color="error.main">
+              {formatPrice(priceData.low)}
+            </Typography>
+          </Box>
+        </Box>
 
-          <Grid item xs={12}>
-            <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
-              <VolumeUp sx={{ mr: 1, color: 'text.secondary' }} />
-              <Box>
-                <Typography variant="body2" color="text.secondary">
-                  Khối Lượng Giao Dịch
-                </Typography>
-                <Typography variant="h6">
-                  {formatVolume(priceData.volume)} cổ phiếu
-                </Typography>
-              </Box>
-            </Box>
-          </Grid>
-        </Grid>
+        {/* Volume */}
+        <Box sx={{ display: 'flex', alignItems: 'center', mt: 3 }}>
+          <VolumeUp sx={{ mr: 1, color: 'text.secondary' }} />
+          <Box>
+            <Typography variant="body2" color="text.secondary">
+              Khối Lượng Giao Dịch
+            </Typography>
+            <Typography variant="h6">
+              {formatVolume(priceData.volume)} cổ phiếu
+            </Typography>
+          </Box>
+        </Box>
 
         {/* Timestamp */}
         <Box sx={{ mt: 2, pt: 2, borderTop: 1, borderColor: 'divider' }}>

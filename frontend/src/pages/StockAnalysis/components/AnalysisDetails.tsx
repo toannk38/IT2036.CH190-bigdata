@@ -4,7 +4,6 @@ import {
   CardContent,
   Typography,
   Box,
-  Grid,
   Chip,
   Accordion,
   AccordionSummary,
@@ -88,171 +87,178 @@ const AnalysisDetails: React.FC<AnalysisDetailsProps> = ({
           </Typography>
         </Box>
 
-        <Grid container spacing={2}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           {/* AI/ML Analysis Section */}
           {hasAiAnalysis && (
-            <Grid item xs={12}>
-              <Accordion defaultExpanded>
-                <AccordionSummary
-                  expandIcon={<ExpandMore />}
-                  aria-controls="ai-analysis-content"
-                  id="ai-analysis-header"
-                >
-                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <SmartToy sx={{ mr: 1, color: 'primary.main' }} />
-                    <Typography variant="subtitle1" sx={{ fontWeight: 'medium' }}>
-                      Phân Tích AI/ML
-                    </Typography>
-                  </Box>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Grid container spacing={2}>
+            <Accordion defaultExpanded>
+              <AccordionSummary
+                expandIcon={<ExpandMore />}
+                aria-controls="ai-analysis-content"
+                id="ai-analysis-header"
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <SmartToy sx={{ mr: 1, color: 'primary.main' }} />
+                  <Typography variant="subtitle1" sx={{ fontWeight: 'medium' }}>
+                    Phân Tích AI/ML
+                  </Typography>
+                </Box>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  {/* Technical Score and Trend Prediction */}
+                  <Box 
+                    sx={{ 
+                      display: 'flex',
+                      flexDirection: { xs: 'column', sm: 'row' },
+                      gap: 2,
+                    }}
+                  >
                     {/* Technical Score */}
                     {aiAnalysis?.technical_score !== undefined && (
-                      <Grid item xs={12} sm={6}>
-                        <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
-                          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                            <TrendingUp sx={{ mr: 1, color: 'primary.main' }} />
-                            <Typography variant="subtitle2">
-                              Điểm Kỹ Thuật
-                            </Typography>
-                          </Box>
-                          <Typography variant="h5" color="primary.main">
-                            {formatTechnicalScore(aiAnalysis.technical_score)}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            Đánh giá dựa trên các chỉ số kỹ thuật
+                      <Box sx={{ flex: 1, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                          <TrendingUp sx={{ mr: 1, color: 'primary.main' }} />
+                          <Typography variant="subtitle2">
+                            Điểm Kỹ Thuật
                           </Typography>
                         </Box>
-                      </Grid>
+                        <Typography variant="h5" color="primary.main">
+                          {formatTechnicalScore(aiAnalysis.technical_score)}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Đánh giá dựa trên các chỉ số kỹ thuật
+                        </Typography>
+                      </Box>
                     )}
 
                     {/* Trend Prediction */}
                     {aiAnalysis?.trend_prediction && (
-                      <Grid item xs={12} sm={6}>
-                        <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
-                          <Typography variant="subtitle2" gutterBottom>
-                            Dự Đoán Xu Hướng
-                          </Typography>
-                          <Typography variant="body1" sx={{ mb: 1 }}>
-                            {aiAnalysis.trend_prediction}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            Dự đoán từ mô hình machine learning
-                          </Typography>
-                        </Box>
-                      </Grid>
-                    )}
-
-                    {/* Full AI Analysis Display */}
-                    <Grid item xs={12}>
-                      <Box sx={{ mt: 1 }}>
-                        <Typography variant="body2" color="text.secondary" gutterBottom>
-                          Dữ liệu phân tích AI/ML đầy đủ:
+                      <Box sx={{ flex: 1, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
+                        <Typography variant="subtitle2" gutterBottom>
+                          Dự Đoán Xu Hướng
                         </Typography>
-                        <Box
-                          component="pre"
-                          sx={{
-                            p: 2,
-                            bgcolor: 'grey.100',
-                            borderRadius: 1,
-                            fontSize: '0.875rem',
-                            overflow: 'auto',
-                            maxHeight: 200,
-                          }}
-                        >
-                          {JSON.stringify(aiAnalysis, null, 2)}
-                        </Box>
+                        <Typography variant="body1" sx={{ mb: 1 }}>
+                          {aiAnalysis.trend_prediction}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Dự đoán từ mô hình machine learning
+                        </Typography>
                       </Box>
-                    </Grid>
-                  </Grid>
-                </AccordionDetails>
-              </Accordion>
-            </Grid>
+                    )}
+                  </Box>
+
+                  {/* Full AI Analysis Display */}
+                  <Box sx={{ mt: 1 }}>
+                    <Typography variant="body2" color="text.secondary" gutterBottom>
+                      Dữ liệu phân tích AI/ML đầy đủ:
+                    </Typography>
+                    <Box
+                      component="pre"
+                      sx={{
+                        p: 2,
+                        bgcolor: 'grey.100',
+                        borderRadius: 1,
+                        fontSize: '0.875rem',
+                        overflow: 'auto',
+                        maxHeight: 200,
+                      }}
+                    >
+                      {JSON.stringify(aiAnalysis, null, 2)}
+                    </Box>
+                  </Box>
+                </Box>
+              </AccordionDetails>
+            </Accordion>
           )}
 
           {/* LLM Analysis Section */}
           {hasLlmAnalysis && (
-            <Grid item xs={12}>
-              <Accordion defaultExpanded>
-                <AccordionSummary
-                  expandIcon={<ExpandMore />}
-                  aria-controls="llm-analysis-content"
-                  id="llm-analysis-header"
-                >
-                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Psychology sx={{ mr: 1, color: 'secondary.main' }} />
-                    <Typography variant="subtitle1" sx={{ fontWeight: 'medium' }}>
-                      Phân Tích LLM
-                    </Typography>
-                  </Box>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Grid container spacing={2}>
+            <Accordion defaultExpanded>
+              <AccordionSummary
+                expandIcon={<ExpandMore />}
+                aria-controls="llm-analysis-content"
+                id="llm-analysis-header"
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Psychology sx={{ mr: 1, color: 'secondary.main' }} />
+                  <Typography variant="subtitle1" sx={{ fontWeight: 'medium' }}>
+                    Phân Tích LLM
+                  </Typography>
+                </Box>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  {/* Sentiment and Summary */}
+                  <Box 
+                    sx={{ 
+                      display: 'flex',
+                      flexDirection: { xs: 'column', sm: 'row' },
+                      gap: 2,
+                    }}
+                  >
                     {/* Sentiment */}
                     {llmAnalysis?.sentiment && (
-                      <Grid item xs={12} sm={6}>
-                        <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
-                          <Typography variant="subtitle2" gutterBottom>
-                            Tâm Lý Thị Trường
-                          </Typography>
-                          <Chip
-                            label={getSentimentLabel(llmAnalysis.sentiment)}
-                            sx={{
-                              backgroundColor: getSentimentColor(llmAnalysis.sentiment),
-                              color: 'white',
-                              fontWeight: 'medium',
-                              mb: 1,
-                            }}
-                          />
-                          <Typography variant="body2" color="text.secondary">
-                            Phân tích từ tin tức và dữ liệu thị trường
-                          </Typography>
-                        </Box>
-                      </Grid>
+                      <Box sx={{ flex: 1, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
+                        <Typography variant="subtitle2" gutterBottom>
+                          Tâm Lý Thị Trường
+                        </Typography>
+                        <Chip
+                          label={getSentimentLabel(llmAnalysis.sentiment)}
+                          sx={{
+                            backgroundColor: getSentimentColor(llmAnalysis.sentiment),
+                            color: 'white',
+                            fontWeight: 'medium',
+                            mb: 1,
+                          }}
+                        />
+                        <Typography variant="body2" color="text.secondary">
+                          Phân tích từ tin tức và dữ liệu thị trường
+                        </Typography>
+                      </Box>
                     )}
 
                     {/* Summary */}
                     {llmAnalysis?.summary && (
-                      <Grid item xs={12} sm={llmAnalysis?.sentiment ? 6 : 12}>
-                        <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
-                          <Typography variant="subtitle2" gutterBottom>
-                            Tóm Tắt Phân Tích
-                          </Typography>
-                          <Typography variant="body2" sx={{ lineHeight: 1.6 }}>
-                            {llmAnalysis.summary}
-                          </Typography>
-                        </Box>
-                      </Grid>
-                    )}
-
-                    {/* Full LLM Analysis Display */}
-                    <Grid item xs={12}>
-                      <Box sx={{ mt: 1 }}>
-                        <Typography variant="body2" color="text.secondary" gutterBottom>
-                          Dữ liệu phân tích LLM đầy đủ:
+                      <Box sx={{ 
+                        flex: llmAnalysis?.sentiment ? 1 : 2, 
+                        p: 2, 
+                        bgcolor: 'grey.50', 
+                        borderRadius: 1 
+                      }}>
+                        <Typography variant="subtitle2" gutterBottom>
+                          Tóm Tắt Phân Tích
                         </Typography>
-                        <Box
-                          component="pre"
-                          sx={{
-                            p: 2,
-                            bgcolor: 'grey.100',
-                            borderRadius: 1,
-                            fontSize: '0.875rem',
-                            overflow: 'auto',
-                            maxHeight: 200,
-                          }}
-                        >
-                          {JSON.stringify(llmAnalysis, null, 2)}
-                        </Box>
+                        <Typography variant="body2" sx={{ lineHeight: 1.6 }}>
+                          {llmAnalysis.summary}
+                        </Typography>
                       </Box>
-                    </Grid>
-                  </Grid>
-                </AccordionDetails>
-              </Accordion>
-            </Grid>
+                    )}
+                  </Box>
+
+                  {/* Full LLM Analysis Display */}
+                  <Box sx={{ mt: 1 }}>
+                    <Typography variant="body2" color="text.secondary" gutterBottom>
+                      Dữ liệu phân tích LLM đầy đủ:
+                    </Typography>
+                    <Box
+                      component="pre"
+                      sx={{
+                        p: 2,
+                        bgcolor: 'grey.100',
+                        borderRadius: 1,
+                        fontSize: '0.875rem',
+                        overflow: 'auto',
+                        maxHeight: 200,
+                      }}
+                    >
+                      {JSON.stringify(llmAnalysis, null, 2)}
+                    </Box>
+                  </Box>
+                </Box>
+              </AccordionDetails>
+            </Accordion>
           )}
-        </Grid>
+        </Box>
 
         {/* Information Note */}
         <Alert severity="info" sx={{ mt: 2 }}>

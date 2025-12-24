@@ -4,6 +4,8 @@ import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import { Layout } from './components/layout';
 import { Dashboard } from './pages/Dashboard';
 import { StockAnalysis } from './pages/StockAnalysis';
+import { AlertsPage } from './pages/Alerts';
+import { HistoricalData } from './pages/HistoricalData';
 
 // Create a theme
 const theme = createTheme({
@@ -28,10 +30,6 @@ const queryClient = new QueryClient({
   },
 });
 
-// Placeholder components for routes
-const Alerts = () => <div>Alerts Page - Coming Soon</div>;
-const HistoricalData = () => <div>Historical Data Page - Coming Soon</div>;
-
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -42,7 +40,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/stock/:symbol" element={<StockAnalysis />} />
-              <Route path="/alerts" element={<Alerts />} />
+              <Route path="/alerts" element={<AlertsPage />} />
               <Route path="/historical" element={<HistoricalData />} />
             </Routes>
           </Layout>
