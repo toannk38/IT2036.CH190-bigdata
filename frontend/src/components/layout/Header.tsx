@@ -64,7 +64,9 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
   };
 
   const renderDesktopNavigation = () => (
-    <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 2 }}>
+    <Box
+      sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 2 }}
+    >
       {navigationItems.map((item) => (
         <Box
           key={item.path}
@@ -77,7 +79,10 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
             py: 1,
             borderRadius: 1,
             cursor: 'pointer',
-            backgroundColor: location.pathname === item.path ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
+            backgroundColor:
+              location.pathname === item.path
+                ? 'rgba(255, 255, 255, 0.1)'
+                : 'transparent',
             '&:hover': {
               backgroundColor: 'rgba(255, 255, 255, 0.05)',
             },

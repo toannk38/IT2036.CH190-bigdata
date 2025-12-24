@@ -8,7 +8,9 @@ export interface UseAlertsOptions {
   gcTime?: number;
   retry?: number;
   retryDelay?: number | ((attemptIndex: number) => number);
-  placeholderData?: (previousData: AlertResponse | undefined) => AlertResponse | undefined;
+  placeholderData?: (
+    previousData: AlertResponse | undefined
+  ) => AlertResponse | undefined;
 }
 
 export const useAlerts = (
@@ -21,7 +23,7 @@ export const useAlerts = (
     gcTime = 300000, // 5 minutes
     retry = 3,
     retryDelay = (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
-    placeholderData = (previousData) => previousData
+    placeholderData = (previousData) => previousData,
   } = options;
 
   return useQuery<AlertResponse, Error>({

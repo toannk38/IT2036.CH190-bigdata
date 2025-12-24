@@ -19,7 +19,7 @@ export const useStockSummary = (
     staleTime = 30000, // 30 seconds
     gcTime = 300000, // 5 minutes
     retry = 3,
-    retryDelay = (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000)
+    retryDelay = (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   } = options;
 
   return useQuery<StockSummary, Error>({

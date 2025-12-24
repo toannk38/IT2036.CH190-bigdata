@@ -1,13 +1,14 @@
 import fc from 'fast-check';
-import { ComponentScores } from '@/types';
 
 // Feature: vietnam-stock-frontend, Property 1: API Integration and Data Display
 describe('Property 1: API Integration and Data Display', () => {
   // Simplified data generators for property-based testing
-  const stockSymbolGen = fc.array(fc.constantFrom('A', 'B', 'C', 'V', 'H', 'M', 'T'), {
-    minLength: 3,
-    maxLength: 4,
-  }).map(arr => arr.join(''));
+  const stockSymbolGen = fc
+    .array(fc.constantFrom('A', 'B', 'C', 'V', 'H', 'M', 'T'), {
+      minLength: 3,
+      maxLength: 4,
+    })
+    .map((arr) => arr.join(''));
 
   const priceDataGen = fc.record({
     timestamp: fc.constant('2024-01-01T00:00:00.000Z'),
@@ -64,24 +65,24 @@ describe('Property 1: API Integration and Data Display', () => {
         }
 
         if (stockSummary.component_scores) {
-          expect(stockSummary.component_scores.technical_score).toBeGreaterThanOrEqual(
-            0
-          );
-          expect(stockSummary.component_scores.technical_score).toBeLessThanOrEqual(
-            1
-          );
-          expect(stockSummary.component_scores.risk_score).toBeGreaterThanOrEqual(
-            0
-          );
+          expect(
+            stockSummary.component_scores.technical_score
+          ).toBeGreaterThanOrEqual(0);
+          expect(
+            stockSummary.component_scores.technical_score
+          ).toBeLessThanOrEqual(1);
+          expect(
+            stockSummary.component_scores.risk_score
+          ).toBeGreaterThanOrEqual(0);
           expect(stockSummary.component_scores.risk_score).toBeLessThanOrEqual(
             1
           );
-          expect(stockSummary.component_scores.sentiment_score).toBeGreaterThanOrEqual(
-            0
-          );
-          expect(stockSummary.component_scores.sentiment_score).toBeLessThanOrEqual(
-            1
-          );
+          expect(
+            stockSummary.component_scores.sentiment_score
+          ).toBeGreaterThanOrEqual(0);
+          expect(
+            stockSummary.component_scores.sentiment_score
+          ).toBeLessThanOrEqual(1);
         }
 
         stockSummary.alerts.forEach((alert) => {
@@ -173,7 +174,7 @@ describe('Property 1: API Integration and Data Display', () => {
         expect(componentScores.risk_score).toBeLessThanOrEqual(1);
         expect(componentScores.sentiment_score).toBeGreaterThanOrEqual(0);
         expect(componentScores.sentiment_score).toBeLessThanOrEqual(1);
-        
+
         // Ensure no NaN values
         expect(Number.isNaN(componentScores.technical_score)).toBe(false);
         expect(Number.isNaN(componentScores.risk_score)).toBe(false);

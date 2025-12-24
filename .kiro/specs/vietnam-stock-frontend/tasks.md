@@ -74,26 +74,26 @@ Kế hoạch triển khai ứng dụng frontend React TypeScript cho hệ thốn
     - **Property 3: Navigation Behavior**
     - **Validates: Requirements 1.5, 4.7, 8.4, 8.5**
 
-- [-] 5. Checkpoint - Ensure basic layout và navigation hoạt động
+- [x] 5. Checkpoint - Ensure basic layout và navigation hoạt động
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 6. Implement Dashboard page
-  - [ ] 6.1 Tạo Dashboard component với grid layout
+- [-] 6. Implement Dashboard page
+  - [x] 6.1 Tạo Dashboard component với grid layout
     - Setup Container và Grid layout cho dashboard
     - Implement responsive design cho different screen sizes
     - _Requirements: 1.1, 6.1, 6.2, 6.3_
 
-  - [ ] 6.2 Implement ActiveSymbolsList component
+  - [x] 6.2 Implement ActiveSymbolsList component
     - Hiển thị danh sách symbols từ API
     - Implement click navigation đến stock analysis
     - _Requirements: 1.2, 1.5_
 
-  - [ ] 6.3 Implement TopAlertsCard component
+  - [x] 6.3 Implement TopAlertsCard component
     - Hiển thị top 5 alerts với priority colors
     - Implement alert item click navigation
     - _Requirements: 1.3, 4.7_
 
-  - [ ] 6.4 Implement LastUpdatedInfo component
+  - [-] 6.4 Implement LastUpdatedInfo component
     - Hiển thị timestamp của data update cuối cùng
     - _Requirements: 1.4_
 

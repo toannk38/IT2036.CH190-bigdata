@@ -18,7 +18,7 @@ const Layout: React.FC<LayoutProps> = ({ children, lastUpdated }) => {
       }}
     >
       <Header />
-      
+
       <Box
         component="main"
         sx={{
@@ -28,7 +28,7 @@ const Layout: React.FC<LayoutProps> = ({ children, lastUpdated }) => {
       >
         {children}
       </Box>
-      
+
       <Footer lastUpdated={lastUpdated} />
     </Box>
   );

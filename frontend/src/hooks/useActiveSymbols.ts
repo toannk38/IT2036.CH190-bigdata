@@ -18,7 +18,7 @@ export const useActiveSymbols = (
     staleTime = 300000, // 5 minutes (symbols don't change frequently)
     gcTime = 600000, // 10 minutes
     retry = 3,
-    retryDelay = (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000)
+    retryDelay = (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   } = options;
 
   return useQuery<SymbolsResponse, Error>({

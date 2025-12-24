@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  Box,
-  Typography,
-  Container,
-  Divider,
-  useTheme,
-} from '@mui/material';
+import { Box, Typography, Container, Divider, useTheme } from '@mui/material';
 
 interface FooterProps {
   lastUpdated?: string;
@@ -13,10 +7,10 @@ interface FooterProps {
 
 const Footer: React.FC<FooterProps> = ({ lastUpdated }) => {
   const theme = useTheme();
-  
+
   const formatLastUpdated = (timestamp?: string) => {
     if (!timestamp) return 'Chưa có dữ liệu';
-    
+
     try {
       const date = new Date(timestamp);
       return date.toLocaleString('vi-VN', {
@@ -61,7 +55,8 @@ const Footer: React.FC<FooterProps> = ({ lastUpdated }) => {
               Hệ thống phân tích cổ phiếu thông minh
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Cung cấp dữ liệu và phân tích chuyên sâu cho thị trường chứng khoán Việt Nam
+              Cung cấp dữ liệu và phân tích chuyên sâu cho thị trường chứng
+              khoán Việt Nam
             </Typography>
           </Box>
 
@@ -70,7 +65,11 @@ const Footer: React.FC<FooterProps> = ({ lastUpdated }) => {
             <Typography variant="body2" color="text.secondary" gutterBottom>
               Cập nhật lần cuối:
             </Typography>
-            <Typography variant="body2" color="text.primary" sx={{ fontWeight: 'medium' }}>
+            <Typography
+              variant="body2"
+              color="text.primary"
+              sx={{ fontWeight: 'medium' }}
+            >
               {formatLastUpdated(lastUpdated)}
             </Typography>
           </Box>

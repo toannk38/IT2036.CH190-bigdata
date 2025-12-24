@@ -21,7 +21,7 @@ export const useHistoricalData = (
     staleTime = 300000, // 5 minutes (historical data is relatively stable)
     gcTime = 600000, // 10 minutes
     retry = 3,
-    retryDelay = (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000)
+    retryDelay = (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   } = options;
 
   // Only enable query if all required parameters are provided

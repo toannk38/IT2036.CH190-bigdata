@@ -22,22 +22,26 @@ const SearchBox: React.FC<SearchBoxProps> = ({ onSearch }) => {
 
   const filteredSuggestions = useMemo(() => {
     if (!symbols?.symbols || !query.trim()) return [];
-    
+
     const searchTerm = query.toLowerCase().trim();
     return symbols.symbols
-      .filter((symbol: SymbolInfo) => 
-        symbol.symbol.toLowerCase().includes(searchTerm) ||
-        symbol.organ_name.toLowerCase().includes(searchTerm)
+      .filter(
+        (symbol: SymbolInfo) =>
+          symbol.symbol.toLowerCase().includes(searchTerm) ||
+          symbol.organ_name.toLowerCase().includes(searchTerm)
       )
       .slice(0, 10); // Limit to 10 suggestions for performance
   }, [query, symbols]);
 
-  const handleInputChange = (_: any, value: string) => {
+  const handleInputChange = (_: React.SyntheticEvent, value: string) => {
     setQuery(value);
     setOpen(value.length > 0);
   };
 
-  const handleSelection = (_: any, value: SymbolInfo | null) => {
+  const handleSelection = (
+    _: React.SyntheticEvent,
+    value: SymbolInfo | null
+  ) => {
     if (value) {
       onSearch(value.symbol);
       setQuery('');
@@ -49,29 +53,36 @@ const SearchBox: React.FC<SearchBoxProps> = ({ onSearch }) => {
     if (event.key === 'Enter' && query.trim()) {
       // If user presses Enter, search for the exact query
       const exactMatch = symbols?.symbols?.find(
-        (symbol: SymbolInfo) => 
+        (symbol: SymbolInfo) =>
           symbol.symbol.toLowerCase() === query.toLowerCase().trim()
       );
-      
+
       if (exactMatch) {
         onSearch(exactMatch.symbol);
       } else if (filteredSuggestions.length > 0) {
         // Use the first suggestion if no exact match
         onSearch(filteredSuggestions[0].symbol);
       }
-      
+
       setQuery('');
       setOpen(false);
     }
   };
 
-  const renderOption = (props: any, option: SymbolInfo) => (
+  const renderOption = (
+    props: React.HTMLAttributes<HTMLLIElement>,
+    option: SymbolInfo
+  ) => (
     <Box component="li" {...props} key={option.symbol}>
       <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
         <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
           {option.symbol}
         </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.875rem' }}>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ fontSize: '0.875rem' }}
+        >
           {option.organ_name}
         </Typography>
         {option.icb_name2 && (
@@ -97,7 +108,11 @@ const SearchBox: React.FC<SearchBoxProps> = ({ onSearch }) => {
       onOpen={() => setOpen(query.length > 0)}
       onClose={() => setOpen(false)}
       options={filteredSuggestions}
-      getOptionLabel={(option) => typeof option === 'string' ? option : `${option.symbol} - ${option.organ_name}`}
+      getOptionLabel={(option) =>
+        typeof option === 'string'
+          ? option
+          : `${option.symbol} - ${option.organ_name}`
+      }
       renderOption={renderOption}
       noOptionsText={renderNoOptions()}
       loading={isLoading}
@@ -146,7 +161,9 @@ const SearchBox: React.FC<SearchBoxProps> = ({ onSearch }) => {
             ),
             endAdornment: (
               <>
-                {isLoading ? <CircularProgress color="inherit" size={20} /> : null}
+                {isLoading ? (
+                  <CircularProgress color="inherit" size={20} />
+                ) : null}
                 {params.InputProps.endAdornment}
               </>
             ),

@@ -17,9 +17,7 @@ const renderWithProviders = (component: React.ReactElement) => {
   return render(
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={theme}>
-        <BrowserRouter>
-          {component}
-        </BrowserRouter>
+        <BrowserRouter>{component}</BrowserRouter>
       </ThemeProvider>
     </QueryClientProvider>
   );
@@ -40,6 +38,8 @@ describe('Header Component', () => {
 
   it('should render search box', () => {
     renderWithProviders(<Header />);
-    expect(screen.getByPlaceholderText('Tìm mã cổ phiếu...')).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText('Tìm mã cổ phiếu...')
+    ).toBeInTheDocument();
   });
 });

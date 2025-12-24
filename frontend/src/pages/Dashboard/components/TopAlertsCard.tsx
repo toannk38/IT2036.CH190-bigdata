@@ -1,0 +1,229 @@
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+  Card,
+  CardContent,
+  Typography,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  ListItemIcon,
+  Skeleton,
+  Box,
+  Chip,
+  Button,
+} from '@mui/material';
+import {
+  Warning,
+  Error,
+  Info,
+  NotificationsActive,
+  TrendingUp,
+} from '@mui/icons-material';
+import { TopAlertsCardProps } from '@/types';
+
+const getPriorityIcon = (priority: string) => {
+  switch (priority.toLowerCase()) {
+    case 'high':
+      return <Error sx={{ color: 'error.main' }} />;
+    case 'medium':
+      return <Warning sx={{ color: 'warning.main' }} />;
+    case 'low':
+      return <Info sx={{ color: 'info.main' }} />;
+    default:
+      return <Info sx={{ color: 'info.main' }} />;
+  }
+};
+
+const getPriorityColor = (priority: string) => {
+  switch (priority.toLowerCase()) {
+    case 'high':
+      return 'error';
+    case 'medium':
+      return 'warning';
+    case 'low':
+      return 'info';
+    default:
+      return 'default';
+  }
+};
+
+const formatTimestamp = (timestamp: string) => {
+  try {
+    const date = new Date(timestamp);
+    return date.toLocaleString('vi-VN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  } catch {
+    return timestamp;
+  }
+};
+
+export const TopAlertsCard: React.FC<TopAlertsCardProps> = ({
+  alerts,
+  loading,
+}) => {
+  const navigate = useNavigate();
+
+  const handleAlertClick = (symbol: string) => {
+    navigate(`/stock/${symbol}`);
+  };
+
+  const handleViewAllAlerts = () => {
+    navigate('/alerts');
+  };
+
+  if (loading) {
+    return (
+      <Card elevation={2}>
+        <CardContent>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            <NotificationsActive sx={{ mr: 1, color: 'primary.main' }} />
+            <Typography variant="h6" component="h2">
+              Cảnh Báo Quan Trọng
+            </Typography>
+          </Box>
+          <List>
+            {Array.from({ length: 5 }).map((_, index) => (
+              <ListItem key={index} divider>
+                <ListItemIcon>
+                  <Skeleton variant="circular" width={24} height={24} />
+                </ListItemIcon>
+                <ListItemText
+                  primary={<Skeleton variant="text" width="70%" />}
+                  secondary={<Skeleton variant="text" width="90%" />}
+                />
+              </ListItem>
+            ))}
+          </List>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!alerts || alerts.length === 0) {
+    return (
+      <Card elevation={2}>
+        <CardContent>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            <NotificationsActive sx={{ mr: 1, color: 'primary.main' }} />
+            <Typography variant="h6" component="h2">
+              Cảnh Báo Quan Trọng
+            </Typography>
+          </Box>
+          <Box sx={{ textAlign: 'center', py: 4 }}>
+            <TrendingUp sx={{ fontSize: 48, color: 'text.secondary', mb: 2 }} />
+            <Typography variant="body1" color="text.secondary">
+              Không có cảnh báo nào
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Thị trường đang ổn định
+            </Typography>
+          </Box>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Card elevation={2}>
+      <CardContent>
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+          <NotificationsActive sx={{ mr: 1, color: 'primary.main' }} />
+          <Typography variant="h6" component="h2">
+            Cảnh Báo Quan Trọng
+          </Typography>
+          <Chip 
+            label={alerts.length} 
+            size="small" 
+            color="primary" 
+            sx={{ ml: 2 }} 
+          />
+        </Box>
+        
+        <List sx={{ p: 0 }}>
+          {alerts.map((alert, index) => (
+            <ListItem 
+              key={`${alert.symbol}-${alert.timestamp}-${index}`} 
+              divider={index < alerts.length - 1}
+              sx={{ px: 0 }}
+            >
+              <ListItemButton
+                onClick={() => handleAlertClick(alert.symbol)}
+                sx={{
+                  borderRadius: 1,
+                  '&:hover': {
+                    backgroundColor: 'action.hover',
+                  },
+                }}
+              >
+                <ListItemIcon sx={{ minWidth: 40 }}>
+                  {getPriorityIcon(alert.priority)}
+                </ListItemIcon>
+                <ListItemText
+                  primary={
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Typography 
+                        variant="subtitle2" 
+                        component="span"
+                        sx={{ fontWeight: 'bold', color: 'primary.main' }}
+                      >
+                        {alert.symbol}
+                      </Typography>
+                      <Chip
+                        label={alert.priority.toUpperCase()}
+                        size="small"
+                        color={getPriorityColor(alert.priority) as any}
+                        sx={{ fontSize: '0.7rem', height: 20 }}
+                      />
+                    </Box>
+                  }
+                  secondary={
+                    <Box>
+                      <Typography 
+                        variant="body2" 
+                        color="text.secondary"
+                        sx={{ 
+                          mb: 0.5,
+                          display: '-webkit-box',
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: 'vertical',
+                          overflow: 'hidden',
+                        }}
+                      >
+                        {alert.message}
+                      </Typography>
+                      <Typography 
+                        variant="caption" 
+                        color="text.secondary"
+                        sx={{ fontSize: '0.75rem' }}
+                      >
+                        {formatTimestamp(alert.timestamp)}
+                      </Typography>
+                    </Box>
+                  }
+                />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+        
+        <Box sx={{ mt: 2, textAlign: 'center' }}>
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={handleViewAllAlerts}
+            sx={{ textTransform: 'none' }}
+          >
+            Xem tất cả cảnh báo
+          </Button>
+        </Box>
+      </CardContent>
+    </Card>
+  );
+};

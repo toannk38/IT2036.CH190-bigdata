@@ -37,7 +37,9 @@ class ApiService {
     // Request interceptor for logging
     this.httpClient.interceptors.request.use(
       (config) => {
-        console.log(`API Request: ${config.method?.toUpperCase()} ${config.url}`);
+        console.log(
+          `API Request: ${config.method?.toUpperCase()} ${config.url}`
+        );
         return config;
       },
       (error) => {
@@ -90,7 +92,9 @@ class ApiService {
         message = 'Dịch vụ tạm thời không khả dụng';
         break;
       default:
-        message = (error.response.data as any)?.message || 'Đã xảy ra lỗi, vui lòng thử lại';
+        message =
+          (error.response.data as { message?: string })?.message ||
+          'Đã xảy ra lỗi, vui lòng thử lại';
     }
 
     return {
@@ -108,9 +112,14 @@ class ApiService {
       return await requestFn();
     } catch (error) {
       const apiError = error as ApiError;
-      
+
       // Don't retry for client errors (4xx) except timeout
-      if (apiError.status && apiError.status >= 400 && apiError.status < 500 && apiError.status !== 408) {
+      if (
+        apiError.status &&
+        apiError.status >= 400 &&
+        apiError.status < 500 &&
+        apiError.status !== 408
+      ) {
         throw error;
       }
 
@@ -121,7 +130,9 @@ class ApiService {
 
       // Wait before retrying
       const delay = this.retryConfig.retryDelay || 1000;
-      await new Promise(resolve => setTimeout(resolve, delay * (4 - retries))); // Exponential backoff
+      await new Promise((resolve) =>
+        setTimeout(resolve, delay * (4 - retries))
+      ); // Exponential backoff
 
       console.log(`Retrying request... (${4 - retries}/3)`);
       return this.retryRequest(requestFn, retries - 1);
