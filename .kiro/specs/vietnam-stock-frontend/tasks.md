@@ -29,18 +29,18 @@ Kế hoạch triển khai ứng dụng frontend React TypeScript cho hệ thốn
     - **Property 1: API Integration and Data Display**
     - **Validates: Requirements 1.2, 1.3, 2.1, 2.2, 2.3, 2.4, 4.1, 4.2, 5.2**
 
-- [-] 3. Tạo custom React hooks cho data fetching
-  - [ ] 3.1 Implement useStockSummary hook với React Query
+- [x] 3. Tạo custom React hooks cho data fetching
+  - [x] 3.1 Implement useStockSummary hook với React Query
     - Tạo hook với caching và error handling
     - Setup stale time và retry configuration
     - _Requirements: 2.1_
 
-  - [ ] 3.2 Implement useAlerts hook với pagination
+  - [x] 3.2 Implement useAlerts hook với pagination
     - Tạo hook hỗ trợ pagination parameters
     - Setup keepPreviousData cho smooth pagination
     - _Requirements: 4.2_
 
-  - [ ] 3.3 Implement useActiveSymbols và useHistoricalData hooks
+  - [x] 3.3 Implement useActiveSymbols và useHistoricalData hooks
     - Tạo hooks cho symbols list và historical data
     - Setup appropriate caching strategies
     - _Requirements: 1.2, 5.2_
@@ -50,13 +50,13 @@ Kế hoạch triển khai ứng dụng frontend React TypeScript cho hệ thốn
     - Test error scenarios và loading states
     - _Requirements: 7.1, 7.2, 7.3_
 
-- [ ] 4. Tạo layout components và navigation
-  - [ ] 4.1 Implement Header component với navigation và search
+- [x] 4. Tạo layout components và navigation
+  - [x] 4.1 Implement Header component với navigation và search
     - Tạo AppBar với logo, navigation menu, và search box
     - Implement responsive navigation với hamburger menu cho mobile
     - _Requirements: 8.1, 8.2, 8.3, 6.4_
 
-  - [ ] 4.2 Implement SearchBox component với autocomplete
+  - [x] 4.2 Implement SearchBox component với autocomplete
     - Tạo search input với suggestions dropdown
     - Implement filtering logic cho symbols và company names
     - Handle search selection và navigation
@@ -66,7 +66,7 @@ Kế hoạch triển khai ứng dụng frontend React TypeScript cho hệ thốn
     - **Property 2: Search Functionality**
     - **Validates: Requirements 3.2, 3.3, 3.4, 3.5**
 
-  - [ ] 4.4 Implement Footer component
+  - [x] 4.4 Implement Footer component
     - Tạo footer với app info và last updated time
     - _Requirements: 8.8_
 
@@ -74,7 +74,7 @@ Kế hoạch triển khai ứng dụng frontend React TypeScript cho hệ thốn
     - **Property 3: Navigation Behavior**
     - **Validates: Requirements 1.5, 4.7, 8.4, 8.5**
 
-- [ ] 5. Checkpoint - Ensure basic layout và navigation hoạt động
+- [-] 5. Checkpoint - Ensure basic layout và navigation hoạt động
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 6. Implement Dashboard page
