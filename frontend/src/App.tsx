@@ -6,6 +6,7 @@ import { Dashboard } from './pages/Dashboard';
 import { StockAnalysis } from './pages/StockAnalysis';
 import { AlertsPage } from './pages/Alerts';
 import { HistoricalData } from './pages/HistoricalData';
+import { ErrorBoundary } from './components/common';
 import './styles/responsive.css';
 
 // Create a theme with responsive breakpoints
@@ -258,21 +259,25 @@ const queryClient = new QueryClient({
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Router>
-          <Layout>
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/stock/:symbol" element={<StockAnalysis />} />
-              <Route path="/alerts" element={<AlertsPage />} />
-              <Route path="/historical" element={<HistoricalData />} />
-            </Routes>
-          </Layout>
-        </Router>
-      </ThemeProvider>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Router>
+            <ErrorBoundary>
+              <Layout>
+                <Routes>
+                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/stock/:symbol" element={<StockAnalysis />} />
+                  <Route path="/alerts" element={<AlertsPage />} />
+                  <Route path="/historical" element={<HistoricalData />} />
+                </Routes>
+              </Layout>
+            </ErrorBoundary>
+          </Router>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 

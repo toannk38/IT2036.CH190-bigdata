@@ -3,6 +3,8 @@ export { useStockSummary } from './useStockSummary';
 export { useAlerts, useTopAlerts } from './useAlerts';
 export { useActiveSymbols } from './useActiveSymbols';
 export { useHistoricalData } from './useHistoricalData';
+export { useRetry } from './useRetry';
+export { useErrorRecovery } from './useErrorRecovery';
 
 // Export hook option types
 export type { UseStockSummaryOptions } from './useStockSummary';
