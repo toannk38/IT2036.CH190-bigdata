@@ -114,7 +114,7 @@ export const FinalScoreChart: React.FC<FinalScoreChartProps> = ({ data }) => {
             });
           },
           label: (context) => {
-            return `Điểm số: ${(context.parsed.y || 0).toFixed(2)}`;
+            return `Điểm số: ${(context.parsed.y || 0).toFixed(1)}`;
           },
         },
       },
@@ -158,7 +158,7 @@ export const FinalScoreChart: React.FC<FinalScoreChartProps> = ({ data }) => {
       },
       y: {
         beginAtZero: true,
-        max: 1,
+        max: 100,
         title: {
           display: true,
           text: 'Điểm Số',
@@ -172,7 +172,7 @@ export const FinalScoreChart: React.FC<FinalScoreChartProps> = ({ data }) => {
         },
         ticks: {
           callback: function (value) {
-            return (value as number).toFixed(2);
+            return (value as number).toFixed(1);
           },
         },
       },

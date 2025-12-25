@@ -34,7 +34,7 @@ describe('Property 1: API Integration and Data Display', () => {
   const stockSummaryGen = fc.record({
     symbol: stockSymbolGen,
     current_price: fc.option(priceDataGen),
-    final_score: fc.option(fc.float({ min: 0, max: 1, noNaN: true })),
+    final_score: fc.option(fc.float({ min: 0, max: 100, noNaN: true })),
     recommendation: fc.option(fc.constantFrom('BUY', 'SELL', 'HOLD')),
     component_scores: fc.option(componentScoresGen),
     alerts: fc.array(alertGen, { maxLength: 5 }),
@@ -101,7 +101,7 @@ describe('Property 1: API Integration and Data Display', () => {
         fc.record({
           symbol: stockSymbolGen,
           timestamp: fc.constant('2024-01-01T00:00:00.000Z'),
-          final_score: fc.float({ min: 0, max: 1, noNaN: true }),
+          final_score: fc.float({ min: 0, max: 100, noNaN: true }),
           recommendation: fc.constantFrom('BUY', 'SELL', 'HOLD'),
           type: fc.string({ minLength: 1 }),
           priority: fc.constantFrom('high', 'medium', 'low'),
@@ -128,7 +128,7 @@ describe('Property 1: API Integration and Data Display', () => {
           expect(['BUY', 'SELL', 'HOLD']).toContain(alert.recommendation);
           expect(['high', 'medium', 'low']).toContain(alert.priority);
           expect(alert.final_score).toBeGreaterThanOrEqual(0);
-          expect(alert.final_score).toBeLessThanOrEqual(1);
+          expect(alert.final_score).toBeLessThanOrEqual(100);
         });
       }),
       { numRuns: 100 }

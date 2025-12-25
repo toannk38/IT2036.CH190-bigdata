@@ -243,7 +243,7 @@ const AlertsTable: React.FC<AlertsTableProps> = ({ alerts, loading }) => {
               </TableCell>
               <TableCell>
                 <Typography variant="body2" fontWeight="medium">
-                  {alert.final_score ? alert.final_score.toFixed(2) : 'N/A'}
+                  {alert.final_score ? alert.final_score.toFixed(1) : 'N/A'}
                 </Typography>
               </TableCell>
               <TableCell>

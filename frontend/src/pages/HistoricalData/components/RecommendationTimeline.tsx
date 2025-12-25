@@ -153,7 +153,7 @@ export const RecommendationTimeline: React.FC<RecommendationTimelineProps> = ({
                         variant="filled"
                       />
                       <Typography variant="body2" color="text.secondary">
-                        Điểm: {point.final_score.toFixed(3)}
+                        Điểm: {point.final_score.toFixed(1)}
                       </Typography>
                     </Box>
 

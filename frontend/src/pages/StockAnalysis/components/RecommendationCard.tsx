@@ -64,24 +64,24 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({
   // Format final score
   const formatScore = (score?: number): string => {
     if (score === undefined || score === null) return 'N/A';
-    return (score * 100).toFixed(1);
+    return score.toFixed(1);
   };
 
   // Get score color based on value
   const getScoreColor = (score?: number): string => {
     if (score === undefined || score === null) return '#9e9e9e';
-    if (score >= 0.7) return COLORS.BUY;
-    if (score >= 0.4) return COLORS.HOLD;
+    if (score >= 70) return COLORS.BUY;
+    if (score >= 40) return COLORS.HOLD;
     return COLORS.SELL;
   };
 
   // Get score level description
   const getScoreLevel = (score?: number): string => {
     if (score === undefined || score === null) return 'Không xác định';
-    if (score >= 0.8) return 'Rất tích cực';
-    if (score >= 0.6) return 'Tích cực';
-    if (score >= 0.4) return 'Trung tính';
-    if (score >= 0.2) return 'Tiêu cực';
+    if (score >= 80) return 'Rất tích cực';
+    if (score >= 60) return 'Tích cực';
+    if (score >= 40) return 'Trung tính';
+    if (score >= 20) return 'Tiêu cực';
     return 'Rất tiêu cực';
   };
 
@@ -139,7 +139,7 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({
 
               <LinearProgress
                 variant="determinate"
-                value={finalScore * 100}
+                value={finalScore}
                 sx={{
                   height: 8,
                   borderRadius: 4,
