@@ -2,23 +2,7 @@ import React from 'react';
 import { Card, CardContent, Typography, Box, Chip } from '@mui/material';
 import { Schedule, CheckCircle, Refresh } from '@mui/icons-material';
 import { LastUpdatedInfoProps } from '@/types';
-
-const formatTimestamp = (timestamp: string) => {
-  try {
-    const date = new Date(timestamp);
-    return date.toLocaleString('vi-VN', {
-      weekday: 'long',
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-    });
-  } catch {
-    return timestamp;
-  }
-};
+import { formatTimestampExtended } from '@/utils';
 
 const getTimeAgo = (timestamp: string) => {
   try {
@@ -102,7 +86,7 @@ export const LastUpdatedInfo: React.FC<LastUpdatedInfoProps> = ({
               mb: 1,
             }}
           >
-            {formatTimestamp(currentTimestamp)}
+            {formatTimestampExtended(currentTimestamp)}
           </Typography>
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>

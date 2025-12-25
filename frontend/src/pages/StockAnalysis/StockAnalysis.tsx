@@ -13,6 +13,7 @@ import { ArrowBack, Refresh } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useStockSummary } from '@/hooks/useStockSummary';
 import { StockAnalysisProps } from '@/types';
+import { formatTimestamp } from '@/utils';
 import {
   PriceInfoCard,
   RecommendationCard,
@@ -175,7 +176,7 @@ const StockAnalysis: React.FC<StockAnalysisProps> = () => {
         {stockSummary.last_updated && (
           <Typography variant="body2" color="text.secondary">
             Cập nhật lần cuối:{' '}
-            {new Date(stockSummary.last_updated).toLocaleString('vi-VN')}
+            {formatTimestamp(stockSummary.last_updated)}
           </Typography>
         )}
       </Box>

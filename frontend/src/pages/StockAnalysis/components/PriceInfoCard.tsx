@@ -14,6 +14,13 @@ import {
   VolumeUp,
 } from '@mui/icons-material';
 import { PriceInfoCardProps } from '@/types';
+import {
+  formatPrice,
+  formatVolume,
+  formatTimestamp,
+  formatPriceChange,
+  formatPercentageChange,
+} from '@/utils';
 
 const PriceInfoCard: React.FC<PriceInfoCardProps> = ({ priceData }) => {
   if (!priceData) {
@@ -32,45 +39,17 @@ const PriceInfoCard: React.FC<PriceInfoCardProps> = ({ priceData }) => {
   }
 
   // Format number with Vietnamese locale
-  const formatPrice = (price: number): string => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price);
-  };
-
-  // Format volume with abbreviated notation
-  const formatVolume = (volume: number): string => {
-    if (volume >= 1000000) {
-      return `${(volume / 1000000).toFixed(1)}M`;
-    } else if (volume >= 1000) {
-      return `${(volume / 1000).toFixed(1)}K`;
-    }
-    return volume.toLocaleString('vi-VN');
-  };
+  // API returns price in thousands VND, so multiply by 1000 to get actual VND
+  // Using centralized formatter functions for consistency
 
   // Calculate price change and percentage
   const priceChange = priceData.close - priceData.open;
   const priceChangePercent = (priceChange / priceData.open) * 100;
   const isPositive = priceChange >= 0;
 
-  // Format timestamp
-  const formatTimestamp = (timestamp: string): string => {
-    try {
-      const date = new Date(timestamp);
-      return date.toLocaleString('vi-VN', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-      });
-    } catch (error) {
-      return timestamp;
-    }
-  };
+  // Format price change with proper styling
+  const formattedPriceChange = formatPriceChange(priceChange);
+  const formattedPercentChange = formatPercentageChange(priceChangePercent);
 
   return (
     <Card>
@@ -90,12 +69,12 @@ const PriceInfoCard: React.FC<PriceInfoCardProps> = ({ priceData }) => {
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Chip
               icon={isPositive ? <TrendingUp /> : <TrendingDown />}
-              label={`${isPositive ? '+' : ''}${formatPrice(priceChange)}`}
-              color={isPositive ? 'success' : 'error'}
+              label={formattedPriceChange.value}
+              color={formattedPriceChange.color as 'success' | 'error'}
               size="small"
             />
             <Chip
-              label={`${isPositive ? '+' : ''}${priceChangePercent.toFixed(2)}%`}
+              label={formattedPercentChange}
               color={isPositive ? 'success' : 'error'}
               variant="outlined"
               size="small"

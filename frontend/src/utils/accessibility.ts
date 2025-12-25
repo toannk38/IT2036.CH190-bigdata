@@ -1,7 +1,9 @@
+import { formatPrice } from './formatters';
+
 // ARIA label generators
 export const generateAriaLabel = {
   stockPrice: (symbol: string, price: number) =>
-    `Giá cổ phiếu ${symbol}: ${price.toLocaleString('vi-VN')} VND`,
+    `Giá cổ phiếu ${symbol}: ${formatPrice(price)}`,
 
   recommendation: (symbol: string, recommendation: string) =>
     `Khuyến nghị cho ${symbol}: ${recommendation}`,
