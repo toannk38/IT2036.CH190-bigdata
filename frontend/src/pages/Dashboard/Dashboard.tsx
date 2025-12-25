@@ -3,51 +3,22 @@ import {
   Container,
   Box,
   Typography,
-  useTheme,
-  useMediaQuery,
 } from '@mui/material';
 import { useActiveSymbols } from '@/hooks/useActiveSymbols';
 import { useTopAlerts } from '@/hooks/useAlerts';
 import { ActiveSymbolsList } from './components/ActiveSymbolsList';
 import { TopAlertsCard } from './components/TopAlertsCard';
 import { LastUpdatedInfo } from './components/LastUpdatedInfo';
-import {
-  getResponsiveSpacing,
-  responsiveFontSizes,
-} from '../../utils/responsive';
 
 export const Dashboard: React.FC = () => {
   const { data: symbolsResponse, isLoading: symbolsLoading } =
     useActiveSymbols();
   const { data: alertsResponse, isLoading: alertsLoading } = useTopAlerts(5);
 
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const responsiveSpacing = getResponsiveSpacing(theme);
-
   return (
-    <Container
-      maxWidth="xl"
-      sx={{
-        py: {
-          xs: responsiveSpacing.py.xs,
-          sm: responsiveSpacing.py.sm,
-          md: responsiveSpacing.py.md,
-        },
-        px: {
-          xs: 1,
-          sm: 2,
-          md: 3,
-        },
-      }}
-    >
+    <Container maxWidth="xl" sx={{ py: 4 }}>
       {/* Header */}
-      <Box
-        sx={{
-          mb: { xs: 2, sm: 3, md: 4 },
-          textAlign: { xs: 'center', md: 'left' },
-        }}
-      >
+      <Box sx={{ mb: 4 }}>
         <Typography
           variant="h4"
           component="h1"
@@ -55,19 +26,11 @@ export const Dashboard: React.FC = () => {
           sx={{
             fontWeight: 'bold',
             color: 'primary.main',
-            ...responsiveFontSizes.h1,
           }}
         >
-          {isMobile ? 'VSA Dashboard' : 'Vietnam Stock AI Dashboard'}
+          Vietnam Stock AI Dashboard
         </Typography>
-        <Typography
-          variant="subtitle1"
-          color="text.secondary"
-          sx={{
-            ...responsiveFontSizes.body1,
-            display: { xs: 'none', sm: 'block' },
-          }}
-        >
+        <Typography variant="subtitle1" color="text.secondary">
           Tổng quan thị trường và phân tích cổ phiếu
         </Typography>
       </Box>
@@ -75,33 +38,28 @@ export const Dashboard: React.FC = () => {
       {/* Main Content */}
       <Box
         sx={{
-          display: 'flex',
-          flexDirection: { xs: 'column', lg: 'row' },
-          gap: { xs: 2, sm: 3 },
-          alignItems: { xs: 'stretch', lg: 'flex-start' },
+          display: 'grid',
+          gridTemplateColumns: '1fr 350px',
+          gap: 3,
+          alignItems: 'start',
         }}
       >
-        {/* Left Column - Active Symbols */}
-        <Box
-          sx={{
-            flex: { lg: '1 1 66%' },
-            minWidth: 0, // Prevent flex item from overflowing
-          }}
-        >
+        {/* Left Column - Active Symbols (Main Content) */}
+        <Box>
           <ActiveSymbolsList
             symbols={symbolsResponse?.symbols}
             loading={symbolsLoading}
           />
         </Box>
 
-        {/* Right Column - Sidebar */}
+        {/* Right Column - Sidebar (Alerts Panel) */}
         <Box
           sx={{
-            flex: { lg: '1 1 34%' },
             display: 'flex',
             flexDirection: 'column',
-            gap: { xs: 2, sm: 3 },
-            minWidth: 0, // Prevent flex item from overflowing
+            gap: 3,
+            position: 'sticky',
+            top: 20,
           }}
         >
           <TopAlertsCard

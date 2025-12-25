@@ -10,20 +10,15 @@ import {
   Skeleton,
   Box,
   Chip,
-  useTheme,
-  useMediaQuery,
 } from '@mui/material';
 import { TrendingUp, Business } from '@mui/icons-material';
 import { ActiveSymbolsListProps } from '@/types';
-import { touchTargetStyles } from '../../../utils/responsive';
 
 export const ActiveSymbolsList: React.FC<ActiveSymbolsListProps> = ({
   symbols,
   loading,
 }) => {
   const navigate = useNavigate();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const handleSymbolClick = (symbol: string) => {
     navigate(`/stock/${symbol}`);
@@ -41,7 +36,7 @@ export const ActiveSymbolsList: React.FC<ActiveSymbolsListProps> = ({
           </Box>
           <List>
             {Array.from({ length: 8 }).map((_, index) => (
-              <ListItem key={index} divider sx={touchTargetStyles.listItem}>
+              <ListItem key={index} divider>
                 <ListItemText
                   primary={<Skeleton variant="text" width="60%" />}
                   secondary={<Skeleton variant="text" width="80%" />}
@@ -87,10 +82,7 @@ export const ActiveSymbolsList: React.FC<ActiveSymbolsListProps> = ({
             label={symbols.length}
             size="small"
             color="primary"
-            sx={{
-              ml: 2,
-              ...touchTargetStyles.chip,
-            }}
+            sx={{ ml: 2 }}
           />
         </Box>
 
@@ -102,8 +94,9 @@ export const ActiveSymbolsList: React.FC<ActiveSymbolsListProps> = ({
               sm: 'repeat(2, 1fr)',
               md: 'repeat(3, 1fr)',
               lg: 'repeat(4, 1fr)',
+              xl: 'repeat(5, 1fr)',
             },
-            gap: { xs: 1, sm: 1.5 },
+            gap: 2,
           }}
         >
           {symbols.map((symbol) => (
@@ -113,11 +106,12 @@ export const ActiveSymbolsList: React.FC<ActiveSymbolsListProps> = ({
                 sx={{
                   cursor: 'pointer',
                   transition: 'all 0.2s ease-in-out',
-                  minHeight: { xs: '120px', sm: '100px' }, // Ensure adequate touch area
+                  height: '140px',
                   '&:hover': {
                     elevation: 4,
                     transform: 'translateY(-2px)',
                     borderColor: 'primary.main',
+                    boxShadow: 3,
                   },
                   '&:active': {
                     transform: 'translateY(0px)',
@@ -127,50 +121,52 @@ export const ActiveSymbolsList: React.FC<ActiveSymbolsListProps> = ({
               >
                 <CardContent
                   sx={{
-                    p: { xs: 2, sm: 1.5 },
-                    '&:last-child': { pb: { xs: 2, sm: 1.5 } },
-                    minHeight: { xs: '88px', sm: '68px' }, // Ensure content area is touchable
+                    p: 2,
+                    height: '100%',
                     display: 'flex',
                     flexDirection: 'column',
-                    justifyContent: 'center',
+                    justifyContent: 'space-between',
+                    '&:last-child': { pb: 2 },
                   }}
                 >
-                  <Typography
-                    variant="h6"
-                    component="div"
-                    sx={{
-                      fontWeight: 'bold',
-                      color: 'primary.main',
-                      fontSize: { xs: '1.1rem', sm: '1rem' },
-                      mb: 0.5,
-                    }}
-                  >
-                    {symbol.symbol}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{
-                      fontSize: { xs: '0.875rem', sm: '0.75rem' },
-                      lineHeight: 1.3,
-                      display: '-webkit-box',
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: 'vertical',
-                      overflow: 'hidden',
-                      mb: symbol.icb_name2 ? 1 : 0,
-                    }}
-                  >
-                    {symbol.organ_name}
-                  </Typography>
-                  {symbol.icb_name2 && !isMobile && (
+                  <Box>
+                    <Typography
+                      variant="h6"
+                      component="div"
+                      sx={{
+                        fontWeight: 'bold',
+                        color: 'primary.main',
+                        fontSize: '1.1rem',
+                        mb: 1,
+                      }}
+                    >
+                      {symbol.symbol}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{
+                        fontSize: '0.8rem',
+                        lineHeight: 1.3,
+                        display: '-webkit-box',
+                        WebkitLineClamp: 3,
+                        WebkitBoxOrient: 'vertical',
+                        overflow: 'hidden',
+                        mb: 1,
+                      }}
+                    >
+                      {symbol.organ_name}
+                    </Typography>
+                  </Box>
+                  {symbol.icb_name2 && (
                     <Chip
                       label={symbol.icb_name2}
                       size="small"
                       variant="outlined"
                       sx={{
                         fontSize: '0.7rem',
-                        height: { xs: 24, sm: 20 },
-                        ...touchTargetStyles.chip,
+                        height: 24,
+                        alignSelf: 'flex-start',
                       }}
                     />
                   )}

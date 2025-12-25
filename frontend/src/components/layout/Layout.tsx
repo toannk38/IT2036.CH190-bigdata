@@ -1,9 +1,8 @@
 import React from 'react';
-import { Box, Container, useTheme } from '@mui/material';
+import { Box, Container } from '@mui/material';
 import Header from './Header';
 import Footer from './Footer';
 import Breadcrumb from './Breadcrumb';
-import { getResponsiveSpacing } from '../../utils/responsive';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -11,9 +10,6 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ children, lastUpdated }) => {
-  const theme = useTheme();
-  const responsiveSpacing = getResponsiveSpacing(theme);
-
   return (
     <Box
       sx={{
@@ -29,24 +25,12 @@ const Layout: React.FC<LayoutProps> = ({ children, lastUpdated }) => {
         sx={{
           flexGrow: 1,
           width: '100%',
-          py: {
-            xs: responsiveSpacing.py.xs,
-            sm: responsiveSpacing.py.sm,
-            md: responsiveSpacing.py.md,
-          },
-          px: {
-            xs: 0, // Let Container handle padding
-          },
+          py: 3,
         }}
       >
         <Container
           maxWidth="xl"
           sx={{
-            px: {
-              xs: 1,
-              sm: 2,
-              md: 3,
-            },
             width: '100%',
           }}
         >
