@@ -22,6 +22,7 @@ import {
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import SearchBox from './SearchBox';
+import { touchTargets } from '../../utils/responsive';
 
 interface HeaderProps {
   onSearch?: (symbol: string) => void;
@@ -37,6 +38,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isTablet = useMediaQuery(theme.breakpoints.between('md', 'lg'));
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -65,7 +67,13 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
 
   const renderDesktopNavigation = () => (
     <Box
-      sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 2 }}
+      sx={{ 
+        display: { xs: 'none', md: 'flex' }, 
+        alignItems: 'center', 
+        gap: { md: 1, lg: 2 },
+        flexGrow: 1,
+        justifyContent: 'center',
+      }}
     >
       {navigationItems.map((item) => (
         <Box
@@ -75,10 +83,11 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
             display: 'flex',
             alignItems: 'center',
             gap: 1,
-            px: 2,
+            px: { md: 1.5, lg: 2 },
             py: 1,
             borderRadius: 1,
             cursor: 'pointer',
+            minHeight: touchTargets.minimum,
             backgroundColor:
               location.pathname === item.path
                 ? 'rgba(255, 255, 255, 0.1)'
@@ -86,10 +95,18 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
             '&:hover': {
               backgroundColor: 'rgba(255, 255, 255, 0.05)',
             },
+            transition: 'background-color 0.2s ease',
           }}
         >
           {item.icon}
-          <Typography variant="body1" color="inherit">
+          <Typography 
+            variant="body1" 
+            color="inherit"
+            sx={{
+              fontSize: { md: '0.875rem', lg: '1rem' },
+              display: { md: isTablet ? 'none' : 'block' },
+            }}
+          >
             {item.label}
           </Typography>
         </Box>
@@ -104,19 +121,45 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
       onClose={() => setMobileMenuOpen(false)}
       sx={{
         '& .MuiDrawer-paper': {
-          width: 250,
+          width: { xs: '280px', sm: '320px' },
+          boxSizing: 'border-box',
         },
       }}
     >
+      <Box sx={{ pt: 2 }}>
+        <Typography
+          variant="h6"
+          sx={{
+            px: 2,
+            pb: 2,
+            color: 'primary.main',
+            fontWeight: 'bold',
+          }}
+        >
+          Vietnam Stock AI
+        </Typography>
+      </Box>
       <List>
         {navigationItems.map((item) => (
           <ListItem key={item.path} disablePadding>
             <ListItemButton
               onClick={() => handleMenuClick(item.path)}
               selected={location.pathname === item.path}
+              sx={{
+                minHeight: touchTargets.recommended,
+                px: 3,
+              }}
             >
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.label} />
+              <ListItemIcon sx={{ minWidth: 40 }}>
+                {item.icon}
+              </ListItemIcon>
+              <ListItemText 
+                primary={item.label}
+                primaryTypographyProps={{
+                  fontSize: '1rem',
+                  fontWeight: location.pathname === item.path ? 600 : 400,
+                }}
+              />
             </ListItemButton>
           </ListItem>
         ))}
@@ -126,8 +169,19 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
 
   return (
     <>
-      <AppBar position="static" sx={{ backgroundColor: '#1976d2' }}>
-        <Toolbar>
+      <AppBar 
+        position="static" 
+        sx={{ 
+          backgroundColor: '#1976d2',
+          boxShadow: theme.shadows[2],
+        }}
+      >
+        <Toolbar
+          sx={{
+            minHeight: { xs: '56px', sm: '64px' },
+            px: { xs: 1, sm: 2, md: 3 },
+          }}
+        >
           {/* Mobile menu button */}
           {isMobile && (
             <IconButton
@@ -135,7 +189,11 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
               color="inherit"
               aria-label="menu"
               onClick={toggleMobileMenu}
-              sx={{ mr: 2 }}
+              sx={{ 
+                mr: { xs: 1, sm: 2 },
+                minWidth: touchTargets.minimum,
+                minHeight: touchTargets.minimum,
+              }}
             >
               <MenuIcon />
             </IconButton>
@@ -146,24 +204,29 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
             variant="h6"
             component="div"
             sx={{
-              flexGrow: 0,
-              mr: 4,
+              flexGrow: { xs: 1, md: 0 },
+              mr: { md: 2, lg: 4 },
               cursor: 'pointer',
               fontWeight: 'bold',
+              fontSize: {
+                xs: '1rem',
+                sm: '1.125rem',
+                md: '1.25rem',
+              },
+              textAlign: { xs: 'center', md: 'left' },
             }}
             onClick={() => navigate('/')}
           >
-            Vietnam Stock AI
+            {isMobile ? 'VSA' : 'Vietnam Stock AI'}
           </Typography>
 
           {/* Desktop navigation */}
           {renderDesktopNavigation()}
 
-          {/* Spacer */}
-          <Box sx={{ flexGrow: 1 }} />
-
           {/* Search box */}
-          <SearchBox onSearch={handleSearch} />
+          <Box sx={{ flexShrink: 0 }}>
+            <SearchBox onSearch={handleSearch} />
+          </Box>
         </Toolbar>
       </AppBar>
 

@@ -23,7 +23,9 @@ interface AlertsTableProps {
 const AlertsTable: React.FC<AlertsTableProps> = ({ alerts, loading }) => {
   const navigate = useNavigate();
 
-  const getPriorityColor = (priority: string): 'error' | 'warning' | 'success' => {
+  const getPriorityColor = (
+    priority: string
+  ): 'error' | 'warning' | 'success' => {
     switch (priority.toLowerCase()) {
       case 'high':
         return 'error';
@@ -36,7 +38,9 @@ const AlertsTable: React.FC<AlertsTableProps> = ({ alerts, loading }) => {
     }
   };
 
-  const getRecommendationColor = (recommendation: string): 'error' | 'warning' | 'success' => {
+  const getRecommendationColor = (
+    recommendation: string
+  ): 'error' | 'warning' | 'success' => {
     switch (recommendation.toUpperCase()) {
       case 'SELL':
         return 'error';
@@ -72,13 +76,17 @@ const AlertsTable: React.FC<AlertsTableProps> = ({ alerts, loading }) => {
   const sortedAlerts = [...alerts].sort((a, b) => {
     // Priority sorting
     const priorityOrder = { high: 3, medium: 2, low: 1 };
-    const aPriority = priorityOrder[a.priority.toLowerCase() as keyof typeof priorityOrder] || 1;
-    const bPriority = priorityOrder[b.priority.toLowerCase() as keyof typeof priorityOrder] || 1;
-    
+    const aPriority =
+      priorityOrder[a.priority.toLowerCase() as keyof typeof priorityOrder] ||
+      1;
+    const bPriority =
+      priorityOrder[b.priority.toLowerCase() as keyof typeof priorityOrder] ||
+      1;
+
     if (aPriority !== bPriority) {
       return bPriority - aPriority; // Higher priority first
     }
-    
+
     // Timestamp sorting (newest first)
     return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
   });
@@ -101,13 +109,27 @@ const AlertsTable: React.FC<AlertsTableProps> = ({ alerts, loading }) => {
           <TableBody>
             {Array.from({ length: 5 }).map((_, index) => (
               <TableRow key={index}>
-                <TableCell><Skeleton width={60} /></TableCell>
-                <TableCell><Skeleton width={80} /></TableCell>
-                <TableCell><Skeleton width={70} /></TableCell>
-                <TableCell><Skeleton width={200} /></TableCell>
-                <TableCell><Skeleton width={60} /></TableCell>
-                <TableCell><Skeleton width={50} /></TableCell>
-                <TableCell><Skeleton width={120} /></TableCell>
+                <TableCell>
+                  <Skeleton width={60} />
+                </TableCell>
+                <TableCell>
+                  <Skeleton width={80} />
+                </TableCell>
+                <TableCell>
+                  <Skeleton width={70} />
+                </TableCell>
+                <TableCell>
+                  <Skeleton width={200} />
+                </TableCell>
+                <TableCell>
+                  <Skeleton width={60} />
+                </TableCell>
+                <TableCell>
+                  <Skeleton width={50} />
+                </TableCell>
+                <TableCell>
+                  <Skeleton width={120} />
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -173,7 +195,7 @@ const AlertsTable: React.FC<AlertsTableProps> = ({ alerts, loading }) => {
         </TableHead>
         <TableBody>
           {sortedAlerts.map((alert, index) => (
-            <TableRow 
+            <TableRow
               key={`${alert.symbol}-${alert.timestamp}-${index}`}
               hover
               sx={{ '&:hover': { backgroundColor: 'action.hover' } }}
@@ -196,9 +218,7 @@ const AlertsTable: React.FC<AlertsTableProps> = ({ alerts, loading }) => {
                 </Link>
               </TableCell>
               <TableCell>
-                <Typography variant="body2">
-                  {alert.type}
-                </Typography>
+                <Typography variant="body2">{alert.type}</Typography>
               </TableCell>
               <TableCell>
                 <Chip

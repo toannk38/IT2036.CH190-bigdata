@@ -34,15 +34,17 @@ interface ComponentScoresChartProps {
   data: HistoricalDataPoint[];
 }
 
-export const ComponentScoresChart: React.FC<ComponentScoresChartProps> = ({ data }) => {
+export const ComponentScoresChart: React.FC<ComponentScoresChartProps> = ({
+  data,
+}) => {
   const chartRef = React.useRef<ChartJS<'line'>>(null);
 
   if (!data || data.length === 0) {
     return (
-      <Box 
-        display="flex" 
-        justifyContent="center" 
-        alignItems="center" 
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
         height={400}
         bgcolor="grey.50"
         borderRadius={1}
@@ -62,11 +64,11 @@ export const ComponentScoresChart: React.FC<ComponentScoresChartProps> = ({ data
 
   // Prepare chart data with multiple lines for each component score
   const chartData = {
-    labels: data.map(point => new Date(point.timestamp)),
+    labels: data.map((point) => new Date(point.timestamp)),
     datasets: [
       {
         label: 'Điểm Kỹ Thuật',
-        data: data.map(point => ({
+        data: data.map((point) => ({
           x: new Date(point.timestamp),
           y: point.components.technical_score,
         })),
@@ -83,7 +85,7 @@ export const ComponentScoresChart: React.FC<ComponentScoresChartProps> = ({ data
       },
       {
         label: 'Điểm Rủi Ro',
-        data: data.map(point => ({
+        data: data.map((point) => ({
           x: new Date(point.timestamp),
           y: point.components.risk_score,
         })),
@@ -100,7 +102,7 @@ export const ComponentScoresChart: React.FC<ComponentScoresChartProps> = ({ data
       },
       {
         label: 'Điểm Tâm Lý',
-        data: data.map(point => ({
+        data: data.map((point) => ({
           x: new Date(point.timestamp),
           y: point.components.sentiment_score,
         })),
@@ -132,14 +134,15 @@ export const ComponentScoresChart: React.FC<ComponentScoresChartProps> = ({ data
           usePointStyle: true,
           padding: 20,
           generateLabels: (chart) => {
-            const original = ChartJS.defaults.plugins.legend.labels.generateLabels;
+            const original =
+              ChartJS.defaults.plugins.legend.labels.generateLabels;
             const labels = original.call(this, chart);
-            
+
             // Add custom styling to legend labels
             labels.forEach((label) => {
               label.pointStyle = 'circle';
             });
-            
+
             return labels;
           },
         },
@@ -222,7 +225,7 @@ export const ComponentScoresChart: React.FC<ComponentScoresChartProps> = ({ data
           color: 'rgba(0, 0, 0, 0.1)',
         },
         ticks: {
-          callback: function(value) {
+          callback: function (value) {
             return (value as number).toFixed(2);
           },
         },
@@ -238,19 +241,20 @@ export const ComponentScoresChart: React.FC<ComponentScoresChartProps> = ({ data
   return (
     <Box>
       <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
-        <Button 
-          variant="outlined" 
-          size="small" 
-          onClick={resetZoom}
-        >
+        <Button variant="outlined" size="small" onClick={resetZoom}>
           Đặt lại zoom
         </Button>
-        <Typography variant="body2" color="text.secondary" sx={{ alignSelf: 'center' }}>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ alignSelf: 'center' }}
+        >
           Sử dụng chuột để zoom và kéo để di chuyển biểu đồ
         </Typography>
       </Stack>
       <Box height={400}>
-        <Line ref={chartRef as any} data={chartData} options={options} />
+        {/* @ts-expect-error Chart.js type compatibility issue */}
+        <Line ref={chartRef} data={chartData} options={options} />
       </Box>
     </Box>
   );

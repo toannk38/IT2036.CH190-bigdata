@@ -189,16 +189,16 @@ Kế hoạch triển khai ứng dụng frontend React TypeScript cho hệ thốn
     - **Property 10: Interactive Chart Features**
     - **Validates: Requirements 5.6, 5.7**
 
-- [-] 10. Checkpoint - Ensure all pages hoạt động correctly
+- [x] 10. Checkpoint - Ensure all pages hoạt động correctly
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 11. Implement responsive design và mobile optimization
-  - [ ] 11.1 Add responsive breakpoints và media queries
+- [x] 11. Implement responsive design và mobile optimization
+  - [x] 11.1 Add responsive breakpoints và media queries
     - Implement CSS breakpoints cho desktop, tablet, mobile
     - Test layout adaptation across screen sizes
     - _Requirements: 6.1, 6.2, 6.3_
 
-  - [ ] 11.2 Optimize touch targets cho mobile
+  - [x] 11.2 Optimize touch targets cho mobile
     - Ensure buttons và links có minimum 44px touch targets
     - _Requirements: 6.6_
 

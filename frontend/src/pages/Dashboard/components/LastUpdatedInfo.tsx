@@ -1,16 +1,6 @@
 import React from 'react';
-import {
-  Card,
-  CardContent,
-  Typography,
-  Box,
-  Chip,
-} from '@mui/material';
-import {
-  Schedule,
-  CheckCircle,
-  Refresh,
-} from '@mui/icons-material';
+import { Card, CardContent, Typography, Box, Chip } from '@mui/material';
+import { Schedule, CheckCircle, Refresh } from '@mui/icons-material';
 import { LastUpdatedInfoProps } from '@/types';
 
 const formatTimestamp = (timestamp: string) => {
@@ -34,8 +24,10 @@ const getTimeAgo = (timestamp: string) => {
   try {
     const date = new Date(timestamp);
     const now = new Date();
-    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
-    
+    const diffInMinutes = Math.floor(
+      (now.getTime() - date.getTime()) / (1000 * 60)
+    );
+
     if (diffInMinutes < 1) {
       return 'Vừa xong';
     } else if (diffInMinutes < 60) {
@@ -54,12 +46,14 @@ const getTimeAgo = (timestamp: string) => {
 
 const getStatusColor = (timestamp?: string) => {
   if (!timestamp) return 'default';
-  
+
   try {
     const date = new Date(timestamp);
     const now = new Date();
-    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
-    
+    const diffInMinutes = Math.floor(
+      (now.getTime() - date.getTime()) / (1000 * 60)
+    );
+
     if (diffInMinutes < 30) return 'success'; // Fresh data
     if (diffInMinutes < 120) return 'warning'; // Somewhat stale
     return 'error'; // Very stale
@@ -70,7 +64,7 @@ const getStatusColor = (timestamp?: string) => {
 
 const getStatusIcon = (timestamp?: string) => {
   const color = getStatusColor(timestamp);
-  
+
   switch (color) {
     case 'success':
       return <CheckCircle sx={{ color: 'success.main' }} />;
@@ -99,40 +93,51 @@ export const LastUpdatedInfo: React.FC<LastUpdatedInfoProps> = ({
             Cập Nhật Cuối
           </Typography>
         </Box>
-        
+
         <Box sx={{ mb: 2 }}>
-          <Typography 
-            variant="body1" 
-            sx={{ 
+          <Typography
+            variant="body1"
+            sx={{
               fontWeight: 'medium',
               mb: 1,
             }}
           >
             {formatTimestamp(currentTimestamp)}
           </Typography>
-          
+
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Chip
               label={getTimeAgo(currentTimestamp)}
               size="small"
-              color={statusColor as any}
+              color={
+                statusColor as
+                  | 'default'
+                  | 'primary'
+                  | 'secondary'
+                  | 'error'
+                  | 'info'
+                  | 'success'
+                  | 'warning'
+              }
               variant="outlined"
             />
           </Box>
         </Box>
-        
-        <Box sx={{ 
-          p: 2, 
-          backgroundColor: 'grey.50', 
-          borderRadius: 1,
-          border: '1px solid',
-          borderColor: 'grey.200',
-        }}>
-          <Typography 
-            variant="body2" 
+
+        <Box
+          sx={{
+            p: 2,
+            backgroundColor: 'grey.50',
+            borderRadius: 1,
+            border: '1px solid',
+            borderColor: 'grey.200',
+          }}
+        >
+          <Typography
+            variant="body2"
             color="text.secondary"
-            sx={{ 
-              display: 'flex', 
+            sx={{
+              display: 'flex',
               alignItems: 'center',
               fontSize: '0.85rem',
             }}
@@ -141,18 +146,20 @@ export const LastUpdatedInfo: React.FC<LastUpdatedInfoProps> = ({
             Dữ liệu được cập nhật tự động từ hệ thống backend
           </Typography>
         </Box>
-        
+
         {statusColor === 'error' && (
-          <Box sx={{ 
-            mt: 2,
-            p: 1.5,
-            backgroundColor: 'error.light',
-            borderRadius: 1,
-            border: '1px solid',
-            borderColor: 'error.main',
-          }}>
-            <Typography 
-              variant="body2" 
+          <Box
+            sx={{
+              mt: 2,
+              p: 1.5,
+              backgroundColor: 'error.light',
+              borderRadius: 1,
+              border: '1px solid',
+              borderColor: 'error.main',
+            }}
+          >
+            <Typography
+              variant="body2"
               color="error.dark"
               sx={{ fontSize: '0.85rem' }}
             >
@@ -160,18 +167,20 @@ export const LastUpdatedInfo: React.FC<LastUpdatedInfoProps> = ({
             </Typography>
           </Box>
         )}
-        
+
         {statusColor === 'warning' && (
-          <Box sx={{ 
-            mt: 2,
-            p: 1.5,
-            backgroundColor: 'warning.light',
-            borderRadius: 1,
-            border: '1px solid',
-            borderColor: 'warning.main',
-          }}>
-            <Typography 
-              variant="body2" 
+          <Box
+            sx={{
+              mt: 2,
+              p: 1.5,
+              backgroundColor: 'warning.light',
+              borderRadius: 1,
+              border: '1px solid',
+              borderColor: 'warning.main',
+            }}
+          >
+            <Typography
+              variant="body2"
               color="warning.dark"
               sx={{ fontSize: '0.85rem' }}
             >

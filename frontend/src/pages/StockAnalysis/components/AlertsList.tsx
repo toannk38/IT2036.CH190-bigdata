@@ -74,12 +74,12 @@ const AlertsList: React.FC<AlertsListProps> = ({ alerts }) => {
   // Get alert type display name
   const getAlertTypeDisplay = (type: string): string => {
     const typeMap: { [key: string]: string } = {
-      'price_movement': 'Biến động giá',
-      'volume_spike': 'Tăng đột biến khối lượng',
-      'news_sentiment': 'Tâm lý tin tức',
-      'technical_signal': 'Tín hiệu kỹ thuật',
-      'risk_alert': 'Cảnh báo rủi ro',
-      'recommendation_change': 'Thay đổi khuyến nghị',
+      price_movement: 'Biến động giá',
+      volume_spike: 'Tăng đột biến khối lượng',
+      news_sentiment: 'Tâm lý tin tức',
+      technical_signal: 'Tín hiệu kỹ thuật',
+      risk_alert: 'Cảnh báo rủi ro',
+      recommendation_change: 'Thay đổi khuyến nghị',
     };
     return typeMap[type] || type;
   };
@@ -103,7 +103,7 @@ const AlertsList: React.FC<AlertsListProps> = ({ alerts }) => {
         <List sx={{ p: 0 }}>
           {sortedAlerts.map((alert, index) => {
             const priorityDetails = getPriorityDetails(alert.priority);
-            
+
             return (
               <React.Fragment key={index}>
                 <ListItem
@@ -118,11 +118,18 @@ const AlertsList: React.FC<AlertsListProps> = ({ alerts }) => {
                       {priorityDetails.icon}
                     </Box>
                   </ListItemIcon>
-                  
+
                   <ListItemText
                     primary={
                       <Box sx={{ mb: 1 }}>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 1,
+                            mb: 1,
+                          }}
+                        >
                           <Chip
                             label={priorityDetails.label}
                             size="small"
@@ -164,7 +171,7 @@ const AlertsList: React.FC<AlertsListProps> = ({ alerts }) => {
                     }
                   />
                 </ListItem>
-                
+
                 {index < sortedAlerts.length - 1 && (
                   <Divider variant="inset" component="li" />
                 )}
@@ -176,8 +183,8 @@ const AlertsList: React.FC<AlertsListProps> = ({ alerts }) => {
         {/* Summary */}
         <Box sx={{ mt: 2, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
           <Typography variant="body2" color="text.secondary">
-            <strong>Tóm tắt:</strong> Có {alerts.length} cảnh báo cho mã cổ phiếu này. 
-            Cảnh báo mức độ cao cần được chú ý đặc biệt.
+            <strong>Tóm tắt:</strong> Có {alerts.length} cảnh báo cho mã cổ
+            phiếu này. Cảnh báo mức độ cao cần được chú ý đặc biệt.
           </Typography>
         </Box>
       </CardContent>

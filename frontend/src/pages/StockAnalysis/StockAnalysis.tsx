@@ -24,7 +24,7 @@ import {
 const StockAnalysis: React.FC<StockAnalysisProps> = () => {
   const { symbol } = useParams<{ symbol: string }>();
   const navigate = useNavigate();
-  
+
   const {
     data: stockSummary,
     isLoading,
@@ -69,7 +69,7 @@ const StockAnalysis: React.FC<StockAnalysisProps> = () => {
             Quay lại Dashboard
           </Button>
         </Box>
-        
+
         <Paper sx={{ p: 4, textAlign: 'center' }}>
           <Alert severity="error" sx={{ mb: 3 }}>
             <Typography variant="h6" gutterBottom>
@@ -79,7 +79,7 @@ const StockAnalysis: React.FC<StockAnalysisProps> = () => {
               {error.message || 'Đã xảy ra lỗi khi tải dữ liệu'}
             </Typography>
           </Alert>
-          
+
           <Box sx={{ mt: 3 }}>
             <Button
               variant="contained"
@@ -90,10 +90,7 @@ const StockAnalysis: React.FC<StockAnalysisProps> = () => {
             >
               {isRefetching ? 'Đang thử lại...' : 'Thử lại'}
             </Button>
-            <Button
-              variant="outlined"
-              onClick={() => navigate('/')}
-            >
+            <Button variant="outlined" onClick={() => navigate('/')}>
               Quay lại Dashboard
             </Button>
           </Box>
@@ -115,17 +112,18 @@ const StockAnalysis: React.FC<StockAnalysisProps> = () => {
             Quay lại Dashboard
           </Button>
         </Box>
-        
+
         <Paper sx={{ p: 4, textAlign: 'center' }}>
           <Alert severity="warning" sx={{ mb: 3 }}>
             <Typography variant="h6" gutterBottom>
               Không tìm thấy dữ liệu
             </Typography>
             <Typography variant="body1">
-              Không có dữ liệu phân tích cho mã cổ phiếu: {symbol?.toUpperCase()}
+              Không có dữ liệu phân tích cho mã cổ phiếu:{' '}
+              {symbol?.toUpperCase()}
             </Typography>
           </Alert>
-          
+
           <Box sx={{ mt: 3 }}>
             <Button
               variant="contained"
@@ -136,10 +134,7 @@ const StockAnalysis: React.FC<StockAnalysisProps> = () => {
             >
               {isRefetching ? 'Đang thử lại...' : 'Thử lại'}
             </Button>
-            <Button
-              variant="outlined"
-              onClick={() => navigate('/')}
-            >
+            <Button variant="outlined" onClick={() => navigate('/')}>
               Quay lại Dashboard
             </Button>
           </Box>
@@ -172,29 +167,30 @@ const StockAnalysis: React.FC<StockAnalysisProps> = () => {
             {isRefetching ? 'Đang cập nhật...' : 'Cập nhật'}
           </Button>
         </Box>
-        
+
         <Typography variant="h4" component="h1" gutterBottom>
           Phân Tích Cổ Phiếu: {symbol?.toUpperCase()}
         </Typography>
-        
+
         {stockSummary.last_updated && (
           <Typography variant="body2" color="text.secondary">
-            Cập nhật lần cuối: {new Date(stockSummary.last_updated).toLocaleString('vi-VN')}
+            Cập nhật lần cuối:{' '}
+            {new Date(stockSummary.last_updated).toLocaleString('vi-VN')}
           </Typography>
         )}
       </Box>
 
       {/* Main content */}
-      <Box 
-        sx={{ 
+      <Box
+        sx={{
           display: 'flex',
           flexDirection: 'column',
           gap: 3,
         }}
       >
         {/* Top Row - Price and Recommendation */}
-        <Box 
-          sx={{ 
+        <Box
+          sx={{
             display: 'flex',
             flexDirection: { xs: 'column', md: 'row' },
             gap: 3,
@@ -212,8 +208,8 @@ const StockAnalysis: React.FC<StockAnalysisProps> = () => {
         </Box>
 
         {/* Second Row - Component Scores and Analysis Details */}
-        <Box 
-          sx={{ 
+        <Box
+          sx={{
             display: 'flex',
             flexDirection: { xs: 'column', lg: 'row' },
             gap: 3,

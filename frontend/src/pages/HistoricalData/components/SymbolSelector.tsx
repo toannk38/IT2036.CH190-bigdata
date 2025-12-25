@@ -17,16 +17,12 @@ export const SymbolSelector: React.FC<SymbolSelectorProps> = ({
 }) => {
   const { data: symbolsResponse, isLoading, error } = useActiveSymbols();
 
-  const handleChange = (event: any) => {
-    onChange(event.target.value);
+  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    onChange(event.target.value as string);
   };
 
   if (error) {
-    return (
-      <Alert severity="error">
-        Không thể tải danh sách mã cổ phiếu
-      </Alert>
-    );
+    return <Alert severity="error">Không thể tải danh sách mã cổ phiếu</Alert>;
   }
 
   return (
@@ -37,6 +33,7 @@ export const SymbolSelector: React.FC<SymbolSelectorProps> = ({
         id="symbol-selector"
         value={value}
         label="Chọn mã cổ phiếu"
+        // @ts-expect-error MUI Select onChange type compatibility
         onChange={handleChange}
         disabled={isLoading}
         endAdornment={

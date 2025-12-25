@@ -53,7 +53,7 @@ const PriceInfoCard: React.FC<PriceInfoCardProps> = ({ priceData }) => {
 
   // Calculate price change and percentage
   const priceChange = priceData.close - priceData.open;
-  const priceChangePercent = ((priceChange / priceData.open) * 100);
+  const priceChangePercent = (priceChange / priceData.open) * 100;
   const isPositive = priceChange >= 0;
 
   // Format timestamp
@@ -106,8 +106,8 @@ const PriceInfoCard: React.FC<PriceInfoCardProps> = ({ priceData }) => {
         <Divider sx={{ mb: 2 }} />
 
         {/* Price Details */}
-        <Box 
-          sx={{ 
+        <Box
+          sx={{
             display: 'grid',
             gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
             gap: 2,
@@ -121,12 +121,15 @@ const PriceInfoCard: React.FC<PriceInfoCardProps> = ({ priceData }) => {
               {formatPrice(priceData.open)}
             </Typography>
           </Box>
-          
+
           <Box>
             <Typography variant="body2" color="text.secondary" gutterBottom>
               Giá Đóng Cửa
             </Typography>
-            <Typography variant="h6" color={isPositive ? 'success.main' : 'error.main'}>
+            <Typography
+              variant="h6"
+              color={isPositive ? 'success.main' : 'error.main'}
+            >
               {formatPrice(priceData.close)}
             </Typography>
           </Box>

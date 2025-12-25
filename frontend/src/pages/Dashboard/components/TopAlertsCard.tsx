@@ -13,6 +13,8 @@ import {
   Box,
   Chip,
   Button,
+  useTheme,
+  useMediaQuery,
 } from '@mui/material';
 import {
   Warning,
@@ -22,6 +24,7 @@ import {
   TrendingUp,
 } from '@mui/icons-material';
 import { TopAlertsCardProps } from '@/types';
+import { touchTargetStyles } from '../../../utils/responsive';
 
 const getPriorityIcon = (priority: string) => {
   switch (priority.toLowerCase()) {
@@ -69,6 +72,8 @@ export const TopAlertsCard: React.FC<TopAlertsCardProps> = ({
   loading,
 }) => {
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleAlertClick = (symbol: string) => {
     navigate(`/stock/${symbol}`);
@@ -90,7 +95,7 @@ export const TopAlertsCard: React.FC<TopAlertsCardProps> = ({
           </Box>
           <List>
             {Array.from({ length: 5 }).map((_, index) => (
-              <ListItem key={index} divider>
+              <ListItem key={index} divider sx={touchTargetStyles.listItem}>
                 <ListItemIcon>
                   <Skeleton variant="circular" width={24} height={24} />
                 </ListItemIcon>
@@ -138,18 +143,21 @@ export const TopAlertsCard: React.FC<TopAlertsCardProps> = ({
           <Typography variant="h6" component="h2">
             Cảnh Báo Quan Trọng
           </Typography>
-          <Chip 
-            label={alerts.length} 
-            size="small" 
-            color="primary" 
-            sx={{ ml: 2 }} 
+          <Chip
+            label={alerts.length}
+            size="small"
+            color="primary"
+            sx={{ 
+              ml: 2,
+              ...touchTargetStyles.chip,
+            }}
           />
         </Box>
-        
+
         <List sx={{ p: 0 }}>
           {alerts.map((alert, index) => (
-            <ListItem 
-              key={`${alert.symbol}-${alert.timestamp}-${index}`} 
+            <ListItem
+              key={`${alert.symbol}-${alert.timestamp}-${index}`}
               divider={index < alerts.length - 1}
               sx={{ px: 0 }}
             >
@@ -157,51 +165,85 @@ export const TopAlertsCard: React.FC<TopAlertsCardProps> = ({
                 onClick={() => handleAlertClick(alert.symbol)}
                 sx={{
                   borderRadius: 1,
+                  ...touchTargetStyles.listItem,
+                  py: { xs: 2, sm: 1.5 }, // Extra padding on mobile
                   '&:hover': {
                     backgroundColor: 'action.hover',
                   },
+                  '&:active': {
+                    backgroundColor: 'action.selected',
+                  },
                 }}
               >
-                <ListItemIcon sx={{ minWidth: 40 }}>
+                <ListItemIcon sx={{ 
+                  minWidth: { xs: 48, sm: 40 },
+                  '& .MuiSvgIcon-root': {
+                    fontSize: { xs: '1.5rem', sm: '1.25rem' },
+                  },
+                }}>
                   {getPriorityIcon(alert.priority)}
                 </ListItemIcon>
                 <ListItemText
                   primary={
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <Typography 
-                        variant="subtitle2" 
+                    <Box sx={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: 1,
+                      flexWrap: { xs: 'wrap', sm: 'nowrap' },
+                    }}>
+                      <Typography
+                        variant="subtitle2"
                         component="span"
-                        sx={{ fontWeight: 'bold', color: 'primary.main' }}
+                        sx={{ 
+                          fontWeight: 'bold', 
+                          color: 'primary.main',
+                          fontSize: { xs: '1rem', sm: '0.875rem' },
+                        }}
                       >
                         {alert.symbol}
                       </Typography>
                       <Chip
                         label={alert.priority.toUpperCase()}
                         size="small"
-                        color={getPriorityColor(alert.priority) as any}
-                        sx={{ fontSize: '0.7rem', height: 20 }}
+                        color={
+                          getPriorityColor(alert.priority) as
+                            | 'default'
+                            | 'primary'
+                            | 'secondary'
+                            | 'error'
+                            | 'info'
+                            | 'success'
+                            | 'warning'
+                        }
+                        sx={{ 
+                          fontSize: { xs: '0.75rem', sm: '0.7rem' }, 
+                          height: { xs: 24, sm: 20 },
+                          ...touchTargetStyles.chip,
+                        }}
                       />
                     </Box>
                   }
                   secondary={
                     <Box>
-                      <Typography 
-                        variant="body2" 
+                      <Typography
+                        variant="body2"
                         color="text.secondary"
-                        sx={{ 
+                        sx={{
                           mb: 0.5,
                           display: '-webkit-box',
-                          WebkitLineClamp: 2,
+                          WebkitLineClamp: { xs: 3, sm: 2 },
                           WebkitBoxOrient: 'vertical',
                           overflow: 'hidden',
+                          fontSize: { xs: '0.875rem', sm: '0.75rem' },
+                          lineHeight: 1.4,
                         }}
                       >
                         {alert.message}
                       </Typography>
-                      <Typography 
-                        variant="caption" 
+                      <Typography
+                        variant="caption"
                         color="text.secondary"
-                        sx={{ fontSize: '0.75rem' }}
+                        sx={{ fontSize: { xs: '0.75rem', sm: '0.7rem' } }}
                       >
                         {formatTimestamp(alert.timestamp)}
                       </Typography>
@@ -212,13 +254,17 @@ export const TopAlertsCard: React.FC<TopAlertsCardProps> = ({
             </ListItem>
           ))}
         </List>
-        
+
         <Box sx={{ mt: 2, textAlign: 'center' }}>
           <Button
             variant="outlined"
-            size="small"
+            size={isMobile ? "medium" : "small"}
             onClick={handleViewAllAlerts}
-            sx={{ textTransform: 'none' }}
+            sx={{ 
+              textTransform: 'none',
+              ...touchTargetStyles.button,
+              fontSize: { xs: '1rem', sm: '0.875rem' },
+            }}
           >
             Xem tất cả cảnh báo
           </Button>

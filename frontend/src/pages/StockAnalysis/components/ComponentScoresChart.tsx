@@ -15,7 +15,9 @@ import {
 } from '@mui/icons-material';
 import { ComponentScoresChartProps } from '@/types';
 
-const ComponentScoresChart: React.FC<ComponentScoresChartProps> = ({ scores }) => {
+const ComponentScoresChart: React.FC<ComponentScoresChartProps> = ({
+  scores,
+}) => {
   if (!scores) {
     return (
       <Card>
@@ -126,7 +128,13 @@ const ComponentScoresChart: React.FC<ComponentScoresChartProps> = ({ scores }) =
               />
 
               {/* Score Details */}
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
                 <Typography variant="body2" color="text.secondary">
                   {component.description}
                 </Typography>
@@ -147,8 +155,9 @@ const ComponentScoresChart: React.FC<ComponentScoresChartProps> = ({ scores }) =
         {/* Summary */}
         <Box sx={{ mt: 3, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
           <Typography variant="body2" color="text.secondary">
-            <strong>Giải thích:</strong> Điểm thành phần được tính từ 0-100%, 
-            trong đó trên 70% là tốt, 40-70% là trung bình, dưới 40% cần thận trọng.
+            <strong>Giải thích:</strong> Điểm thành phần được tính từ 0-100%,
+            trong đó trên 70% là tốt, 40-70% là trung bình, dưới 40% cần thận
+            trọng.
           </Typography>
         </Box>
       </CardContent>

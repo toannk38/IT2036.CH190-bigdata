@@ -24,8 +24,11 @@ const AnalysisDetails: React.FC<AnalysisDetailsProps> = ({
   llmAnalysis,
 }) => {
   // Check if we have any analysis data
-  const hasAiAnalysis = aiAnalysis && (aiAnalysis.trend_prediction || aiAnalysis.technical_score !== undefined);
-  const hasLlmAnalysis = llmAnalysis && (llmAnalysis.sentiment || llmAnalysis.summary);
+  const hasAiAnalysis =
+    aiAnalysis &&
+    (aiAnalysis.trend_prediction || aiAnalysis.technical_score !== undefined);
+  const hasLlmAnalysis =
+    llmAnalysis && (llmAnalysis.sentiment || llmAnalysis.summary);
 
   if (!hasAiAnalysis && !hasLlmAnalysis) {
     return (
@@ -34,9 +37,7 @@ const AnalysisDetails: React.FC<AnalysisDetailsProps> = ({
           <Typography variant="h6" gutterBottom>
             Chi Tiết Phân Tích
           </Typography>
-          <Alert severity="info">
-            Chưa có dữ liệu phân tích chi tiết
-          </Alert>
+          <Alert severity="info">Chưa có dữ liệu phân tích chi tiết</Alert>
         </CardContent>
       </Card>
     );
@@ -52,10 +53,16 @@ const AnalysisDetails: React.FC<AnalysisDetailsProps> = ({
   const getSentimentColor = (sentiment?: string): string => {
     if (!sentiment) return '#9e9e9e';
     const lowerSentiment = sentiment.toLowerCase();
-    if (lowerSentiment.includes('positive') || lowerSentiment.includes('tích cực')) {
+    if (
+      lowerSentiment.includes('positive') ||
+      lowerSentiment.includes('tích cực')
+    ) {
       return '#4caf50';
     }
-    if (lowerSentiment.includes('negative') || lowerSentiment.includes('tiêu cực')) {
+    if (
+      lowerSentiment.includes('negative') ||
+      lowerSentiment.includes('tiêu cực')
+    ) {
       return '#f44336';
     }
     return '#ff9800';
@@ -65,13 +72,22 @@ const AnalysisDetails: React.FC<AnalysisDetailsProps> = ({
   const getSentimentLabel = (sentiment?: string): string => {
     if (!sentiment) return 'Không xác định';
     const lowerSentiment = sentiment.toLowerCase();
-    if (lowerSentiment.includes('positive') || lowerSentiment.includes('tích cực')) {
+    if (
+      lowerSentiment.includes('positive') ||
+      lowerSentiment.includes('tích cực')
+    ) {
       return 'Tích cực';
     }
-    if (lowerSentiment.includes('negative') || lowerSentiment.includes('tiêu cực')) {
+    if (
+      lowerSentiment.includes('negative') ||
+      lowerSentiment.includes('tiêu cực')
+    ) {
       return 'Tiêu cực';
     }
-    if (lowerSentiment.includes('neutral') || lowerSentiment.includes('trung tính')) {
+    if (
+      lowerSentiment.includes('neutral') ||
+      lowerSentiment.includes('trung tính')
+    ) {
       return 'Trung tính';
     }
     return sentiment;
@@ -106,8 +122,8 @@ const AnalysisDetails: React.FC<AnalysisDetailsProps> = ({
               <AccordionDetails>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                   {/* Technical Score and Trend Prediction */}
-                  <Box 
-                    sx={{ 
+                  <Box
+                    sx={{
                       display: 'flex',
                       flexDirection: { xs: 'column', sm: 'row' },
                       gap: 2,
@@ -115,8 +131,17 @@ const AnalysisDetails: React.FC<AnalysisDetailsProps> = ({
                   >
                     {/* Technical Score */}
                     {aiAnalysis?.technical_score !== undefined && (
-                      <Box sx={{ flex: 1, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
-                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                      <Box
+                        sx={{
+                          flex: 1,
+                          p: 2,
+                          bgcolor: 'grey.50',
+                          borderRadius: 1,
+                        }}
+                      >
+                        <Box
+                          sx={{ display: 'flex', alignItems: 'center', mb: 1 }}
+                        >
                           <TrendingUp sx={{ mr: 1, color: 'primary.main' }} />
                           <Typography variant="subtitle2">
                             Điểm Kỹ Thuật
@@ -133,7 +158,14 @@ const AnalysisDetails: React.FC<AnalysisDetailsProps> = ({
 
                     {/* Trend Prediction */}
                     {aiAnalysis?.trend_prediction && (
-                      <Box sx={{ flex: 1, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
+                      <Box
+                        sx={{
+                          flex: 1,
+                          p: 2,
+                          bgcolor: 'grey.50',
+                          borderRadius: 1,
+                        }}
+                      >
                         <Typography variant="subtitle2" gutterBottom>
                           Dự Đoán Xu Hướng
                         </Typography>
@@ -149,7 +181,11 @@ const AnalysisDetails: React.FC<AnalysisDetailsProps> = ({
 
                   {/* Full AI Analysis Display */}
                   <Box sx={{ mt: 1 }}>
-                    <Typography variant="body2" color="text.secondary" gutterBottom>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      gutterBottom
+                    >
                       Dữ liệu phân tích AI/ML đầy đủ:
                     </Typography>
                     <Box
@@ -189,8 +225,8 @@ const AnalysisDetails: React.FC<AnalysisDetailsProps> = ({
               <AccordionDetails>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                   {/* Sentiment and Summary */}
-                  <Box 
-                    sx={{ 
+                  <Box
+                    sx={{
                       display: 'flex',
                       flexDirection: { xs: 'column', sm: 'row' },
                       gap: 2,
@@ -198,14 +234,23 @@ const AnalysisDetails: React.FC<AnalysisDetailsProps> = ({
                   >
                     {/* Sentiment */}
                     {llmAnalysis?.sentiment && (
-                      <Box sx={{ flex: 1, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
+                      <Box
+                        sx={{
+                          flex: 1,
+                          p: 2,
+                          bgcolor: 'grey.50',
+                          borderRadius: 1,
+                        }}
+                      >
                         <Typography variant="subtitle2" gutterBottom>
                           Tâm Lý Thị Trường
                         </Typography>
                         <Chip
                           label={getSentimentLabel(llmAnalysis.sentiment)}
                           sx={{
-                            backgroundColor: getSentimentColor(llmAnalysis.sentiment),
+                            backgroundColor: getSentimentColor(
+                              llmAnalysis.sentiment
+                            ),
                             color: 'white',
                             fontWeight: 'medium',
                             mb: 1,
@@ -219,12 +264,14 @@ const AnalysisDetails: React.FC<AnalysisDetailsProps> = ({
 
                     {/* Summary */}
                     {llmAnalysis?.summary && (
-                      <Box sx={{ 
-                        flex: llmAnalysis?.sentiment ? 1 : 2, 
-                        p: 2, 
-                        bgcolor: 'grey.50', 
-                        borderRadius: 1 
-                      }}>
+                      <Box
+                        sx={{
+                          flex: llmAnalysis?.sentiment ? 1 : 2,
+                          p: 2,
+                          bgcolor: 'grey.50',
+                          borderRadius: 1,
+                        }}
+                      >
                         <Typography variant="subtitle2" gutterBottom>
                           Tóm Tắt Phân Tích
                         </Typography>
@@ -237,7 +284,11 @@ const AnalysisDetails: React.FC<AnalysisDetailsProps> = ({
 
                   {/* Full LLM Analysis Display */}
                   <Box sx={{ mt: 1 }}>
-                    <Typography variant="body2" color="text.secondary" gutterBottom>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      gutterBottom
+                    >
                       Dữ liệu phân tích LLM đầy đủ:
                     </Typography>
                     <Box
@@ -263,8 +314,9 @@ const AnalysisDetails: React.FC<AnalysisDetailsProps> = ({
         {/* Information Note */}
         <Alert severity="info" sx={{ mt: 2 }}>
           <Typography variant="body2">
-            <strong>Lưu ý:</strong> Phân tích AI/ML và LLM được tạo tự động từ dữ liệu thị trường 
-            và tin tức. Kết quả chỉ mang tính chất tham khảo và không phải lời khuyên đầu tư.
+            <strong>Lưu ý:</strong> Phân tích AI/ML và LLM được tạo tự động từ
+            dữ liệu thị trường và tin tức. Kết quả chỉ mang tính chất tham khảo
+            và không phải lời khuyên đầu tư.
           </Typography>
         </Alert>
       </CardContent>

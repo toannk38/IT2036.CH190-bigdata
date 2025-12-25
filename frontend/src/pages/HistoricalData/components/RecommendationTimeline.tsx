@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  Box,
-  Typography,
-  Chip,
-  Paper,
-} from '@mui/material';
+import { Box, Typography, Chip, Paper } from '@mui/material';
 import {
   Timeline,
   TimelineItem,
@@ -13,20 +8,18 @@ import {
   TimelineContent,
   TimelineDot,
 } from '@mui/lab';
-import {
-  TrendingUp,
-  TrendingDown,
-  TrendingFlat,
-} from '@mui/icons-material';
+import { TrendingUp, TrendingDown, TrendingFlat } from '@mui/icons-material';
 import { RecommendationTimelineProps } from '@/types';
 
-export const RecommendationTimeline: React.FC<RecommendationTimelineProps> = ({ data }) => {
+export const RecommendationTimeline: React.FC<RecommendationTimelineProps> = ({
+  data,
+}) => {
   if (!data || data.length === 0) {
     return (
-      <Box 
-        display="flex" 
-        justifyContent="center" 
-        alignItems="center" 
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
         height={200}
         bgcolor="grey.50"
         borderRadius={1}
@@ -39,16 +32,19 @@ export const RecommendationTimeline: React.FC<RecommendationTimelineProps> = ({ 
   }
 
   // Group consecutive recommendations to avoid too many timeline items
-  const groupedRecommendations = data.reduce((acc, point, index) => {
-    const prevPoint = index > 0 ? data[index - 1] : null;
-    
-    // If this is the first point or recommendation changed, add it
-    if (!prevPoint || prevPoint.recommendation !== point.recommendation) {
-      acc.push(point);
-    }
-    
-    return acc;
-  }, [] as typeof data);
+  const groupedRecommendations = data.reduce(
+    (acc, point, index) => {
+      const prevPoint = index > 0 ? data[index - 1] : null;
+
+      // If this is the first point or recommendation changed, add it
+      if (!prevPoint || prevPoint.recommendation !== point.recommendation) {
+        acc.push(point);
+      }
+
+      return acc;
+    },
+    [] as typeof data
+  );
 
   // Take only the most recent 10 changes to keep timeline manageable
   const recentRecommendations = groupedRecommendations.slice(-10);
@@ -104,10 +100,10 @@ export const RecommendationTimeline: React.FC<RecommendationTimelineProps> = ({ 
   return (
     <Box>
       {recentRecommendations.length === 0 ? (
-        <Box 
-          display="flex" 
-          justifyContent="center" 
-          alignItems="center" 
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
           height={200}
           bgcolor="grey.50"
           borderRadius={1}
@@ -123,13 +119,13 @@ export const RecommendationTimeline: React.FC<RecommendationTimelineProps> = ({ 
             const icon = getRecommendationIcon(point.recommendation);
             const text = getRecommendationText(point.recommendation);
             const isLast = index === recentRecommendations.length - 1;
-            
+
             return (
               <TimelineItem key={`${point.timestamp}-${index}`}>
                 <TimelineSeparator>
-                  <TimelineDot 
+                  <TimelineDot
                     color={colors.color}
-                    sx={{ 
+                    sx={{
                       bgcolor: colors.bgcolor,
                       border: `2px solid ${colors.borderColor}`,
                       p: 1,
@@ -139,12 +135,12 @@ export const RecommendationTimeline: React.FC<RecommendationTimelineProps> = ({ 
                   </TimelineDot>
                   {!isLast && <TimelineConnector />}
                 </TimelineSeparator>
-                
+
                 <TimelineContent sx={{ py: '12px', px: 2 }}>
-                  <Paper 
-                    elevation={1} 
-                    sx={{ 
-                      p: 2, 
+                  <Paper
+                    elevation={1}
+                    sx={{
+                      p: 2,
                       bgcolor: colors.bgcolor,
                       border: `1px solid ${colors.borderColor}`,
                     }}
@@ -160,7 +156,7 @@ export const RecommendationTimeline: React.FC<RecommendationTimelineProps> = ({ 
                         Điểm: {point.final_score.toFixed(3)}
                       </Typography>
                     </Box>
-                    
+
                     <Typography variant="body2" color="text.secondary">
                       {new Date(point.timestamp).toLocaleDateString('vi-VN', {
                         year: 'numeric',
@@ -175,12 +171,12 @@ export const RecommendationTimeline: React.FC<RecommendationTimelineProps> = ({ 
           })}
         </Timeline>
       )}
-      
+
       {groupedRecommendations.length > 10 && (
         <Box textAlign="center" mt={2}>
           <Typography variant="body2" color="text.secondary">
-            Hiển thị 10 thay đổi khuyến nghị gần nhất 
-            (tổng cộng {groupedRecommendations.length} thay đổi)
+            Hiển thị 10 thay đổi khuyến nghị gần nhất (tổng cộng{' '}
+            {groupedRecommendations.length} thay đổi)
           </Typography>
         </Box>
       )}

@@ -35,10 +35,10 @@ export const FinalScoreChart: React.FC<FinalScoreChartProps> = ({ data }) => {
 
   if (!data || data.length === 0) {
     return (
-      <Box 
-        display="flex" 
-        justifyContent="center" 
-        alignItems="center" 
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
         height={400}
         bgcolor="grey.50"
         borderRadius={1}
@@ -58,11 +58,11 @@ export const FinalScoreChart: React.FC<FinalScoreChartProps> = ({ data }) => {
 
   // Prepare chart data
   const chartData = {
-    labels: data.map(point => new Date(point.timestamp)),
+    labels: data.map((point) => new Date(point.timestamp)),
     datasets: [
       {
         label: 'Điểm Số Cuối Cùng',
-        data: data.map(point => ({
+        data: data.map((point) => ({
           x: new Date(point.timestamp),
           y: point.final_score,
         })),
@@ -171,7 +171,7 @@ export const FinalScoreChart: React.FC<FinalScoreChartProps> = ({ data }) => {
           color: 'rgba(0, 0, 0, 0.1)',
         },
         ticks: {
-          callback: function(value) {
+          callback: function (value) {
             return (value as number).toFixed(2);
           },
         },
@@ -187,19 +187,20 @@ export const FinalScoreChart: React.FC<FinalScoreChartProps> = ({ data }) => {
   return (
     <Box>
       <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
-        <Button 
-          variant="outlined" 
-          size="small" 
-          onClick={resetZoom}
-        >
+        <Button variant="outlined" size="small" onClick={resetZoom}>
           Đặt lại zoom
         </Button>
-        <Typography variant="body2" color="text.secondary" sx={{ alignSelf: 'center' }}>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ alignSelf: 'center' }}
+        >
           Sử dụng chuột để zoom và kéo để di chuyển biểu đồ
         </Typography>
       </Stack>
       <Box height={400}>
-        <Line ref={chartRef as any} data={chartData} options={options} />
+        {/* @ts-expect-error Chart.js type compatibility issue */}
+        <Line ref={chartRef} data={chartData} options={options} />
       </Box>
     </Box>
   );

@@ -112,11 +112,7 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({
             }}
             size="medium"
           />
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{ mt: 1 }}
-          >
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
             {recommendationDetails.description}
           </Typography>
         </Box>
@@ -126,7 +122,7 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({
           <Typography variant="subtitle1" gutterBottom>
             Điểm Tổng Hợp
           </Typography>
-          
+
           {finalScore !== undefined && finalScore !== null ? (
             <>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
@@ -140,7 +136,7 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({
                   /100
                 </Typography>
               </Box>
-              
+
               <LinearProgress
                 variant="determinate"
                 value={finalScore * 100}
@@ -153,7 +149,7 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({
                   },
                 }}
               />
-              
+
               <Typography variant="body2" color="text.secondary">
                 Mức độ: {getScoreLevel(finalScore)}
               </Typography>
@@ -168,8 +164,9 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({
         {/* Additional Information */}
         <Alert severity={recommendationDetails.severity} sx={{ mt: 2 }}>
           <Typography variant="body2">
-            <strong>Lưu ý:</strong> Đây chỉ là khuyến nghị dựa trên phân tích dữ liệu. 
-            Vui lòng tham khảo thêm các nguồn thông tin khác và cân nhắc kỹ trước khi đầu tư.
+            <strong>Lưu ý:</strong> Đây chỉ là khuyến nghị dựa trên phân tích dữ
+            liệu. Vui lòng tham khảo thêm các nguồn thông tin khác và cân nhắc
+            kỹ trước khi đầu tư.
           </Typography>
         </Alert>
       </CardContent>

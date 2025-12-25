@@ -14,16 +14,25 @@ const AlertsPage: React.FC = () => {
   const [page, setPage] = useState(1);
   const pageSize = 20;
 
-  const { data: alertsResponse, isLoading, error } = useAlerts({
+  const {
+    data: alertsResponse,
+    isLoading,
+    error,
+  } = useAlerts({
     limit: pageSize,
     offset: (page - 1) * pageSize,
   });
 
-  const handlePageChange = (_event: React.ChangeEvent<unknown>, newPage: number) => {
+  const handlePageChange = (
+    _event: React.ChangeEvent<unknown>,
+    newPage: number
+  ) => {
     setPage(newPage);
   };
 
-  const totalPages = alertsResponse ? Math.ceil(alertsResponse.total / pageSize) : 0;
+  const totalPages = alertsResponse
+    ? Math.ceil(alertsResponse.total / pageSize)
+    : 0;
 
   if (error) {
     return (
@@ -52,11 +61,11 @@ const AlertsPage: React.FC = () => {
         </Box>
       ) : (
         <>
-          <AlertsTable 
-            alerts={alertsResponse?.alerts || []} 
+          <AlertsTable
+            alerts={alertsResponse?.alerts || []}
             loading={isLoading}
           />
-          
+
           {totalPages > 1 && (
             <Box display="flex" justifyContent="center" sx={{ mt: 4 }}>
               <Pagination
@@ -70,7 +79,7 @@ const AlertsPage: React.FC = () => {
               />
             </Box>
           )}
-          
+
           {alertsResponse && alertsResponse.alerts.length === 0 && (
             <Box textAlign="center" sx={{ mt: 4 }}>
               <Typography variant="h6" color="text.secondary">

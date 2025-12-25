@@ -6,10 +6,13 @@ import {
   Typography,
   CircularProgress,
   Paper,
+  useTheme,
+  useMediaQuery,
 } from '@mui/material';
 import { Search as SearchIcon } from '@mui/icons-material';
 import { useActiveSymbols } from '../../hooks/useActiveSymbols';
 import { SymbolInfo } from '../../types';
+import { touchTargets } from '../../utils/responsive';
 
 interface SearchBoxProps {
   onSearch: (symbol: string) => void;
@@ -19,6 +22,8 @@ const SearchBox: React.FC<SearchBoxProps> = ({ onSearch }) => {
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const { data: symbols, isLoading } = useActiveSymbols();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const filteredSuggestions = useMemo(() => {
     if (!symbols?.symbols || !query.trim()) return [];
@@ -73,20 +78,42 @@ const SearchBox: React.FC<SearchBoxProps> = ({ onSearch }) => {
     props: React.HTMLAttributes<HTMLLIElement>,
     option: SymbolInfo
   ) => (
-    <Box component="li" {...props} key={option.symbol}>
+    <Box 
+      component="li" 
+      {...props} 
+      key={option.symbol}
+      sx={{
+        minHeight: touchTargets.minimum,
+        py: 1,
+        px: 2,
+      }}
+    >
       <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-        <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+        <Typography 
+          variant="body1" 
+          sx={{ 
+            fontWeight: 'bold',
+            fontSize: { xs: '0.875rem', sm: '1rem' },
+          }}
+        >
           {option.symbol}
         </Typography>
         <Typography
           variant="body2"
           color="text.secondary"
-          sx={{ fontSize: '0.875rem' }}
+          sx={{ 
+            fontSize: { xs: '0.75rem', sm: '0.875rem' },
+            lineHeight: 1.2,
+          }}
         >
           {option.organ_name}
         </Typography>
-        {option.icb_name2 && (
-          <Typography variant="caption" color="text.secondary">
+        {option.icb_name2 && !isMobile && (
+          <Typography 
+            variant="caption" 
+            color="text.secondary"
+            sx={{ fontSize: '0.75rem' }}
+          >
             {option.icb_name2}
           </Typography>
         )}
@@ -96,7 +123,11 @@ const SearchBox: React.FC<SearchBoxProps> = ({ onSearch }) => {
 
   const renderNoOptions = () => (
     <Paper sx={{ p: 2 }}>
-      <Typography variant="body2" color="text.secondary">
+      <Typography 
+        variant="body2" 
+        color="text.secondary"
+        sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+      >
         Không tìm thấy mã cổ phiếu
       </Typography>
     </Paper>
@@ -121,9 +152,15 @@ const SearchBox: React.FC<SearchBoxProps> = ({ onSearch }) => {
       onChange={handleSelection}
       inputValue={query}
       sx={{
-        width: { xs: 200, sm: 300 },
+        width: { 
+          xs: '160px', 
+          sm: '200px', 
+          md: '250px',
+          lg: '300px',
+        },
         '& .MuiOutlinedInput-root': {
           backgroundColor: 'rgba(255, 255, 255, 0.1)',
+          minHeight: touchTargets.minimum,
           '& fieldset': {
             borderColor: 'rgba(255, 255, 255, 0.3)',
           },
@@ -136,6 +173,7 @@ const SearchBox: React.FC<SearchBoxProps> = ({ onSearch }) => {
         },
         '& .MuiInputBase-input': {
           color: 'white',
+          fontSize: { xs: '0.875rem', sm: '1rem' },
           '&::placeholder': {
             color: 'rgba(255, 255, 255, 0.7)',
             opacity: 1,
@@ -146,23 +184,44 @@ const SearchBox: React.FC<SearchBoxProps> = ({ onSearch }) => {
             color: 'rgba(255, 255, 255, 0.7)',
           },
         },
+        '& .MuiAutocomplete-popupIndicator': {
+          minWidth: touchTargets.minimum,
+          minHeight: touchTargets.minimum,
+        },
+      }}
+      ListboxProps={{
+        sx: {
+          maxHeight: { xs: '200px', sm: '300px' },
+          '& .MuiAutocomplete-option': {
+            minHeight: touchTargets.minimum,
+          },
+        },
       }}
       renderInput={(params) => (
         <TextField
           {...params}
-          placeholder="Tìm mã cổ phiếu..."
+          placeholder={isMobile ? "Tìm mã..." : "Tìm mã cổ phiếu..."}
           variant="outlined"
-          size="small"
+          size={isMobile ? "small" : "medium"}
           onKeyPress={handleKeyPress}
           InputProps={{
             ...params.InputProps,
             startAdornment: (
-              <SearchIcon sx={{ color: 'rgba(255, 255, 255, 0.7)', mr: 1 }} />
+              <SearchIcon 
+                sx={{ 
+                  color: 'rgba(255, 255, 255, 0.7)', 
+                  mr: 1,
+                  fontSize: { xs: '1.25rem', sm: '1.5rem' },
+                }} 
+              />
             ),
             endAdornment: (
               <>
                 {isLoading ? (
-                  <CircularProgress color="inherit" size={20} />
+                  <CircularProgress 
+                    color="inherit" 
+                    size={isMobile ? 16 : 20} 
+                  />
                 ) : null}
                 {params.InputProps.endAdornment}
               </>
