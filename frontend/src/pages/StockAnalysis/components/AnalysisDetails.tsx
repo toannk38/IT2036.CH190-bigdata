@@ -43,6 +43,37 @@ const AnalysisDetails: React.FC<AnalysisDetailsProps> = ({
     );
   }
 
+  // Format trend prediction display
+  const formatTrendPrediction = (prediction?: string | object): string => {
+    if (!prediction) return 'Không có dữ liệu';
+    
+    if (typeof prediction === 'string') {
+      return prediction;
+    }
+    
+    // Handle object case - extract meaningful information
+    if (typeof prediction === 'object' && prediction !== null) {
+      const pred = prediction as any;
+      let result = '';
+      
+      if (pred.direction) {
+        result += `Hướng: ${pred.direction}`;
+      }
+      
+      if (pred.confidence) {
+        result += result ? `, Độ tin cậy: ${pred.confidence}` : `Độ tin cậy: ${pred.confidence}`;
+      }
+      
+      if (pred.predicted_price) {
+        result += result ? `, Giá dự đoán: ${pred.predicted_price}` : `Giá dự đoán: ${pred.predicted_price}`;
+      }
+      
+      return result || JSON.stringify(prediction);
+    }
+    
+    return String(prediction);
+  };
+
   // Format technical score
   const formatTechnicalScore = (score?: number): string => {
     if (score === undefined || score === null) return 'N/A';
@@ -50,8 +81,8 @@ const AnalysisDetails: React.FC<AnalysisDetailsProps> = ({
   };
 
   // Get sentiment color
-  const getSentimentColor = (sentiment?: string): string => {
-    if (!sentiment) return '#9e9e9e';
+  const getSentimentColor = (sentiment?: any): string => {
+    if (!sentiment || typeof sentiment !== 'string') return '#9e9e9e';
     const lowerSentiment = sentiment.toLowerCase();
     if (
       lowerSentiment.includes('positive') ||
@@ -69,8 +100,8 @@ const AnalysisDetails: React.FC<AnalysisDetailsProps> = ({
   };
 
   // Get sentiment label
-  const getSentimentLabel = (sentiment?: string): string => {
-    if (!sentiment) return 'Không xác định';
+  const getSentimentLabel = (sentiment?: any): string => {
+    if (!sentiment || typeof sentiment !== 'string') return 'Không xác định';
     const lowerSentiment = sentiment.toLowerCase();
     if (
       lowerSentiment.includes('positive') ||
@@ -170,7 +201,7 @@ const AnalysisDetails: React.FC<AnalysisDetailsProps> = ({
                           Dự Đoán Xu Hướng
                         </Typography>
                         <Typography variant="body1" sx={{ mb: 1 }}>
-                          {aiAnalysis.trend_prediction}
+                          {formatTrendPrediction(aiAnalysis.trend_prediction)}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
                           Dự đoán từ mô hình machine learning

@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     host: '0.0.0.0', // Allow external connections
-    port: 3000,      // Set your desired port
+    port: 5173,      // Set your desired port
   },
   resolve: {
     alias: {

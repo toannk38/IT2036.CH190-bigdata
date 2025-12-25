@@ -21,7 +21,7 @@ export interface Alert {
 }
 
 export interface AIAnalysis {
-  trend_prediction?: string;
+  trend_prediction?: string | object;
   technical_score?: number;
 }
 
