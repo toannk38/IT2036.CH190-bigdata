@@ -6,6 +6,7 @@ Provides REST API endpoints for accessing stock analysis data.
 from datetime import datetime
 from typing import List, Optional, Dict, Any
 from fastapi import FastAPI, HTTPException, Query
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, validator
 from pymongo import MongoClient
@@ -613,6 +614,15 @@ app = FastAPI(
     title="Vietnam Stock AI Backend API",
     description="REST API for accessing stock analysis data",
     version="1.0.0"
+)
+
+# Add CORS middleware to allow all origins
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
 )
 
 # Initialize MongoDB client and API service
