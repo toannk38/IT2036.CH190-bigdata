@@ -1,0 +1,261 @@
+/* Screen reader only content */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Skip to main content link */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: #000;
+  color: #fff;
+  padding: 8px;
+  text-decoration: none;
+  z-index: 10000;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
+/* Focus indicators */
+.focus-visible {
+  outline: 2px solid #1976d2 !important;
+  outline-offset: 2px !important;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .MuiButton-root {
+    border: 2px solid currentColor !important;
+  }
+  
+  .MuiCard-root {
+    border: 1px solid currentColor !important;
+  }
+  
+  .MuiChip-root {
+    border: 1px solid currentColor !important;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Focus management for modals and drawers */
+.focus-trap {
+  position: relative;
+}
+
+.focus-trap::before,
+.focus-trap::after {
+  content: '';
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Ensure interactive elements have minimum touch targets */
+@media (pointer: coarse) {
+  button,
+  [role="button"],
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"],
+  a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Color contrast improvements for alerts */
+.alert-high {
+  background-color: #d32f2f !important;
+  color: #ffffff !important;
+}
+
+.alert-medium {
+  background-color: #f57c00 !important;
+  color: #ffffff !important;
+}
+
+.alert-low {
+  background-color: #388e3c !important;
+  color: #ffffff !important;
+}
+
+/* Ensure text remains readable at all zoom levels */
+@media (min-resolution: 2dppx) {
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Live region for announcements */
+#live-region {
+  position: absolute !important;
+  left: -10000px !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+}
+
+/* Keyboard navigation indicators */
+.keyboard-focused {
+  outline: 2px solid #1976d2 !important;
+  outline-offset: 2px !important;
+  border-radius: 4px !important;
+}
+
+/* Ensure charts and visualizations are accessible */
+.chart-container {
+  position: relative;
+}
+
+.chart-description {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.chart-container:focus .chart-description {
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 8px;
+  border-radius: 4px;
+  margin-top: 8px;
+}
+
+/* Error message styling for better visibility */
+.error-message {
+  color: #d32f2f !important;
+  font-weight: 500 !important;
+  margin: 8px 0 !important;
+}
+
+.error-message::before {
+  content: '⚠ ';
+  font-weight: bold;
+}
+
+/* Loading state accessibility */
+.loading-spinner[aria-label] {
+  position: relative;
+}
+
+.loading-spinner[aria-label]::after {
+  content: attr(aria-label);
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Ensure form labels are properly associated */
+.form-field {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.form-field label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.form-field input:focus + label,
+.form-field select:focus + label,
+.form-field textarea:focus + label {
+  color: #1976d2;
+}
+
+/* Table accessibility improvements */
+.data-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.data-table th,
+.data-table td {
+  border: 1px solid #e0e0e0;
+  padding: 12px;
+  text-align: left;
+}
+
+.data-table th {
+  background-color: #f5f5f5;
+  font-weight: 600;
+}
+
+.data-table caption {
+  caption-side: top;
+  text-align: left;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+/* Responsive text scaling */
+@media (max-width: 768px) {
+  .responsive-text {
+    font-size: 0.875rem !important;
+    line-height: 1.4 !important;
+  }
+  
+  .responsive-heading {
+    font-size: 1.25rem !important;
+    line-height: 1.3 !important;
+  }
+}
+
+/* Print styles for accessibility */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #666;
+  }
+  
+  .chart-description {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+    background: none !important;
+    color: inherit !important;
+    padding: 8px 0 !important;
+    border: 1px solid #ccc !important;
+    margin: 8px 0 !important;
+  }
+}

@@ -87,7 +87,7 @@ export const ActiveSymbolsList: React.FC<ActiveSymbolsListProps> = ({
             label={symbols.length}
             size="small"
             color="primary"
-            sx={{ 
+            sx={{
               ml: 2,
               ...touchTargetStyles.chip,
             }}
@@ -125,9 +125,9 @@ export const ActiveSymbolsList: React.FC<ActiveSymbolsListProps> = ({
                 }}
                 onClick={() => handleSymbolClick(symbol.symbol)}
               >
-                <CardContent 
-                  sx={{ 
-                    p: { xs: 2, sm: 1.5 }, 
+                <CardContent
+                  sx={{
+                    p: { xs: 2, sm: 1.5 },
                     '&:last-child': { pb: { xs: 2, sm: 1.5 } },
                     minHeight: { xs: '88px', sm: '68px' }, // Ensure content area is touchable
                     display: 'flex',

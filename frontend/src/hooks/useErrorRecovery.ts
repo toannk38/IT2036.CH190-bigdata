@@ -35,20 +35,21 @@ export const useErrorRecovery = (
   } = options;
 
   const [error, setError] = useState<Error | ApiError | null>(null);
-  const [lastOperation, setLastOperation] = useState<(() => Promise<any>) | null>(null);
+  const [lastOperation, setLastOperation] = useState<
+    (() => Promise<unknown>) | null
+  >(null);
 
-  const retryOperation = useCallback(async () => {
+  const retryWrapper = useCallback(async () => {
     if (!lastOperation) {
       throw new Error('No operation to retry');
     }
 
     try {
-      const result = await lastOperation();
+      await lastOperation();
       setError(null);
       if (onRecovery) {
         onRecovery();
       }
-      return result;
     } catch (err) {
       const apiError = err as Error | ApiError;
       setError(apiError);
@@ -62,7 +63,7 @@ export const useErrorRecovery = (
     isRetrying,
     canRetry,
     reset: resetRetry,
-  } = useRetry(retryOperation, {
+  } = useRetry(retryWrapper, {
     maxRetries,
     retryDelay,
     exponentialBackoff,
@@ -74,28 +75,31 @@ export const useErrorRecovery = (
     },
   });
 
-  const handleError = useCallback((err: Error | ApiError) => {
-    setError(err);
-    
-    if (onError) {
-      onError(err);
-    }
+  const handleError = useCallback(
+    (err: Error | ApiError) => {
+      setError(err);
 
-    // Check if this error should trigger automatic retry
-    const shouldAutoRetry = autoRetryOn.some(code => {
-      if ('code' in err) {
-        return err.code === code;
+      if (onError) {
+        onError(err);
       }
-      return false;
-    });
 
-    if (shouldAutoRetry && canRetry) {
-      console.log('Auto-retrying due to recoverable error:', err);
-      setTimeout(() => {
-        retry().catch(console.error);
-      }, 100); // Small delay before auto-retry
-    }
-  }, [onError, autoRetryOn, canRetry, retry]);
+      // Check if this error should trigger automatic retry
+      const shouldAutoRetry = autoRetryOn.some((code) => {
+        if ('code' in err) {
+          return err.code === code;
+        }
+        return false;
+      });
+
+      if (shouldAutoRetry && canRetry) {
+        console.log('Auto-retrying due to recoverable error:', err);
+        setTimeout(() => {
+          retry().catch(console.error);
+        }, 100); // Small delay before auto-retry
+      }
+    },
+    [onError, autoRetryOn, canRetry, retry]
+  );
 
   const clearError = useCallback(() => {
     setError(null);
@@ -103,21 +107,22 @@ export const useErrorRecovery = (
     resetRetry();
   }, [resetRetry]);
 
-  const executeWithRecovery = useCallback(async <T>(
-    operation: () => Promise<T>
-  ): Promise<T> => {
-    setLastOperation(() => operation);
-    
-    try {
-      const result = await operation();
-      setError(null);
-      return result;
-    } catch (err) {
-      const apiError = err as Error | ApiError;
-      handleError(apiError);
-      throw apiError;
-    }
-  }, [handleError]);
+  const executeWithRecovery = useCallback(
+    async <T>(operation: () => Promise<T>): Promise<T> => {
+      setLastOperation(() => operation);
+
+      try {
+        const result = await operation();
+        setError(null);
+        return result;
+      } catch (err) {
+        const apiError = err as Error | ApiError;
+        handleError(apiError);
+        throw apiError;
+      }
+    },
+    [handleError]
+  );
 
   return {
     error,

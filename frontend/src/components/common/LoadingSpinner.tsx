@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  Box,
-  CircularProgress,
-  Typography,
-  Backdrop,
-} from '@mui/material';
+import { Box, CircularProgress, Typography, Backdrop } from '@mui/material';
 
 interface LoadingSpinnerProps {
   size?: number | string;
@@ -22,19 +17,14 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   if (variant === 'overlay') {
     return (
       <Backdrop
-        sx={{ 
-          color: '#fff', 
+        sx={{
+          color: '#fff',
           zIndex: (theme) => theme.zIndex.drawer + 1,
           backgroundColor: 'rgba(0, 0, 0, 0.5)',
         }}
         open={true}
       >
-        <Box
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          gap={2}
-        >
+        <Box display="flex" flexDirection="column" alignItems="center" gap={2}>
           <CircularProgress color={color} size={size} />
           {message && (
             <Typography variant="body1" color="inherit">
@@ -56,12 +46,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
 
   if (variant === 'inline') {
     return (
-      <Box
-        display="flex"
-        alignItems="center"
-        gap={1}
-        sx={{ py: 1 }}
-      >
+      <Box display="flex" alignItems="center" gap={1} sx={{ py: 1 }}>
         <CircularProgress size={20} color={color} />
         {message && (
           <Typography variant="body2" color="text.secondary">
@@ -84,11 +69,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
     >
       <CircularProgress size={size} color={color} />
       {message && (
-        <Typography
-          variant="body1"
-          color="text.secondary"
-          sx={{ mt: 2 }}
-        >
+        <Typography variant="body1" color="text.secondary" sx={{ mt: 2 }}>
           {message}
         </Typography>
       )}

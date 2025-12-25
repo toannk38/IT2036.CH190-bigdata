@@ -40,7 +40,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('Error caught by ErrorBoundary:', error, errorInfo);
-    
+
     this.setState({
       error,
       errorInfo,
@@ -107,30 +107,41 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
                 mb: 2,
               }}
             />
-            
+
             <Typography variant="h5" gutterBottom color="error">
               Đã xảy ra lỗi
             </Typography>
-            
+
             <Typography variant="body1" color="text.secondary" paragraph>
-              Rất tiếc, đã xảy ra lỗi không mong muốn. Vui lòng thử lại hoặc tải lại trang.
+              Rất tiếc, đã xảy ra lỗi không mong muốn. Vui lòng thử lại hoặc tải
+              lại trang.
             </Typography>
 
             {process.env.NODE_ENV === 'development' && this.state.error && (
               <Alert severity="error" sx={{ mt: 2, mb: 2, textAlign: 'left' }}>
                 <AlertTitle>Chi tiết lỗi (Development Mode)</AlertTitle>
-                <Typography variant="body2" component="pre" sx={{ fontSize: '0.75rem' }}>
+                <Typography
+                  variant="body2"
+                  component="pre"
+                  sx={{ fontSize: '0.75rem' }}
+                >
                   {this.state.error.message}
                 </Typography>
                 {this.state.error.stack && (
-                  <Typography variant="body2" component="pre" sx={{ fontSize: '0.65rem', mt: 1 }}>
+                  <Typography
+                    variant="body2"
+                    component="pre"
+                    sx={{ fontSize: '0.65rem', mt: 1 }}
+                  >
                     {this.state.error.stack}
                   </Typography>
                 )}
               </Alert>
             )}
 
-            <Box sx={{ mt: 3, display: 'flex', gap: 2, justifyContent: 'center' }}>
+            <Box
+              sx={{ mt: 3, display: 'flex', gap: 2, justifyContent: 'center' }}
+            >
               <Button
                 variant="contained"
                 startIcon={<Refresh />}
@@ -139,7 +150,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
               >
                 Thử lại
               </Button>
-              
+
               <Button
                 variant="outlined"
                 onClick={this.handleReload}

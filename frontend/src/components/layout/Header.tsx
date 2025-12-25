@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   AppBar,
   Toolbar,
@@ -19,10 +19,16 @@ import {
   Dashboard as DashboardIcon,
   Notifications as AlertIcon,
   History as HistoryIcon,
+  Close as CloseIcon,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import SearchBox from './SearchBox';
 import { touchTargets } from '../../utils/responsive';
+import { useFocusManagement } from '../../hooks';
+import {
+  generateAriaLabel,
+  announceToScreenReader,
+} from '../../utils/accessibility';
 
 interface HeaderProps {
   onSearch?: (symbol: string) => void;
@@ -34,7 +40,7 @@ interface NavigationItem {
   icon: React.ReactNode;
 }
 
-const Header: React.FC<HeaderProps> = ({ onSearch }) => {
+const Header: React.FC<HeaderProps> = React.memo(({ onSearch }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -42,15 +48,38 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const navigationItems: NavigationItem[] = [
-    { path: '/', label: 'Dashboard', icon: <DashboardIcon /> },
-    { path: '/alerts', label: 'Alerts', icon: <AlertIcon /> },
-    { path: '/historical', label: 'Historical', icon: <HistoryIcon /> },
-  ];
+  // Focus management for mobile drawer
+  const { containerRef: drawerRef } = useFocusManagement(mobileMenuOpen, {
+    restoreFocus: true,
+    trapFocus: true,
+  });
+
+  const navigationItems: NavigationItem[] = useMemo(
+    () => [
+      { path: '/', label: 'Dashboard', icon: <DashboardIcon /> },
+      { path: '/alerts', label: 'Alerts', icon: <AlertIcon /> },
+      { path: '/historical', label: 'Historical', icon: <HistoryIcon /> },
+    ],
+    []
+  );
 
   const handleMenuClick = (path: string) => {
     navigate(path);
     setMobileMenuOpen(false);
+    announceToScreenReader(`Đã chuyển đến trang ${getPageName(path)}`);
+  };
+
+  const getPageName = (path: string) => {
+    switch (path) {
+      case '/':
+        return 'Dashboard';
+      case '/alerts':
+        return 'Cảnh báo';
+      case '/historical':
+        return 'Dữ liệu lịch sử';
+      default:
+        return 'Trang không xác định';
+    }
   };
 
   const handleSearch = (symbol: string) => {
@@ -58,27 +87,46 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
       onSearch(symbol);
     } else {
       navigate(`/stock/${symbol}`);
+      announceToScreenReader(`Đã chuyển đến phân tích cổ phiếu ${symbol}`);
     }
   };
 
   const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
+    const newState = !mobileMenuOpen;
+    setMobileMenuOpen(newState);
+    announceToScreenReader(
+      newState ? 'Đã mở menu điều hướng' : 'Đã đóng menu điều hướng'
+    );
+  };
+
+  const handleDrawerClose = () => {
+    setMobileMenuOpen(false);
+    announceToScreenReader('Đã đóng menu điều hướng');
   };
 
   const renderDesktopNavigation = () => (
     <Box
-      sx={{ 
-        display: { xs: 'none', md: 'flex' }, 
-        alignItems: 'center', 
+      sx={{
+        display: { xs: 'none', md: 'flex' },
+        alignItems: 'center',
         gap: { md: 1, lg: 2 },
         flexGrow: 1,
         justifyContent: 'center',
       }}
+      role="navigation"
+      aria-label="Main navigation"
     >
       {navigationItems.map((item) => (
         <Box
           key={item.path}
+          component="button"
           onClick={() => handleMenuClick(item.path)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              handleMenuClick(item.path);
+            }
+          }}
           sx={{
             display: 'flex',
             alignItems: 'center',
@@ -95,12 +143,20 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
             '&:hover': {
               backgroundColor: 'rgba(255, 255, 255, 0.05)',
             },
+            '&:focus': {
+              outline: '2px solid rgba(255, 255, 255, 0.8)',
+              outlineOffset: '2px',
+            },
             transition: 'background-color 0.2s ease',
+            border: 'none',
+            color: 'inherit',
           }}
+          aria-label={generateAriaLabel.navigation(getPageName(item.path))}
+          aria-current={location.pathname === item.path ? 'page' : undefined}
         >
           {item.icon}
-          <Typography 
-            variant="body1" 
+          <Typography
+            variant="body1"
             color="inherit"
             sx={{
               fontSize: { md: '0.875rem', lg: '1rem' },
@@ -118,26 +174,52 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
     <Drawer
       anchor="left"
       open={mobileMenuOpen}
-      onClose={() => setMobileMenuOpen(false)}
+      onClose={handleDrawerClose}
       sx={{
         '& .MuiDrawer-paper': {
           width: { xs: '280px', sm: '320px' },
           boxSizing: 'border-box',
         },
       }}
+      ModalProps={{
+        keepMounted: true, // Better performance on mobile
+      }}
     >
-      <Box sx={{ pt: 2 }}>
-        <Typography
-          variant="h6"
+      <Box
+        ref={drawerRef}
+        sx={{ pt: 2 }}
+        role="navigation"
+        aria-label="Mobile navigation menu"
+      >
+        <Box
           sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
             px: 2,
             pb: 2,
-            color: 'primary.main',
-            fontWeight: 'bold',
           }}
         >
-          Vietnam Stock AI
-        </Typography>
+          <Typography
+            variant="h6"
+            sx={{
+              color: 'primary.main',
+              fontWeight: 'bold',
+            }}
+          >
+            Vietnam Stock AI
+          </Typography>
+          <IconButton
+            onClick={handleDrawerClose}
+            aria-label="Đóng menu điều hướng"
+            sx={{
+              minWidth: touchTargets.minimum,
+              minHeight: touchTargets.minimum,
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </Box>
       </Box>
       <List>
         {navigationItems.map((item) => (
@@ -149,11 +231,13 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
                 minHeight: touchTargets.recommended,
                 px: 3,
               }}
+              aria-label={generateAriaLabel.navigation(getPageName(item.path))}
+              aria-current={
+                location.pathname === item.path ? 'page' : undefined
+              }
             >
-              <ListItemIcon sx={{ minWidth: 40 }}>
-                {item.icon}
-              </ListItemIcon>
-              <ListItemText 
+              <ListItemIcon sx={{ minWidth: 40 }}>{item.icon}</ListItemIcon>
+              <ListItemText
                 primary={item.label}
                 primaryTypographyProps={{
                   fontSize: '1rem',
@@ -169,12 +253,13 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
 
   return (
     <>
-      <AppBar 
-        position="static" 
-        sx={{ 
+      <AppBar
+        position="static"
+        sx={{
           backgroundColor: '#1976d2',
           boxShadow: theme.shadows[2],
         }}
+        role="banner"
       >
         <Toolbar
           sx={{
@@ -187,9 +272,11 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
             <IconButton
               edge="start"
               color="inherit"
-              aria-label="menu"
+              aria-label="Mở menu điều hướng"
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-navigation-menu"
               onClick={toggleMobileMenu}
-              sx={{ 
+              sx={{
                 mr: { xs: 1, sm: 2 },
                 minWidth: touchTargets.minimum,
                 minHeight: touchTargets.minimum,
@@ -214,8 +301,22 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
                 md: '1.25rem',
               },
               textAlign: { xs: 'center', md: 'left' },
+              '&:focus': {
+                outline: '2px solid rgba(255, 255, 255, 0.8)',
+                outlineOffset: '2px',
+                borderRadius: '4px',
+              },
             }}
             onClick={() => navigate('/')}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                navigate('/');
+              }
+            }}
+            tabIndex={0}
+            role="button"
+            aria-label="Về trang chủ Vietnam Stock AI"
           >
             {isMobile ? 'VSA' : 'Vietnam Stock AI'}
           </Typography>
@@ -234,6 +335,6 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
       {renderMobileDrawer()}
     </>
   );
-};
+});
 
 export default Header;

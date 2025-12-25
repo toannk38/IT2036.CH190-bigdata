@@ -1,10 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Button,
-  CircularProgress,
-  Box,
-  Typography,
-} from '@mui/material';
+import { Button, CircularProgress, Box, Typography } from '@mui/material';
 import { Refresh } from '@mui/icons-material';
 
 interface RetryButtonProps {
@@ -47,7 +42,11 @@ const RetryButton: React.FC<RetryButtonProps> = ({
     }
   };
 
-  const isDisabled = disabled || loading || isRetrying || (maxRetries !== undefined && retryCount >= maxRetries);
+  const isDisabled =
+    disabled ||
+    loading ||
+    isRetrying ||
+    (maxRetries !== undefined && retryCount >= maxRetries);
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center" gap={1}>
@@ -70,14 +69,14 @@ const RetryButton: React.FC<RetryButtonProps> = ({
       >
         {isRetrying ? 'Đang thử lại...' : children}
       </Button>
-      
+
       {showRetryCount && retryCount > 0 && (
         <Typography variant="caption" color="text.secondary">
           Đã thử {retryCount} lần
           {maxRetries && ` / ${maxRetries}`}
         </Typography>
       )}
-      
+
       {maxRetries && retryCount >= maxRetries && (
         <Typography variant="caption" color="error">
           Đã đạt giới hạn thử lại

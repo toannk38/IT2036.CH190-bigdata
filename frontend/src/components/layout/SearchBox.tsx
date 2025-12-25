@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import {
   Autocomplete,
   TextField,
@@ -13,14 +13,19 @@ import { Search as SearchIcon } from '@mui/icons-material';
 import { useActiveSymbols } from '../../hooks/useActiveSymbols';
 import { SymbolInfo } from '../../types';
 import { touchTargets } from '../../utils/responsive';
+import {
+  generateAriaLabel,
+  announceToScreenReader,
+} from '../../utils/accessibility';
 
 interface SearchBoxProps {
   onSearch: (symbol: string) => void;
 }
 
-const SearchBox: React.FC<SearchBoxProps> = ({ onSearch }) => {
+const SearchBox: React.FC<SearchBoxProps> = React.memo(({ onSearch }) => {
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
   const { data: symbols, isLoading } = useActiveSymbols();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -29,18 +34,29 @@ const SearchBox: React.FC<SearchBoxProps> = ({ onSearch }) => {
     if (!symbols?.symbols || !query.trim()) return [];
 
     const searchTerm = query.toLowerCase().trim();
-    return symbols.symbols
+    const filtered = symbols.symbols
       .filter(
         (symbol: SymbolInfo) =>
           symbol.symbol.toLowerCase().includes(searchTerm) ||
           symbol.organ_name.toLowerCase().includes(searchTerm)
       )
       .slice(0, 10); // Limit to 10 suggestions for performance
+
+    return filtered;
   }, [query, symbols]);
 
   const handleInputChange = (_: React.SyntheticEvent, value: string) => {
     setQuery(value);
     setOpen(value.length > 0);
+
+    // Announce search results to screen readers
+    if (value.length > 0) {
+      const resultCount = filteredSuggestions.length;
+      announceToScreenReader(
+        generateAriaLabel.search(value, resultCount),
+        'polite'
+      );
+    }
   };
 
   const handleSelection = (
@@ -51,6 +67,7 @@ const SearchBox: React.FC<SearchBoxProps> = ({ onSearch }) => {
       onSearch(value.symbol);
       setQuery('');
       setOpen(false);
+      announceToScreenReader(`Đã chọn ${value.symbol} - ${value.organ_name}`);
     }
   };
 
@@ -78,20 +95,22 @@ const SearchBox: React.FC<SearchBoxProps> = ({ onSearch }) => {
     props: React.HTMLAttributes<HTMLLIElement>,
     option: SymbolInfo
   ) => (
-    <Box 
-      component="li" 
-      {...props} 
+    <Box
+      component="li"
+      {...props}
       key={option.symbol}
       sx={{
         minHeight: touchTargets.minimum,
         py: 1,
         px: 2,
       }}
+      role="option"
+      aria-label={`${option.symbol} - ${option.organ_name}`}
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-        <Typography 
-          variant="body1" 
-          sx={{ 
+        <Typography
+          variant="body1"
+          sx={{
             fontWeight: 'bold',
             fontSize: { xs: '0.875rem', sm: '1rem' },
           }}
@@ -101,7 +120,7 @@ const SearchBox: React.FC<SearchBoxProps> = ({ onSearch }) => {
         <Typography
           variant="body2"
           color="text.secondary"
-          sx={{ 
+          sx={{
             fontSize: { xs: '0.75rem', sm: '0.875rem' },
             lineHeight: 1.2,
           }}
@@ -109,8 +128,8 @@ const SearchBox: React.FC<SearchBoxProps> = ({ onSearch }) => {
           {option.organ_name}
         </Typography>
         {option.icb_name2 && !isMobile && (
-          <Typography 
-            variant="caption" 
+          <Typography
+            variant="caption"
             color="text.secondary"
             sx={{ fontSize: '0.75rem' }}
           >
@@ -122,9 +141,9 @@ const SearchBox: React.FC<SearchBoxProps> = ({ onSearch }) => {
   );
 
   const renderNoOptions = () => (
-    <Paper sx={{ p: 2 }}>
-      <Typography 
-        variant="body2" 
+    <Paper sx={{ p: 2 }} role="status" aria-live="polite">
+      <Typography
+        variant="body2"
         color="text.secondary"
         sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
       >
@@ -152,9 +171,9 @@ const SearchBox: React.FC<SearchBoxProps> = ({ onSearch }) => {
       onChange={handleSelection}
       inputValue={query}
       sx={{
-        width: { 
-          xs: '160px', 
-          sm: '200px', 
+        width: {
+          xs: '160px',
+          sm: '200px',
           md: '250px',
           lg: '300px',
         },
@@ -200,27 +219,35 @@ const SearchBox: React.FC<SearchBoxProps> = ({ onSearch }) => {
       renderInput={(params) => (
         <TextField
           {...params}
-          placeholder={isMobile ? "Tìm mã..." : "Tìm mã cổ phiếu..."}
+          ref={inputRef}
+          placeholder={isMobile ? 'Tìm mã...' : 'Tìm mã cổ phiếu...'}
           variant="outlined"
-          size={isMobile ? "small" : "medium"}
+          size={isMobile ? 'small' : 'medium'}
           onKeyPress={handleKeyPress}
+          inputProps={{
+            ...params.inputProps,
+            'aria-label': 'Tìm kiếm mã cổ phiếu',
+            'aria-describedby': 'search-instructions',
+          }}
           InputProps={{
             ...params.InputProps,
             startAdornment: (
-              <SearchIcon 
-                sx={{ 
-                  color: 'rgba(255, 255, 255, 0.7)', 
+              <SearchIcon
+                sx={{
+                  color: 'rgba(255, 255, 255, 0.7)',
                   mr: 1,
                   fontSize: { xs: '1.25rem', sm: '1.5rem' },
-                }} 
+                }}
+                aria-hidden="true"
               />
             ),
             endAdornment: (
               <>
                 {isLoading ? (
-                  <CircularProgress 
-                    color="inherit" 
-                    size={isMobile ? 16 : 20} 
+                  <CircularProgress
+                    color="inherit"
+                    size={isMobile ? 16 : 20}
+                    aria-label="Đang tải dữ liệu"
                   />
                 ) : null}
                 {params.InputProps.endAdornment}
@@ -231,6 +258,6 @@ const SearchBox: React.FC<SearchBoxProps> = ({ onSearch }) => {
       )}
     />
   );
-};
+});
 
 export default SearchBox;

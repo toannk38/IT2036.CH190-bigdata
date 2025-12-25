@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  Box,
-  Typography,
-  Button,
-  Paper,
-  Alert,
-} from '@mui/material';
+import { Box, Typography, Button, Paper, Alert } from '@mui/material';
 import { ErrorOutline, Refresh, Home } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
@@ -62,8 +56,8 @@ const ErrorFallback: React.FC<ErrorFallbackProps> = ({
 
   if (variant === 'inline') {
     return (
-      <Alert 
-        severity="error" 
+      <Alert
+        severity="error"
         action={
           showRetry ? (
             <Button color="inherit" size="small" onClick={handleRetry}>
@@ -72,9 +66,7 @@ const ErrorFallback: React.FC<ErrorFallbackProps> = ({
           ) : undefined
         }
       >
-        <Typography variant="body2">
-          {message}
-        </Typography>
+        <Typography variant="body2">{message}</Typography>
       </Alert>
     );
   }
@@ -105,24 +97,36 @@ const ErrorFallback: React.FC<ErrorFallbackProps> = ({
             mb: 2,
           }}
         />
-        
+
         <Typography variant="h6" gutterBottom color="error">
           {title}
         </Typography>
-        
+
         <Typography variant="body2" color="text.secondary" paragraph>
           {message}
         </Typography>
 
         {process.env.NODE_ENV === 'development' && error && (
           <Alert severity="error" sx={{ mt: 2, mb: 2, textAlign: 'left' }}>
-            <Typography variant="body2" component="pre" sx={{ fontSize: '0.75rem' }}>
+            <Typography
+              variant="body2"
+              component="pre"
+              sx={{ fontSize: '0.75rem' }}
+            >
               {error.message}
             </Typography>
           </Alert>
         )}
 
-        <Box sx={{ mt: 3, display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
+        <Box
+          sx={{
+            mt: 3,
+            display: 'flex',
+            gap: 2,
+            justifyContent: 'center',
+            flexWrap: 'wrap',
+          }}
+        >
           {showRetry && (
             <Button
               variant="contained"
@@ -133,7 +137,7 @@ const ErrorFallback: React.FC<ErrorFallbackProps> = ({
               Thử lại
             </Button>
           )}
-          
+
           {showHome && (
             <Button
               variant="outlined"

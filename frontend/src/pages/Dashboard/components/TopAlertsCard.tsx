@@ -147,7 +147,7 @@ export const TopAlertsCard: React.FC<TopAlertsCardProps> = ({
             label={alerts.length}
             size="small"
             color="primary"
-            sx={{ 
+            sx={{
               ml: 2,
               ...touchTargetStyles.chip,
             }}
@@ -175,27 +175,31 @@ export const TopAlertsCard: React.FC<TopAlertsCardProps> = ({
                   },
                 }}
               >
-                <ListItemIcon sx={{ 
-                  minWidth: { xs: 48, sm: 40 },
-                  '& .MuiSvgIcon-root': {
-                    fontSize: { xs: '1.5rem', sm: '1.25rem' },
-                  },
-                }}>
+                <ListItemIcon
+                  sx={{
+                    minWidth: { xs: 48, sm: 40 },
+                    '& .MuiSvgIcon-root': {
+                      fontSize: { xs: '1.5rem', sm: '1.25rem' },
+                    },
+                  }}
+                >
                   {getPriorityIcon(alert.priority)}
                 </ListItemIcon>
                 <ListItemText
                   primary={
-                    <Box sx={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      gap: 1,
-                      flexWrap: { xs: 'wrap', sm: 'nowrap' },
-                    }}>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1,
+                        flexWrap: { xs: 'wrap', sm: 'nowrap' },
+                      }}
+                    >
                       <Typography
                         variant="subtitle2"
                         component="span"
-                        sx={{ 
-                          fontWeight: 'bold', 
+                        sx={{
+                          fontWeight: 'bold',
                           color: 'primary.main',
                           fontSize: { xs: '1rem', sm: '0.875rem' },
                         }}
@@ -215,8 +219,8 @@ export const TopAlertsCard: React.FC<TopAlertsCardProps> = ({
                             | 'success'
                             | 'warning'
                         }
-                        sx={{ 
-                          fontSize: { xs: '0.75rem', sm: '0.7rem' }, 
+                        sx={{
+                          fontSize: { xs: '0.75rem', sm: '0.7rem' },
                           height: { xs: 24, sm: 20 },
                           ...touchTargetStyles.chip,
                         }}
@@ -258,9 +262,9 @@ export const TopAlertsCard: React.FC<TopAlertsCardProps> = ({
         <Box sx={{ mt: 2, textAlign: 'center' }}>
           <Button
             variant="outlined"
-            size={isMobile ? "medium" : "small"}
+            size={isMobile ? 'medium' : 'small'}
             onClick={handleViewAllAlerts}
-            sx={{ 
+            sx={{
               textTransform: 'none',
               ...touchTargetStyles.button,
               fontSize: { xs: '1rem', sm: '0.875rem' },

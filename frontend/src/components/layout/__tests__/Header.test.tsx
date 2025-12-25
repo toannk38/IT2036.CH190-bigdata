@@ -26,14 +26,24 @@ const renderWithProviders = (component: React.ReactElement) => {
 describe('Header Component', () => {
   it('should render app title', () => {
     renderWithProviders(<Header />);
-    expect(screen.getByText('Vietnam Stock AI')).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /về trang chủ vietnam stock ai/i })
+    ).toBeInTheDocument();
   });
 
   it('should render navigation items', () => {
     renderWithProviders(<Header />);
-    expect(screen.getByText('Dashboard')).toBeInTheDocument();
-    expect(screen.getByText('Alerts')).toBeInTheDocument();
-    expect(screen.getByText('Historical')).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /điều hướng đến trang dashboard/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /điều hướng đến trang cảnh báo/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
+        name: /điều hướng đến trang dữ liệu lịch sử/i,
+      })
+    ).toBeInTheDocument();
   });
 
   it('should render search box', () => {

@@ -1,5 +1,12 @@
 import React from 'react';
-import { Box, Typography, Container, Divider, useTheme, useMediaQuery } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Container,
+  Divider,
+  useTheme,
+  useMediaQuery,
+} from '@mui/material';
 import { getResponsiveSpacing } from '../../utils/responsive';
 
 interface FooterProps {
@@ -43,7 +50,7 @@ const Footer: React.FC<FooterProps> = ({ lastUpdated }) => {
         },
       }}
     >
-      <Container 
+      <Container
         maxWidth="xl"
         sx={{
           px: {
@@ -63,13 +70,15 @@ const Footer: React.FC<FooterProps> = ({ lastUpdated }) => {
           }}
         >
           {/* App Info */}
-          <Box sx={{ 
-            textAlign: { xs: 'center', sm: 'left' },
-            flex: 1,
-          }}>
-            <Typography 
-              variant="h6" 
-              color="primary" 
+          <Box
+            sx={{
+              textAlign: { xs: 'center', sm: 'left' },
+              flex: 1,
+            }}
+          >
+            <Typography
+              variant="h6"
+              color="primary"
               gutterBottom
               sx={{
                 fontSize: { xs: '1rem', sm: '1.125rem', md: '1.25rem' },
@@ -77,8 +86,8 @@ const Footer: React.FC<FooterProps> = ({ lastUpdated }) => {
             >
               Vietnam Stock AI
             </Typography>
-            <Typography 
-              variant="body2" 
+            <Typography
+              variant="body2"
               color="text.secondary"
               sx={{
                 fontSize: { xs: '0.75rem', sm: '0.875rem' },
@@ -88,8 +97,8 @@ const Footer: React.FC<FooterProps> = ({ lastUpdated }) => {
               Hệ thống phân tích cổ phiếu thông minh
             </Typography>
             {!isMobile && (
-              <Typography 
-                variant="body2" 
+              <Typography
+                variant="body2"
                 color="text.secondary"
                 sx={{
                   fontSize: { xs: '0.75rem', sm: '0.875rem' },
@@ -104,13 +113,15 @@ const Footer: React.FC<FooterProps> = ({ lastUpdated }) => {
           </Box>
 
           {/* Last Updated Info */}
-          <Box sx={{ 
-            textAlign: { xs: 'center', sm: 'right' },
-            flexShrink: 0,
-          }}>
-            <Typography 
-              variant="body2" 
-              color="text.secondary" 
+          <Box
+            sx={{
+              textAlign: { xs: 'center', sm: 'right' },
+              flexShrink: 0,
+            }}
+          >
+            <Typography
+              variant="body2"
+              color="text.secondary"
               gutterBottom
               sx={{
                 fontSize: { xs: '0.75rem', sm: '0.875rem' },
@@ -121,7 +132,7 @@ const Footer: React.FC<FooterProps> = ({ lastUpdated }) => {
             <Typography
               variant="body2"
               color="text.primary"
-              sx={{ 
+              sx={{
                 fontWeight: 'medium',
                 fontSize: { xs: '0.75rem', sm: '0.875rem' },
               }}
@@ -135,8 +146,8 @@ const Footer: React.FC<FooterProps> = ({ lastUpdated }) => {
 
         {/* Copyright */}
         <Box sx={{ textAlign: 'center' }}>
-          <Typography 
-            variant="body2" 
+          <Typography
+            variant="body2"
             color="text.secondary"
             sx={{
               fontSize: { xs: '0.75rem', sm: '0.875rem' },

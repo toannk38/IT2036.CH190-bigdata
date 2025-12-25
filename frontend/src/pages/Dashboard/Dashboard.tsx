@@ -1,25 +1,34 @@
 import React from 'react';
-import { Container, Box, Typography, useTheme, useMediaQuery } from '@mui/material';
+import {
+  Container,
+  Box,
+  Typography,
+  useTheme,
+  useMediaQuery,
+} from '@mui/material';
 import { useActiveSymbols } from '@/hooks/useActiveSymbols';
 import { useTopAlerts } from '@/hooks/useAlerts';
 import { ActiveSymbolsList } from './components/ActiveSymbolsList';
 import { TopAlertsCard } from './components/TopAlertsCard';
 import { LastUpdatedInfo } from './components/LastUpdatedInfo';
-import { getResponsiveSpacing, responsiveFontSizes } from '../../utils/responsive';
+import {
+  getResponsiveSpacing,
+  responsiveFontSizes,
+} from '../../utils/responsive';
 
 export const Dashboard: React.FC = () => {
   const { data: symbolsResponse, isLoading: symbolsLoading } =
     useActiveSymbols();
   const { data: alertsResponse, isLoading: alertsLoading } = useTopAlerts(5);
-  
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const responsiveSpacing = getResponsiveSpacing(theme);
 
   return (
-    <Container 
-      maxWidth="xl" 
-      sx={{ 
+    <Container
+      maxWidth="xl"
+      sx={{
         py: {
           xs: responsiveSpacing.py.xs,
           sm: responsiveSpacing.py.sm,
@@ -33,10 +42,12 @@ export const Dashboard: React.FC = () => {
       }}
     >
       {/* Header */}
-      <Box sx={{ 
-        mb: { xs: 2, sm: 3, md: 4 },
-        textAlign: { xs: 'center', md: 'left' },
-      }}>
+      <Box
+        sx={{
+          mb: { xs: 2, sm: 3, md: 4 },
+          textAlign: { xs: 'center', md: 'left' },
+        }}
+      >
         <Typography
           variant="h4"
           component="h1"
@@ -52,7 +63,7 @@ export const Dashboard: React.FC = () => {
         <Typography
           variant="subtitle1"
           color="text.secondary"
-          sx={{ 
+          sx={{
             ...responsiveFontSizes.body1,
             display: { xs: 'none', sm: 'block' },
           }}
@@ -71,10 +82,12 @@ export const Dashboard: React.FC = () => {
         }}
       >
         {/* Left Column - Active Symbols */}
-        <Box sx={{ 
-          flex: { lg: '1 1 66%' },
-          minWidth: 0, // Prevent flex item from overflowing
-        }}>
+        <Box
+          sx={{
+            flex: { lg: '1 1 66%' },
+            minWidth: 0, // Prevent flex item from overflowing
+          }}
+        >
           <ActiveSymbolsList
             symbols={symbolsResponse?.symbols}
             loading={symbolsLoading}

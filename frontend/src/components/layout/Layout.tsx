@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Container, useTheme } from '@mui/material';
 import Header from './Header';
 import Footer from './Footer';
+import Breadcrumb from './Breadcrumb';
 import { getResponsiveSpacing } from '../../utils/responsive';
 
 interface LayoutProps {
@@ -25,7 +26,6 @@ const Layout: React.FC<LayoutProps> = ({ children, lastUpdated }) => {
       <Header />
 
       <Box
-        component="main"
         sx={{
           flexGrow: 1,
           width: '100%',
@@ -50,6 +50,7 @@ const Layout: React.FC<LayoutProps> = ({ children, lastUpdated }) => {
             width: '100%',
           }}
         >
+          <Breadcrumb />
           {children}
         </Container>
       </Box>

@@ -1,22 +1,17 @@
 import React, { useState } from 'react';
-import {
-  Box,
-  Button,
-  Typography,
-  Paper,
-  Stack,
-} from '@mui/material';
+import { Box, Button, Typography, Paper, Stack } from '@mui/material';
 import {
   ErrorBoundary,
   ErrorMessage,
   LoadingState,
-  RetryButton,
   ErrorRecovery,
 } from './index';
 import { useErrorRecovery } from '@/hooks';
 
 // Demo component that throws errors
-const ErrorThrowingComponent: React.FC<{ shouldThrow: boolean }> = ({ shouldThrow }) => {
+const ErrorThrowingComponent: React.FC<{ shouldThrow: boolean }> = ({
+  shouldThrow,
+}) => {
   if (shouldThrow) {
     throw new Error('This is a demo error from ErrorThrowingComponent');
   }
@@ -31,10 +26,10 @@ const ApiErrorDemo: React.FC = () => {
   const simulateApiCall = async () => {
     setLoading(true);
     setError(null);
-    
+
     // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     // Randomly succeed or fail
     if (Math.random() > 0.5) {
       setLoading(false);
@@ -57,7 +52,11 @@ const ApiErrorDemo: React.FC = () => {
 
   return (
     <Box>
-      <LoadingState loading={loading} type="spinner" spinnerMessage="Calling API...">
+      <LoadingState
+        loading={loading}
+        type="spinner"
+        spinnerMessage="Calling API..."
+      >
         {error ? (
           <ErrorMessage
             error={error}
@@ -116,16 +115,16 @@ const ErrorRecoveryHookDemo: React.FC = () => {
       <Typography variant="body1" gutterBottom>
         Error Recovery Hook Demo (Max 3 retries)
       </Typography>
-      
+
       <Stack spacing={2}>
-        <Button 
-          variant="contained" 
+        <Button
+          variant="contained"
           onClick={handleExecute}
           disabled={isRetrying}
         >
           {isRetrying ? 'Executing...' : 'Execute Operation'}
         </Button>
-        
+
         {error && (
           <ErrorMessage
             error={error}
@@ -135,7 +134,7 @@ const ErrorRecoveryHookDemo: React.FC = () => {
             maxRetries={3}
           />
         )}
-        
+
         {retryCount > 0 && (
           <Typography variant="caption" color="text.secondary">
             Retry attempts: {retryCount}/3
@@ -161,7 +160,7 @@ const ErrorHandlingDemo: React.FC = () => {
       <Typography variant="h4" gutterBottom>
         Error Handling Components Demo
       </Typography>
-      
+
       <Stack spacing={4}>
         {/* Error Boundary Demo */}
         <Paper sx={{ p: 3 }}>
@@ -192,9 +191,9 @@ const ErrorHandlingDemo: React.FC = () => {
               Show Loading (3s)
             </Button>
           </Box>
-          <LoadingState 
-            loading={showLoading} 
-            type="skeleton" 
+          <LoadingState
+            loading={showLoading}
+            type="skeleton"
             skeletonVariant="card"
           >
             <Typography>Content loaded successfully!</Typography>
@@ -230,8 +229,8 @@ const ErrorHandlingDemo: React.FC = () => {
             skeletonVariant="card"
           >
             <Typography>
-              This content is wrapped in ErrorRecovery component.
-              It will handle errors automatically with retry functionality.
+              This content is wrapped in ErrorRecovery component. It will handle
+              errors automatically with retry functionality.
             </Typography>
           </ErrorRecovery>
         </Paper>

@@ -203,9 +203,9 @@ export const containerWidths = {
 
 // Helper function to create responsive styles
 export const createResponsiveStyles = (styles: {
-  mobile?: any;
-  tablet?: any;
-  desktop?: any;
+  mobile?: Record<string, unknown>;
+  tablet?: Record<string, unknown>;
+  desktop?: Record<string, unknown>;
 }) => ({
   ...styles.mobile,
   [mediaQueries.tablet]: styles.tablet,

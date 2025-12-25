@@ -14,7 +14,13 @@ interface ErrorRecoveryProps {
   showRetryButton?: boolean;
   showErrorDetails?: boolean;
   loadingType?: 'spinner' | 'skeleton';
-  skeletonVariant?: 'dashboard' | 'stock-analysis' | 'alerts-table' | 'chart' | 'card' | 'list';
+  skeletonVariant?:
+    | 'dashboard'
+    | 'stock-analysis'
+    | 'alerts-table'
+    | 'chart'
+    | 'card'
+    | 'list';
   onError?: (error: Error | ApiError) => void;
   onRecovery?: () => void;
 }
@@ -32,13 +38,7 @@ const ErrorRecovery: React.FC<ErrorRecoveryProps> = ({
   onError,
   onRecovery,
 }) => {
-  const {
-    error,
-    isRetrying,
-    retryCount,
-    canRetry,
-    retry,
-  } = useErrorRecovery({
+  const { error, isRetrying, retryCount, canRetry, retry } = useErrorRecovery({
     maxRetries,
     retryDelay,
     exponentialBackoff: true,

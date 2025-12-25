@@ -72,7 +72,7 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({
 
   const getErrorTitle = () => {
     if (title) return title;
-    
+
     if (errorInfo.status) {
       switch (errorInfo.status) {
         case 404:
@@ -97,15 +97,15 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({
 
   const getSeverity = () => {
     if (severity !== 'error') return severity;
-    
+
     if (errorInfo.status) {
       if (errorInfo.status >= 500) return 'error';
       if (errorInfo.status === 404) return 'warning';
       if (errorInfo.status >= 400) return 'warning';
     }
-    
+
     if (errorInfo.code === 'NETWORK_ERROR') return 'warning';
-    
+
     return 'error';
   };
 
@@ -139,12 +139,14 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({
         }
       >
         <AlertTitle>{getErrorTitle()}</AlertTitle>
-        <Typography variant="body2">
-          {errorInfo.message}
-        </Typography>
-        
+        <Typography variant="body2">{errorInfo.message}</Typography>
+
         {errorInfo.status && (
-          <Typography variant="caption" display="block" sx={{ mt: 1, opacity: 0.8 }}>
+          <Typography
+            variant="caption"
+            display="block"
+            sx={{ mt: 1, opacity: 0.8 }}
+          >
             Mã lỗi: {errorInfo.status}
             {errorInfo.code && ` (${errorInfo.code})`}
           </Typography>
@@ -183,7 +185,7 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({
           </Alert>
         </Collapse>
       )}
-      
+
       {showRetry && onRetry && retryCount > 0 && (
         <Box sx={{ mt: 1, textAlign: 'center' }}>
           <Typography variant="caption" color="text.secondary">

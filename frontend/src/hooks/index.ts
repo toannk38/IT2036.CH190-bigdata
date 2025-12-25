@@ -5,6 +5,8 @@ export { useActiveSymbols } from './useActiveSymbols';
 export { useHistoricalData } from './useHistoricalData';
 export { useRetry } from './useRetry';
 export { useErrorRecovery } from './useErrorRecovery';
+export { default as useFocusManagement } from './useFocusManagement';
+export { default as useKeyboardNavigation } from './useKeyboardNavigation';
 
 // Export hook option types
 export type { UseStockSummaryOptions } from './useStockSummary';

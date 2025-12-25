@@ -6,7 +6,13 @@ interface LoadingStateProps {
   loading: boolean;
   children: React.ReactNode;
   type?: 'spinner' | 'skeleton';
-  skeletonVariant?: 'dashboard' | 'stock-analysis' | 'alerts-table' | 'chart' | 'card' | 'list';
+  skeletonVariant?:
+    | 'dashboard'
+    | 'stock-analysis'
+    | 'alerts-table'
+    | 'chart'
+    | 'card'
+    | 'list';
   skeletonCount?: number;
   spinnerMessage?: string;
   spinnerVariant?: 'default' | 'overlay' | 'inline' | 'minimal';
@@ -24,19 +30,11 @@ const LoadingState: React.FC<LoadingStateProps> = ({
   if (loading) {
     if (type === 'skeleton') {
       return (
-        <LoadingSkeleton
-          variant={skeletonVariant}
-          count={skeletonCount}
-        />
+        <LoadingSkeleton variant={skeletonVariant} count={skeletonCount} />
       );
     }
-    
-    return (
-      <LoadingSpinner
-        message={spinnerMessage}
-        variant={spinnerVariant}
-      />
-    );
+
+    return <LoadingSpinner message={spinnerMessage} variant={spinnerVariant} />;
   }
 
   return <>{children}</>;

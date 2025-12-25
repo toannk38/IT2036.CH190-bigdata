@@ -8,6 +8,7 @@ import { AlertsPage } from './pages/Alerts';
 import { HistoricalData } from './pages/HistoricalData';
 import { ErrorBoundary } from './components/common';
 import './styles/responsive.css';
+import './styles/accessibility.css';
 
 // Create a theme with responsive breakpoints
 const theme = createTheme({
@@ -23,7 +24,7 @@ const theme = createTheme({
     values: {
       xs: 0,
       sm: 600,
-      md: 768,  // Tablet breakpoint
+      md: 768, // Tablet breakpoint
       lg: 1024, // Desktop breakpoint
       xl: 1200,
     },
@@ -265,13 +266,19 @@ function App() {
           <CssBaseline />
           <Router>
             <ErrorBoundary>
+              {/* Skip to main content link for keyboard users */}
+              <a href="#main-content" className="skip-link">
+                Bỏ qua đến nội dung chính
+              </a>
               <Layout>
-                <Routes>
-                  <Route path="/" element={<Dashboard />} />
-                  <Route path="/stock/:symbol" element={<StockAnalysis />} />
-                  <Route path="/alerts" element={<AlertsPage />} />
-                  <Route path="/historical" element={<HistoricalData />} />
-                </Routes>
+                <main id="main-content" tabIndex={-1}>
+                  <Routes>
+                    <Route path="/" element={<Dashboard />} />
+                    <Route path="/stock/:symbol" element={<StockAnalysis />} />
+                    <Route path="/alerts" element={<AlertsPage />} />
+                    <Route path="/historical" element={<HistoricalData />} />
+                  </Routes>
+                </main>
               </Layout>
             </ErrorBoundary>
           </Router>
