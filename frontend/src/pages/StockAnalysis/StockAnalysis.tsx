@@ -146,7 +146,7 @@ const StockAnalysis: React.FC<StockAnalysisProps> = () => {
 
   // Main content when data is loaded successfully
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
+    <Container maxWidth="xl" sx={{ py: 4 }}>
       {/* Header with back button and stock info */}
       <Box sx={{ mb: 4 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
@@ -184,55 +184,45 @@ const StockAnalysis: React.FC<StockAnalysisProps> = () => {
       {/* Main content */}
       <Box
         sx={{
-          display: 'flex',
-          flexDirection: 'column',
+          display: 'grid',
+          gridTemplateColumns: '1fr 400px',
           gap: 3,
+          alignItems: 'start',
         }}
       >
-        {/* Top Row - Price and Recommendation */}
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: { xs: 'column', md: 'row' },
-            gap: 3,
-          }}
-        >
-          <Box sx={{ flex: { md: '1 1 50%' } }}>
+        {/* Left Column - Main Content */}
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+          {/* Price and Recommendation Row */}
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: 3,
+            }}
+          >
             <PriceInfoCard priceData={stockSummary.current_price} />
-          </Box>
-          <Box sx={{ flex: { md: '1 1 50%' } }}>
             <RecommendationCard
               finalScore={stockSummary.final_score}
               recommendation={stockSummary.recommendation}
             />
           </Box>
-        </Box>
 
-        {/* Second Row - Component Scores and Analysis Details */}
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: { xs: 'column', lg: 'row' },
-            gap: 3,
-          }}
-        >
-          <Box sx={{ flex: { lg: '1 1 33%' } }}>
-            <ComponentScoresChart scores={stockSummary.component_scores} />
-          </Box>
-          <Box sx={{ flex: { lg: '1 1 67%' } }}>
-            <AnalysisDetails
-              aiAnalysis={stockSummary.ai_ml_analysis}
-              llmAnalysis={stockSummary.llm_analysis}
-            />
-          </Box>
-        </Box>
+          {/* Analysis Details */}
+          <AnalysisDetails
+            aiAnalysis={stockSummary.ai_ml_analysis}
+            llmAnalysis={stockSummary.llm_analysis}
+          />
 
-        {/* Third Row - Alerts (if any) */}
-        {stockSummary.alerts && stockSummary.alerts.length > 0 && (
-          <Box>
+          {/* Alerts (if any) */}
+          {stockSummary.alerts && stockSummary.alerts.length > 0 && (
             <AlertsList alerts={stockSummary.alerts} />
-          </Box>
-        )}
+          )}
+        </Box>
+
+        {/* Right Column - Component Scores */}
+        <Box sx={{ position: 'sticky', top: 20 }}>
+          <ComponentScoresChart scores={stockSummary.component_scores} />
+        </Box>
       </Box>
     </Container>
   );

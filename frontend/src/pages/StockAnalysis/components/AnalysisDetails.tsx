@@ -9,6 +9,8 @@ import {
   AccordionSummary,
   AccordionDetails,
   Alert,
+  Grid,
+  Divider,
 } from '@mui/material';
 import {
   ExpandMore,
@@ -16,6 +18,10 @@ import {
   Psychology,
   TrendingUp,
   Assessment,
+  TrendingDown,
+  TrendingFlat,
+  ShowChart,
+  Timeline,
 } from '@mui/icons-material';
 import { AnalysisDetailsProps } from '@/types';
 
@@ -24,11 +30,8 @@ const AnalysisDetails: React.FC<AnalysisDetailsProps> = ({
   llmAnalysis,
 }) => {
   // Check if we have any analysis data
-  const hasAiAnalysis =
-    aiAnalysis &&
-    (aiAnalysis.trend_prediction || aiAnalysis.technical_score !== undefined);
-  const hasLlmAnalysis =
-    llmAnalysis && (llmAnalysis.sentiment || llmAnalysis.summary);
+  const hasAiAnalysis = aiAnalysis && Object.keys(aiAnalysis).length > 0;
+  const hasLlmAnalysis = llmAnalysis && Object.keys(llmAnalysis).length > 0;
 
   if (!hasAiAnalysis && !hasLlmAnalysis) {
     return (
@@ -43,86 +46,80 @@ const AnalysisDetails: React.FC<AnalysisDetailsProps> = ({
     );
   }
 
-  // Format trend prediction display
-  const formatTrendPrediction = (prediction?: string | object): string => {
-    if (!prediction) return 'Không có dữ liệu';
-    
-    if (typeof prediction === 'string') {
-      return prediction;
-    }
-    
-    // Handle object case - extract meaningful information
-    if (typeof prediction === 'object' && prediction !== null) {
-      const pred = prediction as any;
-      let result = '';
-      
-      if (pred.direction) {
-        result += `Hướng: ${pred.direction}`;
-      }
-      
-      if (pred.confidence) {
-        result += result ? `, Độ tin cậy: ${pred.confidence}` : `Độ tin cậy: ${pred.confidence}`;
-      }
-      
-      if (pred.predicted_price) {
-        result += result ? `, Giá dự đoán: ${pred.predicted_price}` : `Giá dự đoán: ${pred.predicted_price}`;
-      }
-      
-      return result || JSON.stringify(prediction);
-    }
-    
-    return String(prediction);
+  // Format AI/ML Analysis Data
+  const formatAIAnalysis = (data: any) => {
+    if (!data) return null;
+
+    const {
+      timestamp,
+      trend_prediction,
+      risk_score,
+      technical_score,
+      indicators,
+    } = data;
+
+    return {
+      timestamp,
+      trend_prediction,
+      risk_score,
+      technical_score,
+      indicators,
+    };
   };
 
-  // Format technical score
-  const formatTechnicalScore = (score?: number): string => {
-    if (score === undefined || score === null) return 'N/A';
-    return (score * 100).toFixed(1) + '%';
+  // Format LLM Analysis Data
+  const formatLLMAnalysis = (data: any) => {
+    if (!data) return null;
+
+    const {
+      timestamp,
+      sentiment,
+      summary,
+      influence_score,
+      articles_analyzed,
+    } = data;
+
+    return {
+      timestamp,
+      sentiment,
+      summary,
+      influence_score,
+      articles_analyzed,
+    };
   };
 
-  // Get sentiment color
-  const getSentimentColor = (sentiment?: any): string => {
-    if (!sentiment || typeof sentiment !== 'string') return '#9e9e9e';
-    const lowerSentiment = sentiment.toLowerCase();
-    if (
-      lowerSentiment.includes('positive') ||
-      lowerSentiment.includes('tích cực')
-    ) {
-      return '#4caf50';
+  // Get trend direction icon and color
+  const getTrendIcon = (direction: string) => {
+    switch (direction?.toLowerCase()) {
+      case 'up':
+        return { icon: <TrendingUp />, color: '#4caf50' };
+      case 'down':
+        return { icon: <TrendingDown />, color: '#f44336' };
+      default:
+        return { icon: <TrendingFlat />, color: '#ff9800' };
     }
-    if (
-      lowerSentiment.includes('negative') ||
-      lowerSentiment.includes('tiêu cực')
-    ) {
-      return '#f44336';
-    }
-    return '#ff9800';
   };
 
-  // Get sentiment label
-  const getSentimentLabel = (sentiment?: any): string => {
-    if (!sentiment || typeof sentiment !== 'string') return 'Không xác định';
-    const lowerSentiment = sentiment.toLowerCase();
-    if (
-      lowerSentiment.includes('positive') ||
-      lowerSentiment.includes('tích cực')
-    ) {
-      return 'Tích cực';
+  // Get sentiment color and label
+  const getSentimentInfo = (sentiment: any) => {
+    if (!sentiment) return { label: 'Không xác định', color: '#9e9e9e' };
+    
+    const sentimentValue = typeof sentiment === 'object' ? sentiment.sentiment : sentiment;
+    
+    switch (sentimentValue?.toLowerCase()) {
+      case 'positive':
+        return { label: 'Tích cực', color: '#4caf50' };
+      case 'negative':
+        return { label: 'Tiêu cực', color: '#f44336' };
+      case 'neutral':
+        return { label: 'Trung tính', color: '#ff9800' };
+      default:
+        return { label: sentimentValue || 'Không xác định', color: '#9e9e9e' };
     }
-    if (
-      lowerSentiment.includes('negative') ||
-      lowerSentiment.includes('tiêu cực')
-    ) {
-      return 'Tiêu cực';
-    }
-    if (
-      lowerSentiment.includes('neutral') ||
-      lowerSentiment.includes('trung tính')
-    ) {
-      return 'Trung tính';
-    }
-    return sentiment;
   };
+
+  const aiData = formatAIAnalysis(aiAnalysis);
+  const llmData = formatLLMAnalysis(llmAnalysis);
 
   return (
     <Card>
@@ -136,7 +133,7 @@ const AnalysisDetails: React.FC<AnalysisDetailsProps> = ({
 
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           {/* AI/ML Analysis Section */}
-          {hasAiAnalysis && (
+          {hasAiAnalysis && aiData && (
             <Accordion defaultExpanded>
               <AccordionSummary
                 expandIcon={<ExpandMore />}
@@ -146,100 +143,136 @@ const AnalysisDetails: React.FC<AnalysisDetailsProps> = ({
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <SmartToy sx={{ mr: 1, color: 'primary.main' }} />
                   <Typography variant="subtitle1" sx={{ fontWeight: 'medium' }}>
-                    Phân Tích AI/ML
+                    Dữ liệu phân tích ML/AI đầy đủ
                   </Typography>
                 </Box>
               </AccordionSummary>
               <AccordionDetails>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                  {/* Technical Score and Trend Prediction */}
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      flexDirection: { xs: 'column', sm: 'row' },
-                      gap: 2,
-                    }}
-                  >
-                    {/* Technical Score */}
-                    {aiAnalysis?.technical_score !== undefined && (
-                      <Box
-                        sx={{
-                          flex: 1,
-                          p: 2,
-                          bgcolor: 'grey.50',
-                          borderRadius: 1,
-                        }}
-                      >
-                        <Box
-                          sx={{ display: 'flex', alignItems: 'center', mb: 1 }}
-                        >
-                          <TrendingUp sx={{ mr: 1, color: 'primary.main' }} />
-                          <Typography variant="subtitle2">
-                            Điểm Kỹ Thuật
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                  {/* Timestamp */}
+                  {aiData.timestamp && (
+                    <Box>
+                      <Typography variant="body2" color="text.secondary">
+                        Thời gian phân tích: {new Date(aiData.timestamp).toLocaleString('vi-VN')}
+                      </Typography>
+                    </Box>
+                  )}
+
+                  {/* Trend Prediction */}
+                  {aiData.trend_prediction && (
+                    <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
+                      <Typography variant="subtitle2" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
+                        <ShowChart sx={{ mr: 1, color: 'primary.main' }} />
+                        Dự đoán xu hướng
+                      </Typography>
+                      <Grid container spacing={2}>
+                        <Grid item xs={12} sm={4}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            {getTrendIcon(aiData.trend_prediction.direction).icon}
+                            <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
+                              Hướng: {aiData.trend_prediction.direction === 'up' ? 'Tăng' : 
+                                     aiData.trend_prediction.direction === 'down' ? 'Giảm' : 'Ngang'}
+                            </Typography>
+                          </Box>
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
+                          <Typography variant="body2" color="text.secondary">
+                            Độ tin cậy: {(aiData.trend_prediction.confidence * 100).toFixed(2)}%
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
+                          <Typography variant="body2" color="text.secondary">
+                            Giá dự đoán: {aiData.trend_prediction.predicted_price?.toFixed(2)} đ
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    </Box>
+                  )}
+
+                  {/* Risk Score and Technical Score */}
+                  <Grid container spacing={2}>
+                    {aiData.risk_score !== undefined && (
+                      <Grid item xs={12} sm={6}>
+                        <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
+                          <Typography variant="subtitle2" gutterBottom>
+                            Điểm rủi ro
+                          </Typography>
+                          <Typography variant="h5" color="error.main">
+                            {(aiData.risk_score * 100).toFixed(2)}%
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            Mức độ rủi ro đầu tư
                           </Typography>
                         </Box>
-                        <Typography variant="h5" color="primary.main">
-                          {formatTechnicalScore(aiAnalysis.technical_score)}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          Đánh giá dựa trên các chỉ số kỹ thuật
-                        </Typography>
-                      </Box>
+                      </Grid>
                     )}
-
-                    {/* Trend Prediction */}
-                    {aiAnalysis?.trend_prediction && (
-                      <Box
-                        sx={{
-                          flex: 1,
-                          p: 2,
-                          bgcolor: 'grey.50',
-                          borderRadius: 1,
-                        }}
-                      >
-                        <Typography variant="subtitle2" gutterBottom>
-                          Dự Đoán Xu Hướng
-                        </Typography>
-                        <Typography variant="body1" sx={{ mb: 1 }}>
-                          {formatTrendPrediction(aiAnalysis.trend_prediction)}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          Dự đoán từ mô hình machine learning
-                        </Typography>
-                      </Box>
+                    {aiData.technical_score !== undefined && (
+                      <Grid item xs={12} sm={6}>
+                        <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
+                          <Typography variant="subtitle2" gutterBottom>
+                            Điểm kỹ thuật
+                          </Typography>
+                          <Typography variant="h5" color="primary.main">
+                            {(aiData.technical_score * 100).toFixed(1)}%
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            Đánh giá kỹ thuật tổng thể
+                          </Typography>
+                        </Box>
+                      </Grid>
                     )}
-                  </Box>
+                  </Grid>
 
-                  {/* Full AI Analysis Display */}
-                  <Box sx={{ mt: 1 }}>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      gutterBottom
-                    >
-                      Dữ liệu phân tích AI/ML đầy đủ:
-                    </Typography>
-                    <Box
-                      component="pre"
-                      sx={{
-                        p: 2,
-                        bgcolor: 'grey.100',
-                        borderRadius: 1,
-                        fontSize: '0.875rem',
-                        overflow: 'auto',
-                        maxHeight: 200,
-                      }}
-                    >
-                      {JSON.stringify(aiAnalysis, null, 2)}
+                  {/* Technical Indicators */}
+                  {aiData.indicators && (
+                    <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
+                      <Typography variant="subtitle2" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Timeline sx={{ mr: 1, color: 'primary.main' }} />
+                        Chỉ số kỹ thuật
+                      </Typography>
+                      <Grid container spacing={2}>
+                        {aiData.indicators.rsi !== undefined && (
+                          <Grid item xs={6} sm={3}>
+                            <Typography variant="body2" color="text.secondary">RSI</Typography>
+                            <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
+                              {aiData.indicators.rsi.toFixed(2)}
+                            </Typography>
+                          </Grid>
+                        )}
+                        {aiData.indicators.macd !== undefined && (
+                          <Grid item xs={6} sm={3}>
+                            <Typography variant="body2" color="text.secondary">MACD</Typography>
+                            <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
+                              {aiData.indicators.macd.toFixed(4)}
+                            </Typography>
+                          </Grid>
+                        )}
+                        {aiData.indicators.moving_avg_20 !== undefined && (
+                          <Grid item xs={6} sm={3}>
+                            <Typography variant="body2" color="text.secondary">MA20</Typography>
+                            <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
+                              {aiData.indicators.moving_avg_20.toFixed(2)}
+                            </Typography>
+                          </Grid>
+                        )}
+                        {aiData.indicators.moving_avg_50 !== undefined && (
+                          <Grid item xs={6} sm={3}>
+                            <Typography variant="body2" color="text.secondary">MA50</Typography>
+                            <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
+                              {aiData.indicators.moving_avg_50.toFixed(2)}
+                            </Typography>
+                          </Grid>
+                        )}
+                      </Grid>
                     </Box>
-                  </Box>
+                  )}
                 </Box>
               </AccordionDetails>
             </Accordion>
           )}
 
           {/* LLM Analysis Section */}
-          {hasLlmAnalysis && (
+          {hasLlmAnalysis && llmData && (
             <Accordion defaultExpanded>
               <AccordionSummary
                 expandIcon={<ExpandMore />}
@@ -249,93 +282,101 @@ const AnalysisDetails: React.FC<AnalysisDetailsProps> = ({
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <Psychology sx={{ mr: 1, color: 'secondary.main' }} />
                   <Typography variant="subtitle1" sx={{ fontWeight: 'medium' }}>
-                    Phân Tích LLM
+                    Dữ liệu phân tích LLM đầy đủ
                   </Typography>
                 </Box>
               </AccordionSummary>
               <AccordionDetails>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                  {/* Sentiment and Summary */}
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      flexDirection: { xs: 'column', sm: 'row' },
-                      gap: 2,
-                    }}
-                  >
-                    {/* Sentiment */}
-                    {llmAnalysis?.sentiment && (
-                      <Box
-                        sx={{
-                          flex: 1,
-                          p: 2,
-                          bgcolor: 'grey.50',
-                          borderRadius: 1,
-                        }}
-                      >
-                        <Typography variant="subtitle2" gutterBottom>
-                          Tâm Lý Thị Trường
-                        </Typography>
-                        <Chip
-                          label={getSentimentLabel(llmAnalysis.sentiment)}
-                          sx={{
-                            backgroundColor: getSentimentColor(
-                              llmAnalysis.sentiment
-                            ),
-                            color: 'white',
-                            fontWeight: 'medium',
-                            mb: 1,
-                          }}
-                        />
-                        <Typography variant="body2" color="text.secondary">
-                          Phân tích từ tin tức và dữ liệu thị trường
-                        </Typography>
-                      </Box>
-                    )}
-
-                    {/* Summary */}
-                    {llmAnalysis?.summary && (
-                      <Box
-                        sx={{
-                          flex: llmAnalysis?.sentiment ? 1 : 2,
-                          p: 2,
-                          bgcolor: 'grey.50',
-                          borderRadius: 1,
-                        }}
-                      >
-                        <Typography variant="subtitle2" gutterBottom>
-                          Tóm Tắt Phân Tích
-                        </Typography>
-                        <Typography variant="body2" sx={{ lineHeight: 1.6 }}>
-                          {llmAnalysis.summary}
-                        </Typography>
-                      </Box>
-                    )}
-                  </Box>
-
-                  {/* Full LLM Analysis Display */}
-                  <Box sx={{ mt: 1 }}>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      gutterBottom
-                    >
-                      Dữ liệu phân tích LLM đầy đủ:
-                    </Typography>
-                    <Box
-                      component="pre"
-                      sx={{
-                        p: 2,
-                        bgcolor: 'grey.100',
-                        borderRadius: 1,
-                        fontSize: '0.875rem',
-                        overflow: 'auto',
-                        maxHeight: 200,
-                      }}
-                    >
-                      {JSON.stringify(llmAnalysis, null, 2)}
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                  {/* Timestamp */}
+                  {llmData.timestamp && (
+                    <Box>
+                      <Typography variant="body2" color="text.secondary">
+                        Thời gian phân tích: {new Date(llmData.timestamp).toLocaleString('vi-VN')}
+                      </Typography>
                     </Box>
-                  </Box>
+                  )}
+
+                  {/* Sentiment Analysis */}
+                  {llmData.sentiment && (
+                    <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
+                      <Typography variant="subtitle2" gutterBottom>
+                        Phân tích tâm lý thị trường
+                      </Typography>
+                      <Grid container spacing={2} alignItems="center">
+                        <Grid item xs={12} sm={4}>
+                          <Chip
+                            label={getSentimentInfo(llmData.sentiment).label}
+                            sx={{
+                              backgroundColor: getSentimentInfo(llmData.sentiment).color,
+                              color: 'white',
+                              fontWeight: 'medium',
+                            }}
+                          />
+                        </Grid>
+                        {typeof llmData.sentiment === 'object' && (
+                          <>
+                            <Grid item xs={6} sm={4}>
+                              <Typography variant="body2" color="text.secondary">
+                                Điểm số: {llmData.sentiment.score || 0}
+                              </Typography>
+                            </Grid>
+                            <Grid item xs={6} sm={4}>
+                              <Typography variant="body2" color="text.secondary">
+                                Độ tin cậy: {((llmData.sentiment.confidence || 0) * 100).toFixed(1)}%
+                              </Typography>
+                            </Grid>
+                          </>
+                        )}
+                      </Grid>
+                    </Box>
+                  )}
+
+                  {/* Summary */}
+                  {llmData.summary && (
+                    <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
+                      <Typography variant="subtitle2" gutterBottom>
+                        Tóm tắt phân tích
+                      </Typography>
+                      <Typography variant="body2" sx={{ lineHeight: 1.6 }}>
+                        {llmData.summary}
+                      </Typography>
+                    </Box>
+                  )}
+
+                  {/* Analysis Stats */}
+                  <Grid container spacing={2}>
+                    {llmData.influence_score !== undefined && (
+                      <Grid item xs={12} sm={6}>
+                        <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
+                          <Typography variant="subtitle2" gutterBottom>
+                            Điểm ảnh hưởng
+                          </Typography>
+                          <Typography variant="h5" color="secondary.main">
+                            {(llmData.influence_score * 100).toFixed(1)}%
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            Mức độ ảnh hưởng tin tức
+                          </Typography>
+                        </Box>
+                      </Grid>
+                    )}
+                    {llmData.articles_analyzed !== undefined && (
+                      <Grid item xs={12} sm={6}>
+                        <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
+                          <Typography variant="subtitle2" gutterBottom>
+                            Bài viết phân tích
+                          </Typography>
+                          <Typography variant="h5" color="info.main">
+                            {llmData.articles_analyzed.toLocaleString()}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            Số bài viết đã phân tích
+                          </Typography>
+                        </Box>
+                      </Grid>
+                    )}
+                  </Grid>
                 </Box>
               </AccordionDetails>
             </Accordion>
