@@ -34,24 +34,42 @@ const ComponentScoresChart: React.FC<ComponentScoresChartProps> = ({
   }
 
   // Format score as percentage
-  const formatScore = (score: number): string => {
+  const formatScore = (score: number, isRiskScore = false): string => {
     return (score * 100).toFixed(1);
   };
 
   // Get color based on score value
-  const getScoreColor = (score: number): string => {
-    if (score >= 0.7) return '#4caf50'; // Green
-    if (score >= 0.4) return '#ff9800'; // Orange
-    return '#f44336'; // Red
+  const getScoreColor = (score: number, isRiskScore = false): string => {
+    if (isRiskScore) {
+      // For risk score: lower is better (0-1 scale)
+      if (score <= 0.2) return '#4caf50'; // Green for low risk
+      if (score <= 0.5) return '#ff9800'; // Orange for medium risk
+      return '#f44336'; // Red for high risk
+    } else {
+      // For other scores: higher is better (0-1 scale)
+      if (score >= 0.7) return '#4caf50'; // Green
+      if (score >= 0.4) return '#ff9800'; // Orange
+      return '#f44336'; // Red
+    }
   };
 
   // Get score level description
-  const getScoreLevel = (score: number): string => {
-    if (score >= 0.8) return 'Rất tốt';
-    if (score >= 0.6) return 'Tốt';
-    if (score >= 0.4) return 'Trung bình';
-    if (score >= 0.2) return 'Kém';
-    return 'Rất kém';
+  const getScoreLevel = (score: number, isRiskScore = false): string => {
+    if (isRiskScore) {
+      // For risk score: lower is better
+      if (score <= 0.1) return 'Rất thấp';
+      if (score <= 0.2) return 'Thấp';
+      if (score <= 0.4) return 'Trung bình';
+      if (score <= 0.6) return 'Cao';
+      return 'Rất cao';
+    } else {
+      // For other scores: higher is better
+      if (score >= 0.8) return 'Rất tốt';
+      if (score >= 0.6) return 'Tốt';
+      if (score >= 0.4) return 'Trung bình';
+      if (score >= 0.2) return 'Kém';
+      return 'Rất kém';
+    }
   };
 
   // Component score data
@@ -62,13 +80,15 @@ const ComponentScoresChart: React.FC<ComponentScoresChartProps> = ({
       value: scores.technical_score,
       icon: <TrendingUp />,
       description: 'Đánh giá dựa trên các chỉ số kỹ thuật',
+      isRiskScore: false,
     },
     {
       key: 'risk_score',
       label: 'Đánh Giá Rủi Ro',
       value: scores.risk_score,
       icon: <Security />,
-      description: 'Mức độ rủi ro của cổ phiếu',
+      description: 'Mức độ rủi ro (thấp hơn là tốt hơn)',
+      isRiskScore: true,
     },
     {
       key: 'sentiment_score',
@@ -76,6 +96,7 @@ const ComponentScoresChart: React.FC<ComponentScoresChartProps> = ({
       value: scores.sentiment_score,
       icon: <Psychology />,
       description: 'Phân tích tâm lý từ tin tức và dữ liệu',
+      isRiskScore: false,
     },
   ];
 
@@ -94,17 +115,17 @@ const ComponentScoresChart: React.FC<ComponentScoresChartProps> = ({
             <Box key={component.key} sx={{ mb: 2 }}>
               {/* Component Header */}
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                <Box sx={{ color: getScoreColor(component.value), mr: 1 }}>
+                <Box sx={{ color: getScoreColor(component.value, component.isRiskScore), mr: 1 }}>
                   {component.icon}
                 </Box>
                 <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
                   {component.label}
                 </Typography>
                 <Chip
-                  label={`${formatScore(component.value)}%`}
+                  label={`${formatScore(component.value, component.isRiskScore)}%`}
                   size="small"
                   sx={{
-                    backgroundColor: getScoreColor(component.value),
+                    backgroundColor: getScoreColor(component.value, component.isRiskScore),
                     color: 'white',
                     fontWeight: 'bold',
                   }}
@@ -114,14 +135,14 @@ const ComponentScoresChart: React.FC<ComponentScoresChartProps> = ({
               {/* Progress Bar */}
               <LinearProgress
                 variant="determinate"
-                value={component.value * 100}
+                value={component.isRiskScore ? (1 - component.value) * 100 : component.value * 100}
                 sx={{
                   height: 12,
                   borderRadius: 6,
                   mb: 1,
                   backgroundColor: 'grey.200',
                   '& .MuiLinearProgress-bar': {
-                    backgroundColor: getScoreColor(component.value),
+                    backgroundColor: getScoreColor(component.value, component.isRiskScore),
                     borderRadius: 6,
                   },
                 }}
@@ -141,11 +162,11 @@ const ComponentScoresChart: React.FC<ComponentScoresChartProps> = ({
                 <Typography
                   variant="caption"
                   sx={{
-                    color: getScoreColor(component.value),
+                    color: getScoreColor(component.value, component.isRiskScore),
                     fontWeight: 'medium',
                   }}
                 >
-                  {getScoreLevel(component.value)}
+                  {getScoreLevel(component.value, component.isRiskScore)}
                 </Typography>
               </Box>
             </Box>
@@ -155,9 +176,11 @@ const ComponentScoresChart: React.FC<ComponentScoresChartProps> = ({
         {/* Summary */}
         <Box sx={{ mt: 3, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
           <Typography variant="body2" color="text.secondary">
-            <strong>Giải thích:</strong> Điểm thành phần được tính từ 0-100%,
-            trong đó trên 70% là tốt, 40-70% là trung bình, dưới 40% cần thận
-            trọng.
+            <strong>Giải thích:</strong> 
+            <br />• <strong>Phân tích kỹ thuật & Tâm lý thị trường:</strong> 0-100%, càng cao càng tốt
+            <br />• <strong>Đánh giá rủi ro:</strong> 0-100%, càng thấp càng tốt (rủi ro thấp hơn)
+            <br />• Trên 70% là tốt, 40-70% là trung bình, dưới 40% cần thận trọng
+            <br />• Điểm số phản ánh tiềm năng tăng trưởng và mức độ hấp dẫn đầu tư
           </Typography>
         </Box>
       </CardContent>

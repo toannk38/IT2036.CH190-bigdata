@@ -197,11 +197,28 @@ const AnalysisDetails: React.FC<AnalysisDetailsProps> = ({
                           <Typography variant="subtitle2" gutterBottom>
                             Điểm rủi ro
                           </Typography>
-                          <Typography variant="h5" color="error.main">
+                          <Typography 
+                            variant="h5" 
+                            color={aiData.risk_score <= 0.2 ? 'success.main' : 
+                                   aiData.risk_score <= 0.5 ? 'warning.main' : 'error.main'}
+                          >
                             {(aiData.risk_score * 100).toFixed(2)}%
                           </Typography>
                           <Typography variant="body2" color="text.secondary">
-                            Mức độ rủi ro đầu tư
+                            Mức độ rủi ro (thấp hơn là tốt hơn)
+                          </Typography>
+                          <Typography 
+                            variant="caption" 
+                            sx={{ 
+                              color: aiData.risk_score <= 0.2 ? 'success.main' : 
+                                     aiData.risk_score <= 0.5 ? 'warning.main' : 'error.main',
+                              fontWeight: 'medium'
+                            }}
+                          >
+                            {aiData.risk_score <= 0.1 ? 'Rất thấp' :
+                             aiData.risk_score <= 0.2 ? 'Thấp' :
+                             aiData.risk_score <= 0.4 ? 'Trung bình' :
+                             aiData.risk_score <= 0.6 ? 'Cao' : 'Rất cao'}
                           </Typography>
                         </Box>
                       </Grid>
@@ -216,7 +233,20 @@ const AnalysisDetails: React.FC<AnalysisDetailsProps> = ({
                             {(aiData.technical_score * 100).toFixed(1)}%
                           </Typography>
                           <Typography variant="body2" color="text.secondary">
-                            Đánh giá kỹ thuật tổng thể
+                            Đánh giá kỹ thuật tổng thể (cao hơn là tốt hơn)
+                          </Typography>
+                          <Typography 
+                            variant="caption" 
+                            sx={{ 
+                              color: aiData.technical_score >= 0.7 ? 'success.main' : 
+                                     aiData.technical_score >= 0.4 ? 'warning.main' : 'error.main',
+                              fontWeight: 'medium'
+                            }}
+                          >
+                            {aiData.technical_score >= 0.8 ? 'Rất tốt' :
+                             aiData.technical_score >= 0.6 ? 'Tốt' :
+                             aiData.technical_score >= 0.4 ? 'Trung bình' :
+                             aiData.technical_score >= 0.2 ? 'Kém' : 'Rất kém'}
                           </Typography>
                         </Box>
                       </Grid>

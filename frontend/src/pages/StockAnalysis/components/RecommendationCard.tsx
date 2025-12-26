@@ -67,22 +67,24 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({
     return score.toFixed(1);
   };
 
-  // Get score color based on value
+  // Get score color based on value (0-100 scale, higher is better)
   const getScoreColor = (score?: number): string => {
     if (score === undefined || score === null) return '#9e9e9e';
-    if (score >= 70) return COLORS.BUY;
-    if (score >= 40) return COLORS.HOLD;
-    return COLORS.SELL;
+    if (score >= 70) return COLORS.BUY; // Green for good scores
+    if (score >= 40) return COLORS.HOLD; // Orange for medium scores
+    return COLORS.SELL; // Red for poor scores
   };
 
-  // Get score level description
+  // Get score level description (0-100 scale)
   const getScoreLevel = (score?: number): string => {
     if (score === undefined || score === null) return 'Không xác định';
-    if (score >= 80) return 'Rất tích cực';
-    if (score >= 60) return 'Tích cực';
+    if (score >= 80) return 'Rất đáng mua';
+    if (score >= 70) return 'Đáng mua';
+    if (score >= 60) return 'Có thể mua';
     if (score >= 40) return 'Trung tính';
-    if (score >= 20) return 'Tiêu cực';
-    return 'Rất tiêu cực';
+    if (score >= 30) return 'Ít hấp dẫn';
+    if (score >= 20) return 'Không hấp dẫn';
+    return 'Rất không hấp dẫn';
   };
 
   return (
@@ -125,14 +127,18 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({
 
           {finalScore !== undefined && finalScore !== null ? (
             <>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                 <Typography
-                  variant="h4"
-                  sx={{ color: getScoreColor(finalScore), mr: 1 }}
+                  variant="h3"
+                  sx={{ 
+                    color: getScoreColor(finalScore), 
+                    mr: 1,
+                    fontWeight: 'bold'
+                  }}
                 >
                   {formatScore(finalScore)}
                 </Typography>
-                <Typography variant="h6" color="text.secondary">
+                <Typography variant="h5" color="text.secondary">
                   /100
                 </Typography>
               </Box>
@@ -141,18 +147,41 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({
                 variant="determinate"
                 value={finalScore}
                 sx={{
-                  height: 8,
-                  borderRadius: 4,
-                  mb: 1,
+                  height: 12,
+                  borderRadius: 6,
+                  mb: 2,
                   '& .MuiLinearProgress-bar': {
                     backgroundColor: getScoreColor(finalScore),
                   },
                 }}
               />
 
-              <Typography variant="body2" color="text.secondary">
-                Mức độ: {getScoreLevel(finalScore)}
-              </Typography>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Typography variant="body2" color="text.secondary">
+                  Mức độ: <strong>{getScoreLevel(finalScore)}</strong>
+                </Typography>
+                <Chip
+                  label={getScoreLevel(finalScore)}
+                  size="small"
+                  sx={{
+                    backgroundColor: getScoreColor(finalScore),
+                    color: 'white',
+                    fontWeight: 'medium',
+                  }}
+                />
+              </Box>
+
+              {/* Score interpretation */}
+              <Box sx={{ mt: 2, p: 1.5, bgcolor: 'grey.50', borderRadius: 1 }}>
+                <Typography variant="body2" color="text.secondary">
+                  {finalScore >= 80 ? '🚀 Rất đáng mua - Cơ hội đầu tư xuất sắc' :
+                   finalScore >= 70 ? '📈 Đáng mua - Cơ hội đầu tư tốt' :
+                   finalScore >= 60 ? '📊 Có thể mua - Cơ hội đầu tư khá tốt' :
+                   finalScore >= 40 ? '⚖️ Trung tính - Cần cân nhắc kỹ' :
+                   finalScore >= 30 ? '⚠️ Ít hấp dẫn - Nên thận trọng' :
+                   finalScore >= 20 ? '🔻 Không hấp dẫn - Không nên mua' : '🚨 Rất không hấp dẫn - Tránh mua'}
+                </Typography>
+              </Box>
             </>
           ) : (
             <Alert severity="info" sx={{ mt: 1 }}>
@@ -164,9 +193,9 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({
         {/* Additional Information */}
         <Alert severity={recommendationDetails.severity} sx={{ mt: 2 }}>
           <Typography variant="body2">
-            <strong>Lưu ý:</strong> Đây chỉ là khuyến nghị dựa trên phân tích dữ
-            liệu. Vui lòng tham khảo thêm các nguồn thông tin khác và cân nhắc
-            kỹ trước khi đầu tư.
+            <strong>Lưu ý:</strong> Điểm số phản ánh mức độ hấp dẫn của cổ phiếu dựa trên phân tích dữ liệu. 
+            Điểm càng cao càng có tiềm năng tăng trưởng tốt. Vui lòng tham khảo thêm các nguồn thông tin khác 
+            và cân nhắc kỹ trước khi đầu tư.
           </Typography>
         </Alert>
       </CardContent>

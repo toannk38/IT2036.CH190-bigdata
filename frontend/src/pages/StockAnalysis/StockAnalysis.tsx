@@ -19,7 +19,6 @@ import {
   RecommendationCard,
   ComponentScoresChart,
   AnalysisDetails,
-  AlertsList,
 } from './components';
 
 const StockAnalysis: React.FC<StockAnalysisProps> = () => {
@@ -212,11 +211,6 @@ const StockAnalysis: React.FC<StockAnalysisProps> = () => {
             aiAnalysis={stockSummary.ai_ml_analysis}
             llmAnalysis={stockSummary.llm_analysis}
           />
-
-          {/* Alerts (if any) */}
-          {stockSummary.alerts && stockSummary.alerts.length > 0 && (
-            <AlertsList alerts={stockSummary.alerts} />
-          )}
         </Box>
 
         {/* Right Column - Component Scores */}
